@@ -15,6 +15,6 @@ tags:
 
 具体使用可能要更改其中前缀部分，因为这里直接使用了绝对路径。
 
-![Cocos2d-x Android项目编译包含目录](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-12-16-Cocos2d-x%20Android%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91%E5%8C%85%E5%90%AB%E7%9B%AE%E5%BD%95/include_path.png)
+![Cocos2d-x Android项目编译包含目录](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-12-16/cocos_include_path.png)
 
-[下载我的包含文件示例](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-12-16-Cocos2d-x%20Android%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91%E5%8C%85%E5%90%AB%E7%9B%AE%E5%BD%95/CocosIncludePath.zip)。
+[下载我的包含文件示例](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-12-16/CocosIncludePath.xml)。

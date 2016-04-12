@@ -1,0 +1,32 @@
+---
+layout:     post
+title:      "华为C8813升级Android4.4小记"
+date:       2013-12-05 21:10
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Android
+    - Huawei
+---
+
+为何升级4.4，Android有几个版本是必须升级的，
+
+1. 2.2：JIT特性
+2. 4.1：黄油计划
+3. 4.4：ART
+
+升级过程：
+
+1. 请确认您的armeabi/liblptcpjin.so文件是否存在，位置是否正确
+
+	在安装包内的lib目录，可以看到这个文件，解压出来，放到/system/lib目录下，并修改权限为rw-r--r--即可。
+
+	但是实际上，海卓还是没用。我也是第一次用这货，看来还是得自己动手。。 :(
+
+2. 替换apns-conf.xml文件到/system/etc下的同名文件，覆盖掉，权限改为 **rw-r--r--** ，重启
+
+
+### 参考：
+
+1. [华为C8813刷机4.4ROM基于CM11.0正常上网修改版](http://www.anzow.com/news/List/JPJOKPGNQ.shtml)
+2. [让 KitKat 更好吃：Android 4.4 实用技巧合辑](http://sspai.com/24248)

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdtprojectproperties>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.IncludePaths">
+<language name="holder for library settings">
+
+</language>
+<language name="Assembly">
+<includepath workspace_path="true">/AircraftFighterX/jni</includepath>
+<includepath workspace_path="true">/AircraftFighterX/Classes</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include/backward</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/platforms/android-8/arch-arm/usr/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include-fixed</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/android/cpufeatures</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/kazmath/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CCBReader</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCControlExtension</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCScrollView</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCEditBox</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/network</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/LocalStorage</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CocoStudio/Armature</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libpng/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libcurl/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libjpeg/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libtiff/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libwebp/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/libwebsockets/android/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/Box2D</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk/include/chipmunk</includepath>
+
+</language>
+<language name="GNU C++">
+<includepath workspace_path="true">/AircraftFighterX/jni</includepath>
+<includepath workspace_path="true">/AircraftFighterX/Classes</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include/backward</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/platforms/android-8/arch-arm/usr/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include-fixed</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/android/cpufeatures</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/kazmath/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CCBReader</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCControlExtension</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCScrollView</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCEditBox</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/network</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/LocalStorage</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CocoStudio/Armature</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libpng/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libcurl/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libjpeg/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libtiff/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libwebp/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/libwebsockets/android/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/Box2D</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk/include/chipmunk</includepath>
+
+</language>
+<language name="GNU C">
+<includepath workspace_path="true">/AircraftFighterX/jni</includepath>
+<includepath workspace_path="true">/AircraftFighterX/Classes</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/include/backward</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/platforms/android-8/arch-arm/usr/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.6/include-fixed</includepath>
+<includepath>/Users/kimia/Software/adt-bundle/android-ndk-r9b/sources/android/cpufeatures</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/kazmath/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CCBReader</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCControlExtension</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCScrollView</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/GUI/CCEditBox</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/network</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/LocalStorage</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/extensions/CocoStudio/Armature</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libpng/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libcurl/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libjpeg/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libtiff/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/cocos2dx/platform/third_party/android/prebuilt/libwebp/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/libwebsockets/android/include</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/CocosDenshion/android</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/Box2D</includepath>
+<includepath>/Users/kimia/Software/cocos2d-x-2.2/external/chipmunk/include/chipmunk</includepath>
+
+</language>
+</section>
+<section name="org.eclipse.cdt.internal.ui.wizards.settingswizards.Macros">
+<language name="holder for library settings">
+
+</language>
+<language name="Assembly">
+<macro>
+<name>COCOS2DX_ROOT</name><value>${ProjDirPath}/../../../</value>
+</macro>
+
+</language>
+<language name="GNU C++">
+<macro>
+<name>COCOS2DX_ROOT</name><value>${ProjDirPath}/../../../</value>
+</macro>
+
+</language>
+<language name="GNU C">
+<macro>
+<name>COCOS2DX_ROOT</name><value>${ProjDirPath}/../../../</value>
+</macro>
+
+</language>
+</section>
+</cdtprojectproperties>
