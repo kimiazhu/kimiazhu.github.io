@@ -15,7 +15,7 @@ tags:
 
 现在的WinRT貌似仍然不争气低没拿下什么市场，这货做得不上不下，位置确实很尴尬，可能真的难有出路。但是如果是已有的游戏进行跨平台移植，那试试也无妨？ :)
 
-基于WP的版本上进行打包编译应该还是比较简单的。WP的版本可以看[这篇小结](http://kimiazhu.info/?p=271)。这里是WinRT的一些问题。
+基于WP的版本上进行打包编译应该还是比较简单的。WP的版本可以看[这篇小结](http://kchu.me/2013/10/24/Cocos2d-x%E9%A1%B9%E7%9B%AE%E7%A7%BB%E6%A4%8D%E5%88%B0WP8%E5%B0%8F%E8%AE%B0/)。这里是WinRT的一些问题。
 
 1. 打包错误，提示找不到<font color="green">CCPlatformMacros.h</font>或者<font color="green">CCPlatformConfig.h</font>文件。
 
@@ -125,7 +125,7 @@ tags:
 
 ### 参考
 
-1. [《Cocos2d-x项目移植到WP8小记》](http://i.kimiazhu.info/?p=271)
+1. [《Cocos2d-x项目移植到WP8小记》](http://kchu.me/2013/10/24/Cocos2d-x%E9%A1%B9%E7%9B%AE%E7%A7%BB%E6%A4%8D%E5%88%B0WP8%E5%B0%8F%E8%AE%B0/)
 2. [Porting Cocos2d-x Games for Windows Phone 8](http://developer.nokia.com/Community/Wiki/Porting_Cocos2d-x_Games_for_Windows_Phone_8)
 3. 关于如何打包x64 apps，可以参考这里，但我并未尝试过：<br/>
 	[Howto: Build your Metro app for ARM & x64](http://www.cocos2d-x.org/forums/6/topics/17435)

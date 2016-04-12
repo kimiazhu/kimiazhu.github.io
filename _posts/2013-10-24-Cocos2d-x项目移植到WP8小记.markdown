@@ -151,16 +151,14 @@ tags:
 
 16. 链接错误，提示找不到extension或者CocosDenshion的库：
 
-	<code>
-	Error	204	error LNK2001: unresolved external symbol "public: __cdecl cocos2d::extension::CCBReader::CCBReader(class cocos2d::extension::CCNodeLoaderLibrary *,class cocos2d::extension::CCBMemberVariableAssigner *,class cocos2d::extension::CCBSelectorResolver *,class cocos2d::extension::CCNodeLoaderListener *)" (??0CCBReader@extension@cocos2d@@QAA@PAVCCNodeLoaderLibrary@12@PAVCCBMemberVariableAssigner@12@PAVCCBSelectorResolver@12@PAVCCNodeLoaderListener@12@@Z)
-	</code>
+		Error	204	error LNK2001: unresolved external symbol "public: __cdecl cocos2d::extension::CCBReader::CCBReader(class cocos2d::extension::CCNodeLoaderLibrary *,class cocos2d::extension::CCBMemberVariableAssigner *,class cocos2d::extension::CCBSelectorResolver *,class cocos2d::extension::CCNodeLoaderListener *)" (??0CCBReader@extension@cocos2d@@QAA@PAVCCNodeLoaderLibrary@12@PAVCCBMemberVariableAssigner@12@PAVCCBSelectorResolver@12@PAVCCNodeLoaderListener@12@@Z)
 
 	尝试解决方案->属性中指定游戏的依赖，添加libExtension和CocosDenshion两个项目，另外还需要在游戏项目的属性->框架和引用页面里添加上对libExtension和CocosDenshion两个项目引用的依赖
 
 17. 分辨率适配。
 
 
-##参考
+## 参考
 
 - [如何建立Cocos2d-x WP8开发环境](http://www.cocos2d-x.org/wiki/Windows_Phone_8_Environment_Setup)
 - [Cocos2d-x for WinRT的github源代码](https://github.com/MSOpenTech/cocos2d-x/tree/winrt)
