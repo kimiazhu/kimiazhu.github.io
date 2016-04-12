@@ -1,0 +1,88 @@
+---
+layout:     post
+title:      "Jenkins问题记录"
+date:       2015-10-19 00:05
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Linux
+    - Jenkins
+    - SSL
+    - Git
+---
+
+# 1. Jenkins杀子进程问题
+
+从v1.260开始，Jenkins会将构建阶段产生的子进程杀死。所以我们有这样一个需求：先起一个辅助系统，然后运行**gradle test**进行单元测试，可能会发现辅助系统在测试结束后不复存在。如果我们希望该系统一直存在，需要禁止Jenkins杀进程的特性。
+
+需要在启动Jenkins的时候，传入以下参数：
+
+	-Dhudson.util.ProcessTreeKiller.disable=true
+        
+例如，我们使用CentOS 6, ** yum -y install jenkins ** 进行的安装，则修改 ** /etc/init.d/jenkins ** 启动脚本，添加以下红色部分：
+
+JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.util.ProcessTreeKiller.disable=true</font> -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
+
+参考：
+1. https://wiki.jenkins-ci.org/display/JENKINS/ProcessTreeKiller
+
+
+- - -
+
+# 2. Jenkins SVN SSL错误
+
+配置SVN时报
+**javax.net.ssl.SSLProtocolException: handshake alert:  unrecognized_name**错误。
+
+需要在启动Jenkins的时候，传入以下参数：
+
+	-Djsse.enableSNIExtension=false
+    
+例如，我们使用CentOS 6, ** yum -y install jenkins ** 进行的安装，则修改 ** /etc/init.d/jenkins ** 启动脚本，添加以下红色部分：
+
+JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.util.ProcessTreeKiller.disable=true</font> -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
+
+
+- - -
+
+# 3. 安装 git 1.8
+CentOS 6中默认安装的git版本是1.7, 部分新特性不支持，需要使用1.8以上的版本。编译安装。
+
+    yum install gettext-devel expat-devel curl-devel zlib-devel openssl-devel
+    cd /usr/local/src
+    wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
+    tar xzvf git-1.8.2.3.tar.gz
+    cd git-1.8.2.3
+    make prefix=/usr/local all
+    make prefix=/usr/local install
+    
+    
+---
+
+# 4. Jenkins Schedule
+
+五位的字符串，形如:
+
+	15 13 * * *
+    
+上面的Schedule表示每天的13:15分执行任务。
+
+五位从左往右依次为：
+
+1. 分钟(0-59)
+2. 小时(0-23)
+3. 日(1-31)
+4. 月份(1-12)
+5. 星期(0-7, 0和7都表示星期日)
+
+如果需要表示每五分钟执行一次，表达式为：
+
+	*/5 * * * * 
+    
+另外，新版本的Jenkins会有一个**H**符号，当你用上面的表达式表示每分钟执行一次的时候，会提示你写成下面这样：
+
+	H/5 * * * * 
+
+这里的**H**代表**hash**的意思，实际上是对job名字的一个哈希值。之所以Jenkins这样建议，是因为如果有多个任务使用这样的表达式的时候有可能出现同时间并发执行的情况。比如有10个任务使用了 <font color="red"> 0 0 \* \* \* </font> 表达式，会造成在每天午夜同时执行这10个任务，而在其他时间都是系统都是空闲的。 
+
+**H**符号的意思是针对Job名计算一个hash code，所以把这10个任务的Schedule表达式都换成<font color="red"> H H \* \* \* </font>之后，仍然能保证这10个任务每天执行依次，但是不会挤在一个时间点上执行。

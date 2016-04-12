@@ -1,0 +1,34 @@
+---
+layout:     post
+title:      "MySQL问题记录"
+date:       2015-10-19 00:05
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Linux
+    - MySQL
+---
+
+# 1. Select查询表时阻塞
+
+表可能被锁。
+
+	mysql> show OPEN TABLES where In_use > 0;
+    +--------------+-----------------+--------+-------------+
+    | Database     | Table           | In_use | Name_locked |
+    +--------------+-----------------+--------+-------------+
+    | demodatabase | demo_table_1234 |      1 |           0 |
+    +--------------+-----------------+--------+-------------+
+    1 row in set (0.00 sec)
+
+这时候显示表 **demo_table_1234** 已被使用
+
+# 2. 查看RDS系统资源
+
+查看RDS系统资源
+
+	#查看性能指标，累计值
+	mysqladmin -hlocalhost -uroot extended-status
+    
+    #查看性能指标，1秒内差值 
+	mysqladmin -hlocalhost -uroot extended-status --relative --sleep=1

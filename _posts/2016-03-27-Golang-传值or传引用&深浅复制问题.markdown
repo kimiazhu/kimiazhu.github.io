@@ -1,0 +1,238 @@
+---
+layout:     post
+title:      "Golang-传值or传引用&深浅复制问题"
+date:       2016-03-27 12:05
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Golang
+---
+
+
+关于传值还是传引用的问题，在[go的调用规范](https://golang.org/ref/spec#Calls)中有提到，在函数调用中是传值的（是否有其他的例外情况，我们后面再来考察）,但是在下面的例子中，我们将看到大部分情况下，这句话是好理解的，但是还是会有意外。那么这句话应该怎么理解呢？
+
+先来看看这个例子：
+
+# 1. 一个例子
+
+`golang:`
+
+	type Color int
+	
+	const (
+		black = iota
+		green
+		blue
+	)
+	
+	type Cat struct {
+		name string
+		age  int
+		legs Legs
+		eye  map[string]Eye
+		tail Tail
+	}
+	
+	type Eye struct {
+		color Color
+	}
+	
+	type Tail struct {
+		length float64
+	}
+	
+	type Legs struct {
+		count  int
+		length []int
+	}
+	
+这只猫融合了好几种类型的数据，包括基本类型，内嵌自定义对象，map，slice。将Legs而不是Leg定义为一个对象是有意而为之，是为了测试一个内嵌对象中包含的基本类型和slice类型时的复制行为。
+
+`golang:`
+
+	func ModifyCat(cat Cat) {
+		fmt.Printf("enter value cat:%v\n", cat)
+		fmt.Printf("in modify: cat:%p, cat.name:%p, cat.tail:%p\n", &cat, &cat.name, &cat.tail)
+		fmt.Printf("in modify: cat.legs.length:%p, cat.legs.count:%p\n", &cat.legs.length, &cat.legs.count)
+		cat.name = "Ben"
+		cat.eye["left"] = Eye{blue}
+		cat.tail = Tail{234.56}
+		cat.legs.count = 3
+		cat.legs.length[0] = 0
+		fmt.Printf("exit value cat:%v\n\n", cat)
+	}
+	
+	func main() {
+		catA := Cat{
+			name: "tom",
+			age:  1,
+			legs: Legs{count: 4, length: []int{10, 10, 10, 10}},
+			eye:  map[string]Eye{"left":{black}, "right":{green}},
+			tail: Tail{123.45},
+		}
+	
+		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
+		fmt.Println()
+	
+		ModifyCat(catB)
+		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n\n", &catA.legs.length, &catB.legs.length)
+	
+		catB.name = "Ben"
+		fmt.Printf("in modify: cat: %p\n", &catB)
+		catB.eye["right"] = Eye{black}
+		catB.tail = Tail{234.56}
+		catB.legs.count = 3
+		catB.legs.length[1] = 0
+		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
+	}
+	
+我们首先创建了一直猫catA，然后创建一个catB，并直接将catA赋值给catB，然后将catB传给ModifyCat(Cat)函数修改这只新猫的模样。并打印出前后的过程。
+
+我们看到的具体输出如下：
+
+	value catA:{tom 1 {4 [10 10 10 10]} map[left:{0} right:{1}] {123.45}}, catB:{tom 1 {4 [10 10 10 10]} map[left:{0} right:{1}] {123.45}}
+	address catA:0xc820016190, catB:0xc8200161e0
+	address catA.eye:0xc8200161c8, catB.eye:0xc820016218,
+	address catA.name:0xc820016190, catB.name:0xc8200161e0
+	address catA.tail:0xc8200161d0, catB.tail:0xc820016220
+	address catA.legs.count:0xc8200161a8, catB.legs.count:0xc8200161f8
+	address catA.legs.length:0xc8200161b0, catB.legs.length:0xc820016200
+	
+	enter value cat:{tom 1 {4 [10 10 10 10]} map[right:{1} left:{0}] {123.45}}
+	in modify: cat:0xc8200162d0, cat.name:0xc8200162d0, cat.tail:0xc820016310
+	in modify: cat.legs.length:0xc8200162f0, cat.legs.count:0xc8200162e8
+	exit value cat:{Ben 1 {3 [0 10 10 10]} map[left:{2} right:{1}] {234.56}}
+	
+	value catA:{tom 1 {4 [0 10 10 10]} map[left:{2} right:{1}] {123.45}}, catB:{tom 1 {4 [0 10 10 10]} map[left:{2} right:{1}] {123.45}}
+	address catA:0xc820016190, catB:0xc8200161e0
+	address catA.eye:0xc8200161c8, catB.eye:0xc820016218,
+	address catA.name:0xc820016190, catB.name:0xc8200161e0
+	address catA.tail:0xc8200161d0, catB.tail:0xc820016220
+	address catA.legs.count:0xc8200161a8, catB.legs.count:0xc8200161f8
+	address catA.legs.length:0xc8200161b0, catB.legs.length:0xc820016200
+
+	value catA:{tom 1 {4 [0 0 10 10]} map[left:{2} right:{0}] {123.45}}, catB:{Ben 1 {3 [0 0 10 10]} map[right:{0} left:{2}] {234.56}}	
+	address catA:0xc820016190, catB:0xc8200161e0
+	address catA.eye:0xc8200161c8, catB.eye:0xc820016218,
+	address catA.name:0xc820016190, catB.name:0xc8200161e0
+	address catA.tail:0xc8200161d0, catB.tail:0xc820016220
+	address catA.legs.count:0xc8200161a8, catB.legs.count:0xc8200161f8
+	address catA.legs.length:0xc8200161b0, catB.legs.length:0xc820016200
+
+根据输出可以看到几点：
+
+1. catB进行赋值之后，不管是cat本身，还是cat内部的各个属性的地址都已经改变了。
+2. 在函数内打印cat的几个属性的地址，可以看到和传入之前的catB是不同的。
+3. 在函数内对cat的名字修改后，并没有影响catB，cat是传值的。
+4. 通过赋值得到的catB，直接修改catB的名字，也没有影响catA的名字。
+5. 这些看似符合go规范的说法。
+
+几点意外：
+
+1. 我们在函数内对cat的左眼的修改，影响到了外部的catB，甚至影响到了catA！
+2. 在外部对catB的右眼的修改，影响到了catA
+3. 在函数内外对cat的腿部的长度(slice类型)的修改，都和眼睛有一样的效果。但是对腿部的数量(int类型)的修改则没有。
+4. 这些看起来可不像传值该有的表现！！！
+
+要理解这个问题，先来了解slice的底层结构。
+
+# 2. 理解Slice
+
+slice包括三个部分，一个指针ptr，指向slice的第一个元素；一个长度len表示slice的长度，一个容量cap表示slice的容量。如下图：
+
+![go-slices-usage-and-internals_slice-struct](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-struct.png)
+
+而slice的指针所指向“第一个元素”实际上是一个底层数组的第一个元素。可能会有多个slice共享着同一个底层数组。这种方式导致对slice的截取，拼接等操作都异常高效，可以在常数时间内完成。
+
+考虑下面的数组，这样的数组可以通过`make([]byte, 5)`来创建：
+
+![go-slices-usage-and-internals_slice-1](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-1.png)
+
+然后对该数组执行`s = s[2:4]`操作：
+
+![go-slices-usage-and-internals_slice-2](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-2.png)
+
+对于底层数组而言一次都没变，仅仅是slice的头部三个元素变发生了变化。
+
+容量和长度的关系是len<=cap。一个slice的cap就是底层数组的长度。当len>cap(比如做了一次很长的append)的时候，就需要构造一个容量更长的底层数组。
+
+所以slice并不是简单的传值关系，就像指针和chan这些引用类型一样，map和slice对底层元素的修改都是引用类型的，map和slice的头部地址可以发生改变，但是他们引用到的底层数组可能公共的。
+
+# 3. 闭包
+
+需要注意的是，go的闭包也是引用类型。考虑下面的代码：
+
+	for i := 0; i < 5; i++ {
+	    defer fmt.Printf("%d ", i)
+	    // Output: 4 3 2 1 0
+	}
+	
+	fmt.Printf("\n")
+	    for i := 0; i < 5; i++ {
+	    defer func(){ 
+			fmt.Printf("%d ", i) 
+		} () // Output: 5 5 5 5 5
+	}
+
+第二个函数是外部变量在闭包内通过被改变了的情况，defer函数内的表达式会**在它出现的地方就已经被求值**，然后在退出函数之前，按照defer出现的顺序**逆向**执行。也就是说当第一条defer求值的时候，`i=1`,第五条defer求值的时候，`i=5`，对于两个函数都是如此。区别在于第一个函数的i在每次defer是传值进printf函数的，所以在defer中，i等于有5份拷贝，而第二个函数使用闭包的方式引用了外部变量i其实只有一份！
+
+要在闭包中避免上面的问题，可以有两种方式。
+
+	// 方法1: 每次循环构造一个临时变量 i
+	for i := 0; i < 5; i++ {
+	    i := i
+	    defer func(){ fmt.Printf("%d ", i) } ()
+	    // Output: 4 3 2 1 0
+	}
+	// 方法2: 通过函数参数传参
+	for i := 0; i < 5; i++ {
+	    defer func(i int){ fmt.Printf("%d ", i) } (i)
+	    // Output: 4 3 2 1 0
+	}
+
+# 4. 深度拷贝
+
+关于深度拷贝，这里有个使用gob序列化反序列化的例子：
+
+	func deepCopy(dst, src interface{}) error {
+		var buf bytes.Buffer
+		if err := gob.NewEncoder(&buf).Encode(src); err != nil {
+		    return err
+		}
+		return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
+	}
+	
+另外也有一些利用反射进行实现的方式：
+
+- [opystructure](https://github.com/mitchellh/copystructure/blob/master/copystructure.go)
+
+# 5. 最佳实践
+
+1. slice和map都不支持==操作符，判断两个slice相等需要自己写循环判断，这种循环判断的方式效率并不会很低；
+2. map不支持对元素取地址，如果这样做，编辑器会拒绝编译，原因是随着map容量的扩张，底层数据结构可能改变，导致所取得的地址无效。
+3. 对slice的元素取地址编译器是不禁止的，但是我们仍应该避免这样做，因为slice扩张也会导致在新的内存空间重新构造底层数组，而如果操作之前保存的地址值可能会导致无法预料的结果。
+4. for...range...操作中，如果取了值，而不是通过去下标，像这样：`for i,v := range s`，其中v并不是s内元素的一个引用，改变v的值，并不能改变s中对应位置的元素。如果要这样做必须通过下标s[i]进行操作。
+
+# 6. 参考
+
+1. [Go Slices: usage and internals](http://blog.golang.org/go-slices-usage-and-internals)
+2. [effective_go.html#maps](https://golang.org/doc/effective_go.html#maps)
+3. [go spec#Calls](https://golang.org/ref/spec#Calls)
