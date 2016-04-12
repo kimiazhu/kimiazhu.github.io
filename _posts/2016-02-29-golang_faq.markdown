@@ -11,12 +11,16 @@ tags:
 
 # 1. Windows下拉取GitHub私有仓库
 
+mac或者linux下可以很容易地配置ssh密钥，而在windows下可以用两种方式拉取私有仓库。
+
 ## 1.1) 生成github access token：
 
 进入github -> settings -> Personal access token, 生成一个带repo权限的token。
 
 
 ## 1.2) 配置git
+
+使用如下配置命令：
 
 	git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
@@ -27,6 +31,8 @@ tags:
 	go get [-u] github.com/kimiazhu/private_repo
 
 # 2. 结构体嵌套定义和初始化
+
+Go的结构体嵌套定义和匿名结构体初始化，有时候在一次性时候结构体时会比较方便。当然，这种方式比较晦涩，大量使用并没有任何好处。
 
 ## 2.1）嵌套定义
 
