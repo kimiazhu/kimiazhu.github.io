@@ -46,42 +46,42 @@ tags:
 
 ### 1.搜寻敌人
 
-`C++ Code:`
-
-	/**
-	 * 寻找目标,所有的敌人都保存在一个CCArray中，需要从中遍历得到满足条件的一个。
-	 * @author [K.C.](http://i.kimiazhu.info)
-	 */
-	void HTTrackBullet::seekEnemy() {
-		mTarget = NULL;
-		//目标和子弹之间距离的平方值，之所以用平方值，因为这里只要判断大小，就不开方了。
-		float minDistanceSQ = mMinDistanceSQ;
-		//获取保存所有敌人的数组
-		CCArray* array = getArrayForEnemy();
-		for (int i = 0; i < array->count(); i++) {
-		    //敌人都继承自我自定义的HTCollidablePart可碰撞部件
-			HTCollidablePart* enemy = (HTCollidablePart*) array->objectAtIndex(i);
-			if (enemy->isCollidable() && enemy->isInsideWindow()
-					&& calcAngle(enemy->getPosition()) < (PI / 2)) {
-				/*
-				 * 判断满足条件：
-				 *  1. 敌人可碰撞（就是可以被打击）
-				 *  2. 敌人在当前窗口可视范围内
-				 *  3. 目标和敌人的角度小于90度
-				 */
-				float distanceSQ = ccpDistanceSQ(enemy->getPosition(),
-						this->getPosition());
-				if (distanceSQ < minDistanceSQ) {
-					minDistanceSQ = distanceSQ;
-					mTarget = enemy;
-				}
+```c++
+/**
+ * 寻找目标,所有的敌人都保存在一个CCArray中，需要从中遍历得到满足条件的一个。
+ * @author [K.C.](http://i.kimiazhu.info)
+ */
+void HTTrackBullet::seekEnemy() {
+	mTarget = NULL;
+	//目标和子弹之间距离的平方值，之所以用平方值，因为这里只要判断大小，就不开方了。
+	float minDistanceSQ = mMinDistanceSQ;
+	//获取保存所有敌人的数组
+	CCArray* array = getArrayForEnemy();
+	for (int i = 0; i < array->count(); i++) {
+	    //敌人都继承自我自定义的HTCollidablePart可碰撞部件
+		HTCollidablePart* enemy = (HTCollidablePart*) array->objectAtIndex(i);
+		if (enemy->isCollidable() && enemy->isInsideWindow()
+				&& calcAngle(enemy->getPosition()) < (PI / 2)) {
+			/*
+			 * 判断满足条件：
+			 *  1. 敌人可碰撞（就是可以被打击）
+			 *  2. 敌人在当前窗口可视范围内
+			 *  3. 目标和敌人的角度小于90度
+			 */
+			float distanceSQ = ccpDistanceSQ(enemy->getPosition(),
+					this->getPosition());
+			if (distanceSQ < minDistanceSQ) {
+				minDistanceSQ = distanceSQ;
+				mTarget = enemy;
 			}
 		}
 	}
+}
+```
 
 ### 2.计算角度
 
-```cpp
+```c++
 /**
  * 计算速度方向和目标之间的夹角
  * @author [K.C.](http://i.kimiazhu.info)
