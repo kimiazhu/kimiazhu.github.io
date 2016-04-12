@@ -1,0 +1,168 @@
+---
+layout:     post
+title:      "实现Cocos2d-x追踪子弹"
+date:       2012-05-33 12:40
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Cocos2d-x
+    - Cocos2d
+    - C++
+    - Games
+    - CocosBuilder
+---
+
+## 需求
+追踪子弹是游戏中的一个相当重要的精灵。子弹追踪的实现本质上是要实时调整子弹的线速度和角速度，使其不断地照着接近目标的方向移动。
+
+## 分析
+子弹速度分为两类，一个线速度，一个是角速度。所谓追踪，就是在子弹更新的每一帧中，动态计算子弹和目标之间的位置关系，然后更新子弹当前的线速度，和把子弹本身绕着自己的中心点旋转一个角度，使子弹朝向和子弹速度方向一致。
+
+这里我们的子弹每帧的旋转角度设定为1度。方向为顺时针或是逆时针根据其与目标之间的位置决定，例如目标在子弹的右上方，则子弹（每帧）顺时针旋转一度，如果在左上方，则逆时针旋转。当然实际计算过程我们可以根据向量运算决定方向。
+
+而子弹的线速度需要通过计算子弹和目标之间的夹角得到，如果子弹和目标之间夹角不为0，那么子弹需要实时调整自己的速度的方向，我们这里也设定为每帧可以旋转1度（这个值和子弹自身的旋转要一样，才能保持子弹看来永远朝着自己的前方运动），在整个运动过程中，子弹的速率（速度的模值）必须是保持不变的。
+
+另外我们需要加一些限制条件（自然的或者人为的限制）：
+
+1. 子弹发射时需要寻找目标，子弹默认会寻找离自己最近的，并且**不满足4.1和4.2两个条件**的目标。
+
+2. 子弹如果没有找到目标的情况下发射出去了，则按照初始速度飞行。
+
+3. 子弹在运动过程中如果失去目标，则按照当前速度飞行。
+
+4. 子弹一旦锁定目标，就会一直追踪打击目标，直到击中目标或者当目标**满足**下面条件时放弃并重新寻找目标：
+
+	4.1 目标离开屏幕范围
+
+	4.2 **子弹与目标之间的夹角大于90度角度**
+
+## 实现
+关键部分的实现，包括：
+1. 搜索目标
+2. 计算速度方向和目标之间的夹角
+3. 计算子弹自身要打击到目标需要旋转的方向
+4. 子弹运动函数，在这里把东西全串起来
+
+
+### 1.搜寻敌人
+
+`C++ Code:`
+
+	/**
+	 * 寻找目标,所有的敌人都保存在一个CCArray中，需要从中遍历得到满足条件的一个。
+	 * @author [K.C.](http://i.kimiazhu.info)
+	 */
+	void HTTrackBullet::seekEnemy() {
+		mTarget = NULL;
+		//目标和子弹之间距离的平方值，之所以用平方值，因为这里只要判断大小，就不开方了。
+		float minDistanceSQ = mMinDistanceSQ;
+		//获取保存所有敌人的数组
+		CCArray* array = getArrayForEnemy();
+		for (int i = 0; i < array->count(); i++) {
+		    //敌人都继承自我自定义的HTCollidablePart可碰撞部件
+			HTCollidablePart* enemy = (HTCollidablePart*) array->objectAtIndex(i);
+			if (enemy->isCollidable() && enemy->isInsideWindow()
+					&& calcAngle(enemy->getPosition()) < (PI / 2)) {
+				/*
+				 * 判断满足条件：
+				 *  1. 敌人可碰撞（就是可以被打击）
+				 *  2. 敌人在当前窗口可视范围内
+				 *  3. 目标和敌人的角度小于90度
+				 */
+				float distanceSQ = ccpDistanceSQ(enemy->getPosition(),
+						this->getPosition());
+				if (distanceSQ < minDistanceSQ) {
+					minDistanceSQ = distanceSQ;
+					mTarget = enemy;
+				}
+			}
+		}
+	}
+
+### 2.计算角度
+
+`C++ Code:`
+
+	/**
+	 * 计算速度方向和目标之间的夹角
+	 * @author [K.C.](http://i.kimiazhu.info)
+	 */
+	float HTTrackBullet::calcAngle(CCPoint target) {
+		float r = PI;
+		CCPoint p2 = ccpSub(target, this->getPosition());
+		r = ccpAngle(speed, p2); //计算夹角r是弧度值，不是角度值
+		return r;
+
+	}
+	
+### 3.计算子弹自身旋转方向
+
+`C++ Code:`
+
+	/**
+	 * 计算子弹自身要打击到目标需要旋转的方向
+	 * @author [K.C.](http://i.kimiazhu.info)
+	 */
+	RotateDirection HTTrackBullet::calcDirection(CCPoint target) {
+		CCPoint p2 = ccpSub(target, this->getPosition());
+		if (ccpCross(speed, p2) > 0) {
+			// 在opengl的右手坐标系中，向量叉乘大于0表示逆时针方向
+			return COUNTERCLOCKWISE;
+		} else if (ccpCross(speed, p2) < 0) {
+			return CLOCKWISE;
+		} else {
+			return NO_ROTATE;
+		}
+	}
+	
+### 4.子弹每帧移动
+
+`C++ Code:`
+
+	/**
+	 * 子弹运动
+	 * @author [K.C.](http://i.kimiazhu.info)
+	 */
+	void HTTrackBullet::move() {
+		do {
+			if (mTarget) {
+				if (mTarget->isDamaged() || (mTarget->getPositionX() <= 0)
+						|| (mTarget->getPositionY() <= 0)) {
+					mTarget = NULL;
+					break;
+				}
+				//step 1:确定角度
+				//计算夹角r是弧度值，不是角度值
+				float _rad = calcAngle(mTarget->getPosition()); 
+				if (_rad && _rad >= PI / 2) {
+					//角度大于90的时候放弃，不追踪
+					mTarget = NULL;
+					break;
+				}
+				float _deg = CC_RADIANS_TO_DEGREES(_rad);
+
+				float deltaR = _rad < mDeltaRadians ? _rad : mDeltaRadians;
+				float deltaD = _deg < mDeltaDegree ? _deg : mDeltaDegree;
+
+				//step 2:确定方向
+				switch (calcDirection(mTarget->getPosition())) {
+				case COUNTERCLOCKWISE: {
+					speed = ccpRotateByAngle(speed, ccp(0,0), deltaR);
+					this->setRotation(this->getRotation() - deltaD);
+					break;
+				}
+				case CLOCKWISE: {
+					speed = ccpRotateByAngle(speed, ccp(0,0), -deltaR);
+					this->setRotation(this->getRotation() + deltaD);
+					break;
+				}
+				default:
+					break;
+				}
+
+			} else {
+				seekEnemy();
+			}
+		} while (0);
+		this->setPosition(ccpAdd(getPosition(), speed));
+	}

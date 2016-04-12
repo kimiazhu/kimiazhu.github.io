@@ -1,0 +1,26 @@
+---
+layout:     post
+title:      "诡异的Cocos问题"
+date:       2013-05-28 01:12
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Cocos2d-x
+    - Cocos2d
+    - C++
+    - Games
+    - Android
+    - iOS
+---
+
+莫名其面的Cocos2d-x + CocosBuilder在Android上的问题，情况是这样的：
+
+1. 页面A是开始页面，A，B是商店，C是游戏开始页面；
+2. A有两个入口可以到达B（分别是A1和A2），B原来是手工通过代码做的布局，后来改成CocosBuilder了，改后的版本叫B'吧；
+3. 发现改后的B'到C会闪退，闪退的点可能有很多，注掉一个闪退的点，会在第二个点出现闪退，但是有一个共同点，都是createWithSpriteFrameName()方法出出现异常；
+4. 然后又做了一种尝试：入口A1跳到老界面B（原来手工布局的页面），然后从老界面跳到C，正常。入口A2跳到CocosBuilder重新构建的页面B'，然后B'再跳到C开始游戏，游戏一会儿就闪退（奇怪的是B到C和B'到C之间仅仅做了个场景切换而已，没有什么逻辑在其中，确定两者没有任何不同）；
+5. 尝试升级到最新版本（cocos2d-2.1rc0-x-2.1.3 + CocosBuilder 3.0alpha4），重新编译部署，CocosBuilder重新Publish，结果还是一样。。
+6. 尝试从A跳过B直接进入C，却是是正常的。
+7. 再回到A到B'，B'到C，却又正常了。。。
+
+诡异的，折腾了一个晚上。。怀疑和CocosReader对CCSpriteFrameCache的使用有关。先记下现象，以后再抽时间纠查原因吧。不知是否还有其他人遇到这个问题？
