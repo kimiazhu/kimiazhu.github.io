@@ -26,11 +26,11 @@ fmt.Printf("%v", value)
 
 对于以下的`struct`：
 
-```golang	
-	type R struct {
-		L int
-		w int
-	}
+```go
+type R struct {
+	L int
+	w int
+}
 ```
 
 具体可以有三种方式进行输出：
