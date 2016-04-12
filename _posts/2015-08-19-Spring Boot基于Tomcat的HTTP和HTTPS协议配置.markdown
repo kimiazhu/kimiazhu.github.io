@@ -32,6 +32,8 @@ tags:
 
 将keystore.p12放到工程根目录下，并在application.properties文件配置即可：
 
+`application.properties`
+
 	server.ssl.key-store = keystore.p12
 	server.ssl.key-store-password = your_password
 	server.ssl.keyStoreType = PKCS12
@@ -46,6 +48,8 @@ tags:
 # 3. 配置HTTP支持
 
 接下来通过编码的方式支持HTTP协议访问，可以在application.java入口中加入以下代码创建一个新德Connector：
+
+`java:`
 
 	@Value("${xgsdk.http.port}")
     private int httpPort;
@@ -75,6 +79,8 @@ tags:
 
 我们希望用户访问http端口的时候会自动跳转到https协议来访问，可以在创建connect的时候进行端口重定向。（当然还有其他方式，比如可以在应用中通过filter进行重定向处理）。
 
+`java:`
+
 	@Bean
     public EmbeddedServletContainerFactory servletContainer() {
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
@@ -101,6 +107,8 @@ tags:
 # 5. 配置部分链接允许http访问
 
 这个需求源自一些静态资源，使用http协议访问可以获得更高效率。这里需要再增加一个SecurityConstraint对象进行处理，我们先设置一些url-pattern，然后将这些pattern加入到NONE策略的SecurityConstraint中，以便允许这部分链接通过http访问。而剩下的仍然走CONFIDENTIAL策略。
+
+`java:`
 
 	private static final String HTTP_URL_PATTERNS[] = {
             "/static/*", 
