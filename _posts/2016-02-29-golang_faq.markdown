@@ -32,8 +32,6 @@ tags:
 
 结构体可以嵌套定义，内部还可以定义数组，嵌套定义的结构体是匿名的，同时也可以指定tag。
 
-<code lang="golang">
-
 	type A struct {
 		VA string       `tag:"va"`
 		B  struct {		// B是一个内嵌结构体
@@ -44,13 +42,10 @@ tags:
 		}               `tag:"c"`
 	}
 
-</code>
 
 ## 2.2）初始化
 
 嵌套定义的结构体是匿名的，初始化的时候仍要将结构体重写一遍。需要注意的是，匿名结构体内属性的tag也要重写，并且和之前定义的要写成一样，否则会报类型不匹配的错误。
-
-<code lang="golang">
 
 	A := A {
 		VA: "valueA",
@@ -59,10 +54,9 @@ tags:
 		} {VB: "valueB"},
 		C: []struct {
 			VC string `tag:"vc"`
-		} {{VC: "valueC1"}, {VC: "valueC2"}},
+		} { {VC: "valueC1"}, {VC: "valueC2"} },
 	}
 
-</code>
 
 # 3. 复制流
 
