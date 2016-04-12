@@ -83,6 +83,7 @@ tags:
 
 `C++ Code:`
 
+```
 	/**
 	 * 计算速度方向和目标之间的夹角
 	 * @author [K.C.](http://i.kimiazhu.info)
@@ -94,6 +95,7 @@ tags:
 		return r;
 
 	}
+```
 	
 ### 3.计算子弹自身旋转方向
 
