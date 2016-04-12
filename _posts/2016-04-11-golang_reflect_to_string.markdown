@@ -8,11 +8,11 @@ tags:
     - Golang
 ---
 
-#1. 说明
+# 1. 说明
 
 将struct对象信息方便地以人可读的方式打印到日志或者console中，go提供了一些方式，可以让我们方便地做这个事情。
 
-#2. fmt包标准输出
+# 2. fmt包标准输出
 
 	fmt.Printf("%v", value)
 
@@ -31,7 +31,7 @@ tags:
 - %+v 输出带filed name的格式，比如一个矩形`{L:100 w:50}`
 - %#v 输出带type、filed name和filed value的完整形式，还是这个矩形：`main.R{L:100, w:50}`
 
-#3. json输出
+# 3. json输出
 
 可以调用`encoding/json`包进行格式化成json格式输出，但这个方式只会导出公开的字段，**对于unexported字段值是不会出现的**。
 
@@ -46,11 +46,11 @@ tags:
 		return string(result)
 	}
 
-#4. 自定义的输出
+# 4. 自定义的输出
 
 如果需要更自由一些，又希望节省代码，可以使用反射的方式递归遍历一个数据结构内的每个字段和值，并根据需要进行拼接打印。
 
-##4.1 RefelectToString
+## 4.1 RefelectToString
 
 我提供了一个ReflectToString()的实现，使用反射机制来生成一个struct的字符串表示。它与fmt包不同的地方在于，在保持通用性的同时，提供了许多配置项来控制字符串的最终格式。
 
@@ -130,11 +130,11 @@ tags:
 
 具体代码资源在[这里](https://github.com/kimiazhu/golib/blob/master/utils/strings.go)。
 
-##4.2 自定义ToString
+## 4.2 自定义ToString
 
 当以上所有情况都不能满足需求时，或者对于某个输出具有非常特别的格式要求时候，可以针对每个struct内自行定义`String()`函数，在需要的时候进行调用该方法。
 
-##4.3 统一
+## 4.3 统一
 
 我们可以定制一个方法来统一上面两种格式的输出：
 
@@ -155,6 +155,6 @@ tags:
 
 这段代码实现了当存在String()方法的时候，我们调用对象的String()方法进行输出。否则使用反射构造通用的字符串格式输出。
 
-#5. Reference
+# 5. Reference
 
 - [strings.go](https://github.com/kimiazhu/golib/blob/master/utils/strings.go)
