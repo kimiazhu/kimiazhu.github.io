@@ -1,0 +1,57 @@
+---
+layout:     post
+title:      "Cocos2d-x模态对话框组件"
+date:       2013-07-24 10:01
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Cocos2d-x
+    - Dialog
+    - Games
+    - C++
+---
+
+> 2013-11-19 更新v1.1
+
+[这里查看源代码v1.1](https://github.com/kimiazhu/cocos-playground/tree/master/KC.JACModalAlert_20131119)
+
+[这里查看源代码v1.0](https://github.com/kimiazhu/cocos-playground/tree/master/KC.JACModalAlert_20130722)
+
+## 1. 说明
+
+此组件为弹出的模态对话框，会屏蔽底层的一切触摸事件，只有对话框中的按钮能够相应用户点击。组件基于JACModalAlert进行的修改的。直接就在原始文件上进行修改了。最主要的是**支持cocos2d-x 2.x版本**。详细变更日志如下：
+
+
+## 2. Change Log：
+
+<font color="green">**v1.0[20131119]:**</font>
+
+1. 修复在Win系列的平台下报告ESP栈未正确设置的问题，参考[这篇文章](http://i.kimiazhu.info/?p=307)提到的第7点。已测试在cocos2d-x 2.2中会出现此问题。
+
+	具体为将JACModalAlert.cpp中的函数：<br/>
+
+		void Execute(CCControlEvent event);
+
+	改成：
+
+		void Execute(CCNode *menu_item, CCControlEvent event);
+
+<font color="green">**v1.0[20130722]:**</font>
+
+1. 优化：按钮的按下事件改为内部弹起事件
+2. 优化：增加声音
+3. 修复：cocos2d-x 2.x 下的事件屏蔽不起作用
+4. 优化：增加点击放大效果
+5. 修复：点在对话框内部但是按钮之外(例如点击对话框的中的文字)，如果底层有按钮之类的其他可接受触摸事件的控件的话，还是会触发底层元素的点击事件的问题。即在对话框内部&按钮外部没有屏蔽底层触摸事件。
+
+      解决方法是：对整个coverLayer使用优先级为INT_MIN+1进行屏蔽全屏幕的触摸操作，然后对对话框的两个按钮用优先级为INT_MIN进行接收时间即可。这种方式比原来的更简单，并且可以解决此bug。
+6. 调整：原来使用BitMapFont，现在改成CCLabelTTF
+7. 调整：鉴于大家都会使用TexturePacker之类的打包工具给Texture打包，改成从SpriteSheet中获取图片资源。
+8. 扩大了按钮的间距
+
+
+
+## 3. 其他
+使用方法和原来一致。这个完全出于自己的需要而修改。所以还没有过多的整理得太详细。以后有时间再看看重新整理下。
+
+
