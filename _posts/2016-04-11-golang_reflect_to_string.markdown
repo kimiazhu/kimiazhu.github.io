@@ -18,16 +18,20 @@ tags:
 
 标准包`fmt`中提供了格式化字符串的支持。
 
-	fmt.Printf("%v", value)
+```golang
+fmt.Printf("%v", value)
+```
 
 `%v`可以打印出你想要的方式。并且私有字段也可以通过反射获取输出值。
 
 对于以下的`struct`：
-	
+
+```golang	
 	type R struct {
 		L int
 		w int
 	}
+```
 
 具体可以有三种方式进行输出：
 
