@@ -18,6 +18,8 @@ tags:
 
 # 2. 特性
 
+log4go支持类似log4j的xml配置文件，多个日志过滤器和级别设置。access日志（打印请求时间，结果，耗时等）。具体特性如下：
+
 1. 支持多个日志Filter配置，配置文件类似log4j的xml格式，默认会自动加载当前目录下的./log4go.xml或者conf/log4go.xml。如果没有找到，则需要手动指定，或者通过字符串的形式传入Setup()函数中。
 
 2. 当服务器重启时，如果已有log文件并且文件不满足滚动条件的时候，会尝试重用这些文件。这与Java中的通常做法一致（[alecthomas/log4go](https://github.com/alecthomas/log4go)的做法是每次重启都会生成一个新的log文件）
