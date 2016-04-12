@@ -17,6 +17,7 @@ tags:
 节点插件能用来为CocosBuilder增加自定义类型的对象，这些对象可以从CocosBuilder中导出来，最终也可以被用回到CocosBuilder中。这些自定义类必须都是CCNode的直接或间接子类。
 
 ---
+
 ## 1. 建立工程
 
 在XCode中建立插件工程的最简单方式是直接复制*Plugin Nodes*目录中的example工程。
@@ -26,6 +27,7 @@ tags:
 要编辑并测试这个插件，首先需要确定你已经在 *build* 目录构建好了一份CocosBuilder的拷贝，然后点击 *Run* 按钮进行测试。系统会开始编译插件并且拷贝到CocosBuilder的PlugIns目录中。要测试或者调试它的话，在build目录中双击CocosBuilder应用程序，你就可以在Mac OS的Console.app里看到输出了，为了过滤掉无关的日志信息，可以将Console的过滤器设置成CocosBuilder。
 
 ---
+
 ## 2. 插件基本架构
 
 要创建一个可用的插件，你需要把你自己的类直接添加到工程中，并且编辑 *CCBPProperties.plist* 文件。当自定义类被加载的时候CocosBuilder/CCBReader会调用 *alloc* 和缺省的 *init* 方法创建对象，然后给对象的所有属性赋上值。因此这需要你的自定义类只能使用 *init* 方法进行初始化，而不是使用一个自定义初始化方法。
@@ -35,6 +37,7 @@ tags:
 你可以将许多类型的节点类放到插件中，在 *CCBPProperties.plist* 设置它们中的可以被编辑的属性。有时候你还可能需要把用于显示和加载进App的时候用不同的类来进行去区别。通常最简单的做法是扩展节点的一个子类并且，覆盖它的一些方法来实现。例如你可以在子类中禁用动画或者用动作然后将它用于显示。如果你使用了这个方法，那么你应该将子类的命名前增加 *CCBP* 前缀（例如当你的父类名为CCMyCocosNode的话，子类可以命名为CCBPMyCocosNode）。
 
 ---
+
 ## 3. 将插件添加到CocosBuilder中
 
 请注意，只有那些很通用的插件才应该默认包含到CocosBuilder中。例如，核心的cocos2d类以及那些被CocosBuilder捆绑使用的GUI组件。
@@ -48,6 +51,7 @@ tags:
 5. 当你增加新的类和资源到插件中的时候，必须注意你只应该将它们添加到插件目标中。
 
 ---
+
 ## 4. CCBPProperties.plist的格式
 
 插件的大多数行为还是和 *CCBPProperties.plist* 有关。它定义了你的类的所有可以在CocosBuilder中进行编辑的属性，当然还有其他一些关于插件的信息。下面来看看这个文件的大体结构。
@@ -72,6 +76,7 @@ tags:
 |requireParentClass    |String     |指定了该节点是否只能作为子节点出现。例如CCMenuItemImage就只能作为CCMenu的子节点出现|
 
 ---
+
 ## 5. PlugInProperty
 
 一个PlugInProperty（插件属性）属性在CocosBuilder中应该如何展示，以及它应该如何被CCBReader加载到App中。这是一个包含以下Key的字典。至于哪个属性 *type* 是受支持的以及它如何（将缺省直）序列化则定义在 *Property Types* 文档中。
@@ -96,6 +101,7 @@ tags:
 |extra          |String |不同的type有不同的用法。参见Property Types文档获取详细解释 |
 
 ---
+
 ## 6. SpriteFrameDrop
 
 *SpriteFrameDrop* 结构体用来定义将CocosBuilder左边的资源列表中的物件拖放到Timeline中的该类的节点上时发生的行为。
@@ -108,6 +114,7 @@ tags:
 |property       |String |需要分配给拖放到的节点的该精灵的属性名称，例如CCSprite拖放到CCLayer中的时候应该赋值displayFrame|
 
 ---
-## 参考
+
+## 7. 参考
 
 * [摆脱无尽的贴坐标，自制CocosBuilder插件（CCBPProperties.plist详解）](http://www.cnblogs.com/Ringo-D/archive/2013/05/21/3090951.html)
