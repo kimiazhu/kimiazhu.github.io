@@ -1,11 +1,16 @@
 ---
-
-Date: 2013.07.16
-
-Title: Glyph Designer中文字体指南
-
-Tag: Cocos2d, Cocos2d-x, Glyph Designer, Games, Font
-
+layout:     post
+title:      "Glyph Designer中文字体指南"
+date:       2013-07-16 23:33
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Cocos2d
+    - Cocos2d-x
+    - Glyph Designer
+    - Games
+    - Font
+    - Design
 ---
 
 通过本教程你可以学到如何使用Glyph Designer创建如[图1]所示漂亮的中文字体，本文介绍到的效果包括描边、填充、渐变和阴影。
