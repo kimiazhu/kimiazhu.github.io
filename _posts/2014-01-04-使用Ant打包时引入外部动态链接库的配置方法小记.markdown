@@ -1,0 +1,32 @@
+---
+layout:     post
+title:      "使用Ant打包时引入外部动态链接库的配置方法小记"
+date:       2014-1-4 21:45
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Android
+    - adb
+    - Ant
+Date: 2014-1-4 21:45
+---
+
+Ant脚本打包的时候一般我们会执行一次clean清理掉之前生成的文件，为了提高打包的效率，Ant中我不执行调用ndk_build.sh重新编译本地C/C++代码，而是一次性编译好后（比如在Eclipse跑过一次之后，会留下一个生成好的libgame.so），Ant只执行编译Java文件（相对编译涉及到Cocos2d-x框架的游戏逻辑而言快很多），速度上算是个折中。否则做多次完整打包，需要的总时间难以忍受。
+
+如果游戏中涉及到需要引入一个或者多个第三方的动态链接库(*.so)的时候，这个文件我们可能需要放到Assets或者libs/armeabi目录下，这时候如果直接使用Eclipse的打包工具打包是不会有问题的，但是如果要用Ant，那么这个目录会在Ant执行清理的时候被删除掉。从而导致打出来的apk安装后无法正常运行。
+
+正确的配置方法：
+
+例如需要集成中国移动的计费sdk，这个sdk带有两个so库，分别是： **libcasdkjni.so** 和 **libidentifyapp.so** ，在工程下建立prebuilt目录，将两个so文件放到该目录下，Android.mk中添加如下配置：(可以加到 **<font color="red">LOCAL_PATH := $(call my-dir)</font>** 之后。)
+
+`Android.mk:`
+
+	include $(CLEAR_VARS)
+	LOCAL_MODULE:=casdkjni
+	LOCAL_SRC_FILES:=prebuilt/libcasdkjni.so 
+	include $(PREBUILT_SHARED_LIBRARY)
+	
+	include $(CLEAR_VARS)
+	LOCAL_MODULE:=identifyapp
+	LOCAL_SRC_FILES:=prebuilt/libidentifyapp.so
+	include $(PREBUILT_SHARED_LIBRARY)

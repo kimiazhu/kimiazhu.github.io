@@ -1,0 +1,89 @@
+---
+layout:     post
+title:      "Ant打包APK时条件控制分支小记"
+date:       2013-12-23 12:12
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Android
+    - adb
+    - Ant
+---
+
+由于渠道包众多，只能用ant批量打包。由于广告内置的问题（有的渠道不允许有内置广告），出现manifest文件在带广告和不带广告的版本之间有大量修改，所以考虑有一个变量isSDKEnabled控制是否生成带广告的APK安装文件。于是需要用到条件判断，做个小记。
+
+project.properties文件增加以下配置，用来控制打包是否包含广告SDK：
+
+`project.properties:`
+
+	isSDKEnabled=true
+
+
+## 方法一：
+
+使用Ant自带条件判断的方式；
+
+`build.xml`
+
+	<project name="testCondition" default="test">
+		<target name="test">
+			<property file="project.properties" />
+			<echo message="isSDKEnabled=${isSDKEnabled}"/>
+			<condition property="cond">
+				<istrue value="cond"/>
+			</condition>
+			<antcall target="isTrue" />
+			<antcall target="isFalse" />
+		</target>
+		<target name="isTrue" if="${isSDKEnabled}">
+			<echo>It is ture...</echo>
+		</target>
+		<target name="isFalse" unless="${isSDKEnabled}">
+			<echo>It is false...</echo>
+		</target>
+	</project>
+
+这个方式也可以在condition里面使用&lt;and&gt;、&lt;or&gt;、&lt;not&gt;、&lt;xor&gt;等多条件组合判断。
+
+## 方法二：
+
+使用Ant-contrib包的条件判断：
+
+`build.xml`
+
+	<project name="testCondition" default="condition"> 
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+		
+		<target name="isTrue">  
+	        <echo>is ture</echo>  
+	    </target>  
+	    <target name="isFalse">  
+	        <echo>is false</echo>  
+	    </target>  
+		<target name="condition">
+		<loadproperties srcFile="project.properties" />
+			<if>
+				<equals arg1="true" arg2="${isSDKEnabled}" />
+				<then>
+					<antcall target="isTrue"/>
+				</then>
+			
+				<elseif>
+					<equals arg1="false" arg2="${isSDKEnabled}" />
+					<then>
+						<antcall target="isFalse"/>
+					</then>
+				</elseif>
+				<else>
+					<echo>Error occur...</echo>
+				</else>
+			</if>
+		</target>
+	</project>  
+
+方法二看起来会更加容易让人理解。
+
+## 参考：
+
+1. [Ant Manual - Conditions](http://ant.apache.org/manual/Tasks/conditions.html)
+2. [Ant-contrib Tasks: If](ant-contrib.sourceforge.net/tasks/tasks/if.html‎)
