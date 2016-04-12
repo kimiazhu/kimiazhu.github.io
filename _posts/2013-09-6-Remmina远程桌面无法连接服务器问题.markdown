@@ -1,0 +1,20 @@
+---
+layout:     post
+title:      "Remmina远程桌面无法连接服务器问题"
+date:       2013-09-06 10:00
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Ubuntu
+    - Linux
+    - Remmina
+    - Remote Desktop
+---
+
+**Remmina Remote Desktop Client** 是在Linux下用过最好用的远程桌面客户端了。最近出过两次无法连接的问题，之前一直没去修复，改用旁边的Mac的RDP客户端来链接Windows了。今天对另外一台的Windows的连接也出了问题。无奈！
+
+问题表现很简单，就是点连接服务器的时候，弹出窗口提示： **Uable to connect to RDP server** 。然后尝试删除 *~/.remmina*  目录，发现无效。
+
+正确的方法其实不需要删除 *~/.remmina* 目录，实际上是host认证的配置文件错误了。可以尝试直接删除 *~/.freerdp* 目录，然后重新链接即可，这时候系统会重新弹出认证窗口，让你重新确认host签名信息。
+
+![Remmina cert dialog](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-09-06/remmina-cert-dialog.png "Remmina cert dialog")
