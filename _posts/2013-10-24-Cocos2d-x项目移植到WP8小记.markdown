@@ -1,0 +1,174 @@
+---
+layout:     post
+title:      "Cocos2d-x项目移植到WP8小记"
+date:       2013-10-24 00:33
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Android
+    - adb
+    - Windows Phone
+    - Windows RT
+    - WinRT
+    - Visual Studio
+    - C++
+---
+
+1. Cocos2d-x v2.2已经支持了Windows一系列的系统（cocos2d-x 0.13那个除外啦），包括RT，x86以及WP8
+
+2. 创建工程用create_project.py命令，工程会建立在cocos2d-x目录下的projects子目录中。
+
+3. 移植之前如果你的源文件中有中文，在vs 2012中编译可能会出现许多莫名其妙的错误，诸如类型未定义、变量未定义 *warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss* 之类的问题，但是在编辑器中是正常的。
+
+	解决方法，选中有问题的文件，ctrl-A全选所有文本，File->Advanced Saved Options...对话框中选择 *Unicode - Codepage 1200*，或者 *Unicode (UTF-8 with signature) - Codepage 65001* 保存，建议优先尝试后者。
+
+4. 做完第三步之后，可能会发现中文无法识别，我不清楚有多少人会遇到这个问题，但是在将Eclipse（Linux上的开发环境，非Windows）和XCode上做好的代码移植到Windows+Visual Studio的时候，我发现我的代码中（甚至是注释中）的中文字符会导致无法编译，错误信息很奇怪的，比如告诉你哪个位置少了分号，某个变量缺少类型之类的根本不存在的错误。
+
+	这个绝对是编码问题，和代码逻辑无关。为了解决这个问题，文件中尽量少出现中文符号（如果从头开始就是在VS上写代码不知道是不是会有这样的问题，移植的代码，问题会更多）。同时也为了国际化，我们可以把游戏中需要出现的文案抽取出来，可以参考Android的方式来做国际化，将中文放到配置文件上(配置文件编码确保和CCLabelBMFont所使用的fnt文件的编码相同，一般使用 *Unicode (UTF-8 without signature) - Codepage 65001* 编码)。这样配置文件不参与编译，就可以避免编译期间中文编码扰乱编译过程这个问题。（这个问题上卡了我两天 ~_~ ）
+
+5.  引入其他工程，请注意引入工程依赖之后，你还需要将需要include的头文件配置到工程属性中，在这里：**右键点击你的工程名->Properties->Configuration Properties->C/C++->Addtional Include Directories** 中加入响应的头文件所在的位置。例如对于声音依赖工程CocosDenshion的头文件在这里 *$(ProjectDir)..\\..\\..\\CocosDenshion\include* ;而对于extionsion则在这里： *$(ProjectDir)..\\..\\..\\extensions* 
+
+6. 关于导入Classes目录中的子目录，目前没有发现能用的好办法，一个一个建立Filter，然后往Filter中添加sources吧.
+
+7. 错误信息： *error C2440: 'type cast' : cannot convert from 'void (__cdecl XXXX::* )(void)' to 'cocos2d::SEL_MenuHandler'* 
+
+	解决方法，可能是函数原型不对，看看菜单的回调函数原型是不是这样的（检查一下是不是你少了参数？）：
+
+	```C++ Code:```
+
+		void HelloWorld::doClick1(CCObject* pSender);
+
+	其他类似的情形也一样，你可以留意一下这几个函数的原型，它们定义在 *CCObject.h* 中：
+
+	```C++ Code:```
+
+		typedef void (CCObject::*SEL_SCHEDULE)(float);
+		typedef void (CCObject::*SEL_CallFunc)();
+		typedef void (CCObject::*SEL_CallFuncN)(CCNode*);
+		typedef void (CCObject::*SEL_CallFuncND)(CCNode*, void*);
+		typedef void (CCObject::*SEL_CallFuncO)(CCObject*);
+		typedef void (CCObject::*SEL_MenuHandler)(CCObject*);
+		typedef void (CCObject::*SEL_EventHandler)(CCEvent*);
+		typedef int (CCObject::*SEL_Compare)(CCObject*); 
+
+8. 提示资源文件找不到？选中问题资源，点属性，然后把 *Content* 属性设置为true即可。
+
+9. 没有声音？建议使用wav资源。。体积那是相对其他格式要大一点的。。
+
+10. 最棘手的问题：cocos2d-x 2.2中的CCScrollView和CCTableView存在bug，导致整个屏幕图像会变形。论坛上已有用户[反馈](http://www.cocos2d-x.org/forums/6/topics/36926?r=39579 "Adding CCScrollView to CCLayer as child crops screen windows phone 8 cocos2dx.2.2")，我自己也有回帖，但估计WP开发者相对弱势，这个问题并没有得到解决。折腾了几天之后得到了解决方法，修改CCScrollView.cpp替换一下函数：
+
+
+	```C++ Code:```
+
+		/**
+		 * clip this view so that outside of the visible bounds can be hidden.
+		 */
+		void CCScrollView::beforeDraw()
+		{
+		    if (m_bClippingToBounds)
+		    {
+				m_bScissorRestored = false;
+		        CCRect frame = getViewRect();
+		        if (CCEGLView::sharedOpenGLView()->isScissorEnabled()) {
+		            m_bScissorRestored = true;
+		            m_tParentScissorRect = CCEGLView::sharedOpenGLView()->getScissorRect();
+		            //set the intersection of m_tParentScissorRect and frame as the new scissor rect
+		            if (frame.intersectsRect(m_tParentScissorRect)) {
+		                float x = MAX(frame.origin.x, m_tParentScissorRect.origin.x);
+		                float y = MAX(frame.origin.y, m_tParentScissorRect.origin.y);
+		                float xx = MIN(frame.origin.x+frame.size.width, m_tParentScissorRect.origin.x+m_tParentScissorRect.size.width);
+		                float yy = MIN(frame.origin.y+frame.size.height, m_tParentScissorRect.origin.y+m_tParentScissorRect.size.height);
+		#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+						glScissor((GLint)x, (GLint)y, (GLsizei)xx-x, (GLsizei)yy-y); 
+		#else
+						CCEGLView::sharedOpenGLView()->setScissorInPoints(x, y, xx-x, yy-y);
+		#endif
+		            }
+		        }
+		        else {
+		            glEnable(GL_SCISSOR_TEST);
+		#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+					glScissor((GLint)frame.origin.x, (GLint)frame.origin.y, (GLsizei)(frame.size.width), (GLsizei)(frame.size.height)); 
+					//glDisable(GL_SCISSOR_TEST);
+		#else
+		            CCEGLView::sharedOpenGLView()->setScissorInPoints(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+		#endif
+		        }
+		    }
+		} 
+
+	实际使用我新建了名为HTScrollView和HTTableView两个类，代码引用到这两个新建的类上，避免直接更改框架代码。当然上面代码使用了宏预编译，直接修改框架代码也不会影响到Android和iOS。（我只发现原cocos2d-x-2.2框架在WP8下有此bug，至于WinRT下是否也有此问题并未测试。）CCScrollView.cpp做修改以后，CCTableView的问题也会得到解决。
+
+11. 关于CCLOG日志无输出的问题：
+
+	在Android中，要在Android.mk文件中添加以下编译选项： **APP_CPPFLAGS := -DCOCOS2D_DEBUG=1** 
+
+	在VC++中的编译器不是gcc，而应该在Visual Studio设置： **Your Project -> Settings -> Configuration Properties -> C/C++ -> Command Line -> Additional Options** 输入框中添加定义： **/D "COCOS2D_DEBUG=1"**，重新编译即可。当你决定发布Release版本的时候，请把这个去掉。
+
+12. 关于WP8返回物理按键的响应，另文总结。
+
+13. 提交市场的时候出现错误：
+
+	![提交市场的XAP验证失败](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/xap_valid_failed.jpg)
+
+		1028: The native API api-ms-win-core-debug-l1-1-1.dll:OutputDebugStringA() isn’t allowed in assembly libcocos2d.dll. Update it and then try again.
+	 
+		1028: The native API api-ms-win-core-synch-l1-2-0.dll:CreateMutexExA() isn’t allowed in assembly libcocos2d.dll. Update it and then try again.
+		 
+		1028: The native API api-ms-win-core-synch-l1-2-0.dll:CreateEventExA() isn’t allowed in assembly libGLESv2_phone.dll. Update it and then try again.
+
+	记得提交到MarketPlace一定要打成Release包，这里是两个问题：
+	
+	1) 在libcocos2d工程中，将platform/winrt/CCCommon.cpp中的 **CCLuaLog(const char \*pszMsg)** 方法的 **OutputDebugStringA("\n");** 注释掉或者加入预编译使得Release版本不出现。
+
+	2) [有人说可以使用c++11中的mutex替代](http://www.cocos2d-x.org/forums/6/topics/37119)，但我直接注释掉了。两处地方：
+
+	  - 修改文件：
+	  **cocos2dx/platform/winrt/CCWinRTUtils.h** 中的 **inline void pthread_mutex_init(pthread_mutex_t* m, void* attributes)** 方法注释掉内容。
+	  ![fix_createEventExA_problem_of_market_place](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_2.jpg)
+	  - 修改文件：
+	  **cocos2dx/platform/third_party/winrt/angleproject/src/third_party/winrt/<br/>ThreadEmulation/ThreadEmulation.cpp** 中的 **\_Use_decl_annotations\_ VOID WINAPI Sleep(DWORD dwMilliseconds)** 方法，注释掉内容。
+	  ![fix_createEventExA_problem_of_market_place](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_1.jpg)
+
+14. Release版本无声音，在 **CocosDenshion/wp8/Audio.cpp** 中注释此行：
+
+		m_soundEffects[sound].m_soundEffectSourceVoice->SetVolume(m_soundEffctVolume);
+
+	如图：
+	![Release版本无声音Bug修复](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_no_sound_effect_in_release_version.jpg)
+
+15. 关于内购：
+
+	WP8完美支持C++，所以内购其实很简单。
+
+	- 对于Consumable产品，可以用IsConsumable来加以判断，当然你设置产品属性的时候可能已经知道类型，这里可以可以免于判断了。重要的是使用IsActive判断用户是否计费成功。记得给用户发放道具之后，要调用以下方法来向服务器汇报，否则你将无法继续下次计费。
+
+		`C++ Code:`
+
+			CurrentApp::ReportProductFulfillment(productId);
+
+	- 对于Durable类型产品，使用IsActive判断计费成功后，直接给用户反馈即可，无需向服务器汇报。调用 **ReportProductFulfillment(productId)** 方法是会抛出异常的。切记。
+
+16. 链接错误，提示找不到extension或者CocosDenshion的库：
+
+	<code>
+	Error	204	error LNK2001: unresolved external symbol "public: __cdecl cocos2d::extension::CCBReader::CCBReader(class cocos2d::extension::CCNodeLoaderLibrary *,class cocos2d::extension::CCBMemberVariableAssigner *,class cocos2d::extension::CCBSelectorResolver *,class cocos2d::extension::CCNodeLoaderListener *)" (??0CCBReader@extension@cocos2d@@QAA@PAVCCNodeLoaderLibrary@12@PAVCCBMemberVariableAssigner@12@PAVCCBSelectorResolver@12@PAVCCNodeLoaderListener@12@@Z)
+	</code>
+
+	尝试解决方案->属性中指定游戏的依赖，添加libExtension和CocosDenshion两个项目，另外还需要在游戏项目的属性->框架和引用页面里添加上对libExtension和CocosDenshion两个项目引用的依赖
+
+17. 分辨率适配。
+
+
+##参考
+
+- [如何建立Cocos2d-x WP8开发环境](http://www.cocos2d-x.org/wiki/Windows_Phone_8_Environment_Setup)
+- [Cocos2d-x for WinRT的github源代码](https://github.com/MSOpenTech/cocos2d-x/tree/winrt)
+- [Cocos2d-x源代码](https://github.com/cocos2d/cocos2d-x/tree/master)
+- [Cocos2d-x wiki文档](http://www.cocos2d-x.org/wiki/)
+- [how to import lib projects to cocos2d-x wp8 solution](http://cocos2d-x.org/forums/6/topics/36856)：这篇的方法还是有点问题，需要和本文上面刚提到的第五点结合，才能正常编译工程。
+- [CCTableView的上级容器缩放时显示区域错误的问题](http://bbs.firedragonpzy.com.cn/forum.php?mod=viewthread&tid=49&fromuid=30)
+- [cocos2d-x多分辨率自适配及因此导致的CCListView的bug修复](http://www.cnblogs.com/eagley/archive/2013/05/31/3110785.html)
+- [Report bug for CCScrollView](http://www.cocos2d-x.org/forums/6/topics/17768)
+- [Windows Phone 8 Games - Migrating from XNA to DirectX](http://developer.nokia.com/Community/Wiki/Windows_Phone_8_Games_-_Migrating_from_XNA_to_DirectX)
+- [Porting Cocos2d-x Games for Windows Phone 8](http://developer.nokia.com/Community/Wiki/Porting_Cocos2d-x_Games_for_Windows_Phone_8)

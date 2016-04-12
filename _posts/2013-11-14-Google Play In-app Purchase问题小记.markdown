@@ -1,11 +1,16 @@
 ---
-
-Date: 2013-11-14 00:36
-
-Title: Google Play In-app Purchase问题小记
-
-Tags: Android, IAP, In-app products, Games
-
+layout:     post
+title:      "Google Play In-app Purchase问题小记"
+date:       2013-11-14 00:36
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Android
+    - IAP
+    - In-app products
+    - Games
+    - Google
+    - Google Play
 ---
 
 1. 至今中国区无法正常访问付费应用，也无法正常途径收款。
@@ -34,8 +39,8 @@ Tags: Android, IAP, In-app products, Games
 	发现问题了，香港帐号不行，要美国帐号。很奇怪的是，香港重新正式注册的帐号也不行，都怀疑是不是谷歌政策变化了，香港不再直接支持付费应用了？？
 	</font>
 
-##参考
+## 参考
 
 1. 在[这里](https://code.google.com/p/marketbilling/)是一个针对In-app Purchase的 **官方** issue tracker项目，只是还没有合并到SDK的Sample中。[Google官方对该页面的引用在这里](https://developer.android.com/google/play/billing/billing_admin.html#billing-support)。
 
-2. [串接Google Play In-app-billing 易犯的錯誤](http://lp43.blogspot.tw/2012/04/google-play-in-app-billing.html) 这是一篇在墙外的文章。我转到了[这里](http://i.kimiazhu.info/?p=301)。
+2. [串接Google Play In-app-billing 易犯的錯誤](http://lp43.blogspot.tw/2012/04/google-play-in-app-billing.html) 这是一篇在墙外的文章。我转到了[这里](http://kchu.me/2013/11/14/%E4%B8%B2%E6%8E%A5-Google-Play-In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/)。

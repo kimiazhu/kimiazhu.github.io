@@ -40,7 +40,7 @@ Google Play的In-app-billing機制很完善，因此在機制底下的規矩也�
 
 ##### (2)設定Publisher後臺 應用程式產品內ID值 的[受管理]與[不受管理]分類時請小心！
 
-![](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-11-14-%E4%B8%B2%E6%8E%A5Google%20Play%20In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/1.png)
+![](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-11-14/1.png)
 
 由於 應用程式產品內ID值 分成受管理和不受管理類，這個值如果沒有設定好就儲存或發佈，後來發現設定錯了，即使刪除，都不能再在同一個APP內設定同一個產品ID了。 這很麻煩，因為程式還要為了這個不小心的錯誤，重新改程式碼中對應的ID值、重新上傳草稿APK、重新測試… 
 
@@ -48,7 +48,7 @@ Google Play的In-app-billing機制很完善，因此在機制底下的規矩也�
 
 這算是一個新手錯誤。
 
-![](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-11-14-%E4%B8%B2%E6%8E%A5Google%20Play%20In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/2.png)
+![](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-11-14/2.png)
 
 如果查看一下LOG，收到的LOG應該是 **RESULT_DEVELOPER_ERROR** 官方文件對這個LOG的定義如下︰
 此回應指出您的APP試圖發送iap請求，但是APP的AnddroidManifest.xml裡卻沒有宣告 com.android.vending.BILLING權限。也可能是因為應用程式沒有正確的被簽署，或者您發送了一個非正確格式的請求，像是忘了傳 Bundle的key值或者是使用了一個無法被識別的請求類型。
@@ -137,7 +137,7 @@ Google Play的In-app-billing機制很完善，因此在機制底下的規矩也�
 但是，
 ResponseCode.RESULT_OK只是代表我們可以執行iap購買，不代表交易成功了。還記得in-app-billing交易流程圖嗎？
 
-![](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-11-14-%E4%B8%B2%E6%8E%A5Google%20Play%20In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/3.png)
+![](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-11-14/3.png)
 
 **ResponseCode.RESULT_OK**只是這個交易flow的第2條而已。真正表示你交易成功會發生在第7點︰PURCHASE_STATE_CHANGED。
 
@@ -169,7 +169,7 @@ ResponseCode.RESULT_OK只是代表我們可以執行iap購買，不代表交易�
 
 剛開始串接IAP的新手有時候會遇到「找不到項目」的錯誤，看LOG回覆的錯誤訊息，並且參照Reference通常都能找出錯誤原因，我曾遇過的錯誤是因為**RESULT_ERROR**，查了一下In-app Billing Reference後，發現問題是因為我自己是販售者，我仍然又用販售者的身份去購買in-app Billing的商品，自己跟自己買東西，這件事在Google Wallet是不被允許的。 因此，如果你現在用Test Account購買商品，記得手機登入的Primary Account不能跟販售者的account相同。 
 
-![](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-11-14-%E4%B8%B2%E6%8E%A5Google%20Play%20In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/4.png)
+![](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-11-14/4.png)
 
 ###6.別急
 許多人在設定和實作的過程中，都急著想看到可以購買的結果。但是，如果你是第1次為這隻APP發佈in-app-billing商品時，Google是需要花時間去處理的(我的實測是2個小時候才找的到該商品，因為中午吃了一個便當，今天吃7-11的義大利麵)。所以，你發佈出去不代表馬上就能找到應用程式內商品，等一下他們吧！
@@ -180,7 +180,7 @@ ResponseCode.RESULT_OK只是代表我們可以執行iap購買，不代表交易�
 一定要將apk發佈，才能找的到iab商品(見下圖)。2012/08/14
 </font>
 
-![](https://dl.dropboxusercontent.com/u/3175114/Articles/2013-11-14-%E4%B8%B2%E6%8E%A5Google%20Play%20In-app-billing%E6%98%93%E7%8A%AF%E7%9A%84%E9%8C%AF%E8%AA%A4/5.png)
+![](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-11-14/5.png)
 
 ## 三、結論
 
