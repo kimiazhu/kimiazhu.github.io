@@ -81,9 +81,7 @@ tags:
 
 ### 2.计算角度
 
-`C++ Code:`
-
-```
+```C++
 /**
  * 计算速度方向和目标之间的夹角
  * @author [K.C.](http://i.kimiazhu.info)
