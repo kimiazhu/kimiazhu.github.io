@@ -97,72 +97,72 @@ float HTTrackBullet::calcAngle(CCPoint target) {
 	
 ### 3.计算子弹自身旋转方向
 
-`C++ Code:`
-
-	/**
-	 * 计算子弹自身要打击到目标需要旋转的方向
-	 * @author [K.C.](http://i.kimiazhu.info)
-	 */
-	RotateDirection HTTrackBullet::calcDirection(CCPoint target) {
-		CCPoint p2 = ccpSub(target, this->getPosition());
-		if (ccpCross(speed, p2) > 0) {
-			// 在opengl的右手坐标系中，向量叉乘大于0表示逆时针方向
-			return COUNTERCLOCKWISE;
-		} else if (ccpCross(speed, p2) < 0) {
-			return CLOCKWISE;
-		} else {
-			return NO_ROTATE;
-		}
+```c++
+/**
+ * 计算子弹自身要打击到目标需要旋转的方向
+ * @author [K.C.](http://i.kimiazhu.info)
+ */
+RotateDirection HTTrackBullet::calcDirection(CCPoint target) {
+	CCPoint p2 = ccpSub(target, this->getPosition());
+	if (ccpCross(speed, p2) > 0) {
+		// 在opengl的右手坐标系中，向量叉乘大于0表示逆时针方向
+		return COUNTERCLOCKWISE;
+	} else if (ccpCross(speed, p2) < 0) {
+		return CLOCKWISE;
+	} else {
+		return NO_ROTATE;
 	}
-	
+}
+```
+
 ### 4.子弹每帧移动
 
-`C++ Code:`
-
-	/**
-	 * 子弹运动
-	 * @author [K.C.](http://i.kimiazhu.info)
-	 */
-	void HTTrackBullet::move() {
-		do {
-			if (mTarget) {
-				if (mTarget->isDamaged() || (mTarget->getPositionX() <= 0)
-						|| (mTarget->getPositionY() <= 0)) {
-					mTarget = NULL;
-					break;
-				}
-				//step 1:确定角度
-				//计算夹角r是弧度值，不是角度值
-				float _rad = calcAngle(mTarget->getPosition()); 
-				if (_rad && _rad >= PI / 2) {
-					//角度大于90的时候放弃，不追踪
-					mTarget = NULL;
-					break;
-				}
-				float _deg = CC_RADIANS_TO_DEGREES(_rad);
-
-				float deltaR = _rad < mDeltaRadians ? _rad : mDeltaRadians;
-				float deltaD = _deg < mDeltaDegree ? _deg : mDeltaDegree;
-
-				//step 2:确定方向
-				switch (calcDirection(mTarget->getPosition())) {
-				case COUNTERCLOCKWISE: {
-					speed = ccpRotateByAngle(speed, ccp(0,0), deltaR);
-					this->setRotation(this->getRotation() - deltaD);
-					break;
-				}
-				case CLOCKWISE: {
-					speed = ccpRotateByAngle(speed, ccp(0,0), -deltaR);
-					this->setRotation(this->getRotation() + deltaD);
-					break;
-				}
-				default:
-					break;
-				}
-
-			} else {
-				seekEnemy();
+```c++
+/**
+ * 子弹运动
+ * @author [K.C.](http://i.kimiazhu.info)
+ */
+void HTTrackBullet::move() {
+	do {
+		if (mTarget) {
+			if (mTarget->isDamaged() || (mTarget->getPositionX() <= 0)
+					|| (mTarget->getPositionY() <= 0)) {
+				mTarget = NULL;
+				break;
 			}
-		} while (0);
-		this->setPosition(ccpAdd(getPosition(), speed));
-	}
+			//step 1:确定角度
+			//计算夹角r是弧度值，不是角度值
+			float _rad = calcAngle(mTarget->getPosition()); 
+			if (_rad && _rad >= PI / 2) {
+				//角度大于90的时候放弃，不追踪
+				mTarget = NULL;
+				break;
+			}
+			float _deg = CC_RADIANS_TO_DEGREES(_rad);
+
+			float deltaR = _rad < mDeltaRadians ? _rad : mDeltaRadians;
+			float deltaD = _deg < mDeltaDegree ? _deg : mDeltaDegree;
+
+			//step 2:确定方向
+			switch (calcDirection(mTarget->getPosition())) {
+			case COUNTERCLOCKWISE: {
+				speed = ccpRotateByAngle(speed, ccp(0,0), deltaR);
+				this->setRotation(this->getRotation() - deltaD);
+				break;
+			}
+			case CLOCKWISE: {
+				speed = ccpRotateByAngle(speed, ccp(0,0), -deltaR);
+				this->setRotation(this->getRotation() + deltaD);
+				break;
+			}
+			default:
+				break;
+			}
+
+		} else {
+			seekEnemy();
+		}
+	} while (0);
+	this->setPosition(ccpAdd(getPosition(), speed));
+}
+```
