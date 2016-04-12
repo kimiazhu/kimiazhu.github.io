@@ -1,0 +1,63 @@
+---
+layout:     post
+title:      "华为Android设备开发问题集合"
+date:       2013-09-15 14:57
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Cocos2d-x
+    - C++
+    - CocosBuilder
+    - Games
+    - Android
+    - Huawei
+---
+
+天煞的华为手机。:( 大概国内手机总有各种各样的问题吧。。刚用有一台华为开发机，碰上了。记录一下。
+
+## 1. adb命令无法识别手机
+
+华为手机在系统可能无法被识别，Linux上可能更加容易出现这种情况，即使电脑上已经做了正确的配置，仍然可能如此，*adb devices* 会出现设备全是?????一串问号的情况，需要经过以下设置将机器模式选择成google模式。
+
+1 使用电话拨打\*#\*#2846579#\*#\*
+
+2 这时会出现一个菜单，选择 *projectMenu*
+
+3 选择 *Background setting*
+
+4 选择 *Usb port setting*
+ 
+5 选择 *Google mode*
+
+6 提示 *Successed, please restart handset to make it effect*
+
+PS：在第五步中可以看到的模式包括
+
+- Normal mode
+- Google mode
+- CTS mode
+- Manufacture mode
+- Authentication mode
+- Other mode
+
+## 2. 系统日志无法正常输出
+
+我的C8813就有这个问题，日志输出只有error级别，其他级别日志都看不到。也有反应所有日志都无法输出到终端的。
+
+实际上是厂商为了提升性能，在底层默认屏蔽了日志输出。如下方法打开。
+
+1 使用电话拨打\*#\*#2846579#\*#\*
+
+2 这时会出现一个菜单，选择 *projectMenu*
+
+3 选择 *后台设置* (Background setting)
+
+4 选择 *Log设置* (Log setting)
+ 
+5 在 *Log设置* 中选择 *Log开关* 并选择 *LOG打开*
+
+6 在第四步的 *Log设置* 中选择 *Log级别设置* 并选择 *VERBOSE* 或其他你希望的最低级别。
+
+7 回到第四步 *LOG设置* 同一级菜单，找到 *Dump & Log* 设置，选择 *打开 Dump & Log*
+
+8 退出，重启手机。完成后日志将能够正常输出。
