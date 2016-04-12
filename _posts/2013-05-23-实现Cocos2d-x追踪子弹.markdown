@@ -84,17 +84,17 @@ tags:
 `C++ Code:`
 
 ```
-	/**
-	 * 计算速度方向和目标之间的夹角
-	 * @author [K.C.](http://i.kimiazhu.info)
-	 */
-	float HTTrackBullet::calcAngle(CCPoint target) {
-		float r = PI;
-		CCPoint p2 = ccpSub(target, this->getPosition());
-		r = ccpAngle(speed, p2); //计算夹角r是弧度值，不是角度值
-		return r;
+/**
+ * 计算速度方向和目标之间的夹角
+ * @author [K.C.](http://i.kimiazhu.info)
+ */
+float HTTrackBullet::calcAngle(CCPoint target) {
+	float r = PI;
+	CCPoint p2 = ccpSub(target, this->getPosition());
+	r = ccpAngle(speed, p2); //计算夹角r是弧度值，不是角度值
+	return r;
 
-	}
+}
 ```
 	
 ### 3.计算子弹自身旋转方向
