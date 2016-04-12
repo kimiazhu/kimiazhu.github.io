@@ -18,7 +18,7 @@ tags:
 
 标准包`fmt`中提供了格式化字符串的支持。
 
-```golang
+```go
 fmt.Printf("%v", value)
 ```
 
@@ -28,8 +28,8 @@ fmt.Printf("%v", value)
 
 ```go
 type R struct {
-	L int
-	w int
+  L int
+  w int
 }
 ```
 
@@ -44,16 +44,18 @@ type R struct {
 
 可以调用`encoding/json`包进行格式化成json格式输出，但这个方式只会导出公开的字段，**对于unexported字段值是不会出现的**。
 
-	// ToJson return the json format of the obj
-	// when error occur it will return empty.
-	// Notice: unexported field will not be marshaled
-	func ToJson(obj interface{}) string {
-		result, err := json.Marshal(obj)
-		if err != nil {
-			return fmt.Sprintf("<no value with error: %v>", err)
-		}
-		return string(result)
-	}
+```go
+// ToJson return the json format of the obj
+// when error occur it will return empty.
+// Notice: unexported field will not be marshaled
+func ToJson(obj interface{}) string {
+  result, err := json.Marshal(obj)
+  if err != nil {
+    return fmt.Sprintf("<no value with error: %v>", err)
+  }
+  return string(result)
+}
+```
 
 # 4. 自定义的输出
 <br />
@@ -67,40 +69,42 @@ type R struct {
 
 具体代码附在后边，函数的签名和注释如下：
 
-	// ReflectToString return the string formatted by the given argument,
-	// the number of args may be one or two
-	//
-	// the first argument is the print style, and it's default value is
-	// StyleMedium. the second argument is the style configuration pointer.
-	//
-	// The long style may be a very long format like following:
-	//
-	//      Type{name=value}
-	//
-	// it's some different from fmt.Printf("%#v\n", value),
-	// it's separated by comma and equal
-	//
-	// Then, the medium style would like:
-	//
-	//      {key=value}
-	//
-	// it's some different from fmt.Printf("%+v\n", value),
-	// it's separated by comma and equal
-	//
-	// Otherwise the short format will only print the value but no type
-	// and name information.
-	//
-	// since recursive call, this method would be pretty slow, so if you
-	// use it to print log, may be you need to check if the log level is
-	// enabled first
-	// 
-	// examples:
-	//
-	//   - ReflectToString(input)
-	//   - ReflectToString(input, StringStyleLong)
-	//   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", SepField:",", SepKeyValue:":"})
-	//   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
-	func ReflectToString(obj interface{}, args ...interface{}) string 
+```go
+  // ReflectToString return the string formatted by the given argument,
+  // the number of args may be one or two
+  //
+  // the first argument is the print style, and it's default value is
+  // StyleMedium. the second argument is the style configuration pointer.
+  //
+  // The long style may be a very long format like following:
+  //
+  //      Type{name=value}
+  //
+  // it's some different from fmt.Printf("%#v\n", value),
+  // it's separated by comma and equal
+  //
+  // Then, the medium style would like:
+  //
+  //      {key=value}
+  //
+  // it's some different from fmt.Printf("%+v\n", value),
+  // it's separated by comma and equal
+  //
+  // Otherwise the short format will only print the value but no type
+  // and name information.
+  //
+  // since recursive call, this method would be pretty slow, so if you
+  // use it to print log, may be you need to check if the log level is
+  // enabled first
+  // 
+  // examples:
+  //
+  //   - ReflectToString(input)
+  //   - ReflectToString(input, StringStyleLong)
+  //   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", SepField:",", SepKeyValue:":"})
+  //   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
+  func ReflectToString(obj interface{}, args ...interface{}) string 
+```
 
 我们可以通过这样一个方法来实现类似fmt.Printf()函数，并且支持一定的格式自定义：
 
@@ -151,20 +155,22 @@ type R struct {
 
 我们可以定制一个方法来统一上面两种格式的输出：
 
-	// ToString return the common string format of the obj according
-	// to the given arguments
-	//
-	// by default obj.String() will be called if this method exists.
-	// otherwise we will call ReflectToString() to get it's string
-	// representation
-	//
-	// the args please refer to the ReflectToString() function.
-	func ToString(obj interface{}, args ...interface{}) string {
-		if v, ok := obj.(fmt.Stringer); ok {
-			return v.String()
-		}
-		return ReflectToString(obj, args)
-	}
+```go
+  // ToString return the common string format of the obj according
+  // to the given arguments
+  //
+  // by default obj.String() will be called if this method exists.
+  // otherwise we will call ReflectToString() to get it's string
+  // representation
+  //
+  // the args please refer to the ReflectToString() function.
+  func ToString(obj interface{}, args ...interface{}) string {
+    if v, ok := obj.(fmt.Stringer); ok {
+      return v.String()
+  }
+  return ReflectToString(obj, args)
+}
+```
 
 这段代码实现了当存在String()方法的时候，我们调用对象的String()方法进行输出。否则使用反射构造通用的字符串格式输出。
 
