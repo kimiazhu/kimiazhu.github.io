@@ -1,0 +1,61 @@
+---
+layout:     post
+title:      "如何查找Linux命令是否存在"
+date:       2015-09-25 00:05
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Linux
+    - Shell
+---
+
+
+# 1. 起因
+
+最近在做发布流程。
+
+初期的项目得不到有效的流程保证是常有的事情。但大部分情况下，这不是技术所能解决的。自动化系统发布过程只是流程化/规范化产品开发过程的其中一个方面，但也是最重要的方面之一。
+
+做发布脚本的时候新申请来的机器总是没有得到必要的初始化，并且每台机器的环境可能都会有些不同，所以需要做一些（一次性的）检查，看看哪些命令没有装上，或者哪些端口/服务没有打开。
+
+# 2. 分析
+
+`whereis`和`which`都可以显示命令所在的路径，正常情况下，如果不存在，不会有任何输出。但我发现`whereis`有时候不一定能得到你想要的返回，比如在 OS X (基于10.10 Yosemite测试) 就不会正确地设置退出状态，不论命令是否存在，`echo $?` 都会返回状态 0 ，另外也有说法表示 `which` 命令在某些操作系统下也会有同样问题。而且有一些操作系统还会更改它的输出（CentOS 6下我就发现输出和Ubuntu可能有区别），甚至是挂上和包管理器相关的一些操作上[^1]。
+
+所以，尽量不要使用这两个命令。可以尝试以下命令取而代之：
+
+`Shell Script:`
+
+	$ command -v foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+	$ type foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+	$ hash foo 2>/dev/null || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+
+PS: 有人会建议使用 **2>&-** 来替代 **2>/dev/null**，原因是前者更短更简洁。但实际上这两种写法的效果并非完全一样：**2>&-** 用于关闭FD2即stderr，当程序尝试写入stderr的时候它可能会导致错误。[^2]
+
+但是当我们使用 **/bin/sh** 作为shell的时候要注意了，POSIX并没有非常明确地定义 **type** 和 **hash** 命令的退出时候的状态码。比如 **hash** 可能会在所要查找的命令本身并不存在的情况下也成功退出。所以请尽量使用 **command** 命令，它在POSIX中的退出行为被清晰地定义过。
+
+如果我们用的是 **Bash** shell，**type** 和 **hash** 就是可以非常放心地使用了。**type** 在bash中有一个 **-P** 参数用于仅在**PATH**下搜索命令，而 **hash** 使用后还会将命令的路径进行哈希索引（这样下次你用这个命令的时候会更快一些）。
+
+以下是一个使用gdate的例子：
+
+`Shell Script:`
+
+	gnudate() {
+       if hash gdate 2>/dev/null; then
+           gdate "$@"
+       else
+           date "$@"
+       fi
+	}
+	
+# 3. 总结
+
+- 使用`Bash`作为shell的时候，推荐使用 `hash`（下次用该命令时更快）或者 `type`（内建命令）
+
+- 写POSIX脚本的时候，请使用 `command -v`
+
+# 4. 参考
+
+[^1]: [Check if a program exists from a bash script](http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script)
+
+[^2]: [Difference between 2>&-, 2>/dev/null, |&, &>/dev/null and >/dev/null 2>&1](http://unix.stackexchange.com/questions/70963/difference-between-2-2-dev-null-dev-null-and-dev-null-21)
