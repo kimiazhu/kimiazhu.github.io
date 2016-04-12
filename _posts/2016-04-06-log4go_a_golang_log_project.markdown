@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "log4go: a golang log project"
+title:      "log4go: A Golang Log Project"
 date:       2016-04-06 20:05
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
@@ -9,7 +9,7 @@ tags:
 ---
 
 # 1. 说明
-<br />
+
 现有的golang标准库中的log方案不支持滚动，也不支持多个日志级别输出，使用起来会有些不方便，而网上也有不少的针对go的log解决方案。我这个log方案基于[alecthomas/log4go](https://github.com/alecthomas/log4go)改造而来。并且已经改过很多东西，所以讲它单独独立出来了。目前我们自己的生产环境已经在使用。
 
 核心结构如：
@@ -17,7 +17,7 @@ tags:
 ![core struct of log4go](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-04-06/core_struct.png)
 
 # 2. 特性
-<br />
+
 1. 支持多个日志Filter配置，配置文件类似log4j的xml格式，默认会自动加载当前目录下的./log4go.xml或者conf/log4go.xml。如果没有找到，则需要手动指定，或者通过字符串的形式传入Setup()函数中。
 
 2. 当服务器重启时，如果已有log文件并且文件不满足滚动条件的时候，会尝试重用这些文件。这与Java中的通常做法一致（[alecthomas/log4go](https://github.com/alecthomas/log4go)的做法是每次重启都会生成一个新的log文件）
@@ -46,10 +46,10 @@ tags:
 		})
 
 # 3. TODO
-<br />
+
 1. exclude需要能够在所有级别中生效
 2. 移除一些无用代码
 
 # 4. Reference
-<br />
+
 [kimiazhu/log4go](https://github.com/kimiazhu/log4go)
