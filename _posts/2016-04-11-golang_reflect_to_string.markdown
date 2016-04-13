@@ -161,7 +161,7 @@ func ToString(obj interface{}, args ...interface{}) string {
   if v, ok := obj.(fmt.Stringer); ok {
     return v.String()
   }
-return ReflectToString(obj, args)
+  return ReflectToString(obj, args)
 }
 ```
 
