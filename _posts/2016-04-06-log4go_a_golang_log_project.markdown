@@ -28,11 +28,11 @@ log4go支持类似log4j的xml配置文件，多个日志过滤器和级别设置
 
 ```xml
 <filter enabled="true">
-	<tag>stdout</tag>
-	<type>console</type>
-	<level>INFO</level>
-	<exclude>github.com/example</exclude>
-	<exclude>github.com/sample</exclude>
+  <tag>stdout</tag>
+  <type>console</type>
+  <level>INFO</level>
+  <exclude>github.com/example</exclude>
+  <exclude>github.com/sample</exclude>
 </filter>
 ```
 
