@@ -98,8 +98,8 @@
   user-select: none;
 }
 
-.gutter gl {
-
+.gutter .gl {
+    border: 10px;
 }
 
 .table th, .table td {
