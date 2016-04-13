@@ -15,95 +15,95 @@ tags:
 
 # 1. 一个例子
 
-`golang:`
+```go
+type Color int
 
-	type Color int
-	
-	const (
-		black = iota
-		green
-		blue
-	)
-	
-	type Cat struct {
-		name string
-		age  int
-		legs Legs
-		eye  map[string]Eye
-		tail Tail
-	}
-	
-	type Eye struct {
-		color Color
-	}
-	
-	type Tail struct {
-		length float64
-	}
-	
-	type Legs struct {
-		count  int
-		length []int
-	}
+const (
+  black = iota
+  green
+  blue
+)
+
+type Cat struct {
+  name string
+  age  int
+  legs Legs
+  eye  map[string]Eye
+  tail Tail
+}
+
+type Eye struct {
+  color Color
+}
+
+type Tail struct {
+  length float64
+}
+
+type Legs struct {
+  count  int
+  length []int
+}
+```
 	
 这只猫融合了好几种类型的数据，包括基本类型，内嵌自定义对象，map，slice。将Legs而不是Leg定义为一个对象是有意而为之，是为了测试一个内嵌对象中包含的基本类型和slice类型时的复制行为。
 
-`golang:`
+```go
+func ModifyCat(cat Cat) {
+  fmt.Printf("enter value cat:%v\n", cat)
+  fmt.Printf("in modify: cat:%p, cat.name:%p, cat.tail:%p\n", &cat, &cat.name, &cat.tail)
+  fmt.Printf("in modify: cat.legs.length:%p, cat.legs.count:%p\n", &cat.legs.length, &cat.legs.count)
+  cat.name = "Ben"
+  cat.eye["left"] = Eye{blue}
+  cat.tail = Tail{234.56}
+  cat.legs.count = 3
+  cat.legs.length[0] = 0
+  fmt.Printf("exit value cat:%v\n\n", cat)
+}
 
-	func ModifyCat(cat Cat) {
-		fmt.Printf("enter value cat:%v\n", cat)
-		fmt.Printf("in modify: cat:%p, cat.name:%p, cat.tail:%p\n", &cat, &cat.name, &cat.tail)
-		fmt.Printf("in modify: cat.legs.length:%p, cat.legs.count:%p\n", &cat.legs.length, &cat.legs.count)
-		cat.name = "Ben"
-		cat.eye["left"] = Eye{blue}
-		cat.tail = Tail{234.56}
-		cat.legs.count = 3
-		cat.legs.length[0] = 0
-		fmt.Printf("exit value cat:%v\n\n", cat)
-	}
-	
-	func main() {
-		catA := Cat{
-			name: "tom",
-			age:  1,
-			legs: Legs{count: 4, length: []int{10, 10, 10, 10}},
-			eye:  map[string]Eye{"left":{black}, "right":{green}},
-			tail: Tail{123.45},
-		}
-	
-		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
-		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
-		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
-		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
-		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
-		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
-		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
-		fmt.Println()
-	
-		ModifyCat(catB)
-		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
-		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
-		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
-		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
-		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
-		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
-		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n\n", &catA.legs.length, &catB.legs.length)
-	
-		catB.name = "Ben"
-		fmt.Printf("in modify: cat: %p\n", &catB)
-		catB.eye["right"] = Eye{black}
-		catB.tail = Tail{234.56}
-		catB.legs.count = 3
-		catB.legs.length[1] = 0
-		fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
-		fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
-		fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
-		fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
-		fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
-		fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
-		fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
-	}
-	
+func main() {
+  catA := Cat{
+    name: "tom",
+    age:  1,
+    legs: Legs{count: 4, length: []int{10, 10, 10, 10}},
+    eye:  map[string]Eye{"left":{black}, "right":{green}},
+    tail: Tail{123.45},
+  }
+  
+  fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+  fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+  fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+  fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+  fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+  fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+  fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
+  fmt.Println()
+  
+  ModifyCat(catB)
+  fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+  fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+  fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+  fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+  fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+  fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+  fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n\n", &catA.legs.length, &catB.legs.length)
+  
+  catB.name = "Ben"
+  fmt.Printf("in modify: cat: %p\n", &catB)
+  catB.eye["right"] = Eye{black}
+  catB.tail = Tail{234.56}
+  catB.legs.count = 3
+  catB.legs.length[1] = 0
+  fmt.Printf("value catA:%v, catB:%v\n", catA, catB)
+  fmt.Printf("address catA:%p, catB:%p\n", &catA, &catB)
+  fmt.Printf("address catA.eye:%p, catB.eye:%p,\n", &catA.eye, &catB.eye)
+  fmt.Printf("address catA.name:%p, catB.name:%p\n", &catA.name, &catB.name)
+  fmt.Printf("address catA.tail:%p, catB.tail:%p\n", &catA.tail, &catB.tail)
+  fmt.Printf("address catA.legs.count:%p, catB.legs.count:%p\n", &catA.legs.count, &catB.legs.count)
+  fmt.Printf("address catA.legs.length:%p, catB.legs.length:%p\n", &catA.legs.length, &catB.legs.length)
+}
+```
+
 我们首先创建了一直猫catA，然后创建一个catB，并直接将catA赋值给catB，然后将catB传给ModifyCat(Cat)函数修改这只新猫的模样。并打印出前后的过程。
 
 我们看到的具体输出如下：
@@ -158,17 +158,17 @@ tags:
 
 slice包括三个部分，一个指针ptr，指向slice的第一个元素；一个长度len表示slice的长度，一个容量cap表示slice的容量。如下图：
 
-![go-slices-usage-and-internals_slice-struct](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-struct.png)
+![go-slices-usage-and-internals_slice-struct](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-struct.png)
 
 而slice的指针所指向“第一个元素”实际上是一个底层数组的第一个元素。可能会有多个slice共享着同一个底层数组。这种方式导致对slice的截取，拼接等操作都异常高效，可以在常数时间内完成。
 
 考虑下面的数组，这样的数组可以通过`make([]byte, 5)`来创建：
 
-![go-slices-usage-and-internals_slice-1](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-1.png)
+![go-slices-usage-and-internals_slice-1](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-1.png)
 
 然后对该数组执行`s = s[2:4]`操作：
 
-![go-slices-usage-and-internals_slice-2](https://dl.dropboxusercontent.com/u/3175114/Articles/2016-03-27-Golang-%E4%BC%A0%E5%80%BCor%E4%BC%A0%E5%BC%95%E7%94%A8%26%E6%B7%B1%E6%B5%85%E5%A4%8D%E5%88%B6%E9%97%AE%E9%A2%98/go-slices-usage-and-internals_slice-2.png)
+![go-slices-usage-and-internals_slice-2](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-2.png)
 
 对于底层数组而言一次都没变，仅仅是slice的头部三个元素变发生了变化。
 
@@ -180,45 +180,51 @@ slice包括三个部分，一个指针ptr，指向slice的第一个元素；一�
 
 需要注意的是，go的闭包也是引用类型。考虑下面的代码：
 
-	for i := 0; i < 5; i++ {
-	    defer fmt.Printf("%d ", i)
-	    // Output: 4 3 2 1 0
-	}
-	
-	fmt.Printf("\n")
-	    for i := 0; i < 5; i++ {
-	    defer func(){ 
-			fmt.Printf("%d ", i) 
-		} () // Output: 5 5 5 5 5
-	}
+```go
+for i := 0; i < 5; i++ {
+  defer fmt.Printf("%d ", i)
+  // Output: 4 3 2 1 0
+}
+
+fmt.Printf("\n")
+  for i := 0; i < 5; i++ {
+  defer func(){ 
+  	fmt.Printf("%d ", i) 
+  } () // Output: 5 5 5 5 5
+}
+```
 
 第二个函数是外部变量在闭包内通过被改变了的情况，defer函数内的表达式会**在它出现的地方就已经被求值**，然后在退出函数之前，按照defer出现的顺序**逆向**执行。也就是说当第一条defer求值的时候，`i=1`,第五条defer求值的时候，`i=5`，对于两个函数都是如此。区别在于第一个函数的i在每次defer是传值进printf函数的，所以在defer中，i等于有5份拷贝，而第二个函数使用闭包的方式引用了外部变量i其实只有一份！
 
 要在闭包中避免上面的问题，可以有两种方式。
 
-	// 方法1: 每次循环构造一个临时变量 i
-	for i := 0; i < 5; i++ {
-	    i := i
-	    defer func(){ fmt.Printf("%d ", i) } ()
-	    // Output: 4 3 2 1 0
-	}
-	// 方法2: 通过函数参数传参
-	for i := 0; i < 5; i++ {
-	    defer func(i int){ fmt.Printf("%d ", i) } (i)
-	    // Output: 4 3 2 1 0
-	}
+```go
+  // 方法1: 每次循环构造一个临时变量 i
+  for i := 0; i < 5; i++ {
+    i := i
+    defer func(){ fmt.Printf("%d ", i) } ()
+    // Output: 4 3 2 1 0
+  }
+  // 方法2: 通过函数参数传参
+  for i := 0; i < 5; i++ {
+    defer func(i int){ fmt.Printf("%d ", i) } (i)
+    // Output: 4 3 2 1 0
+  }
+```
 
 # 4. 深度拷贝
 
 关于深度拷贝，这里有个使用gob序列化反序列化的例子：
 
-	func deepCopy(dst, src interface{}) error {
-		var buf bytes.Buffer
-		if err := gob.NewEncoder(&buf).Encode(src); err != nil {
-		    return err
-		}
-		return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
-	}
+```go
+  func deepCopy(dst, src interface{}) error {
+    var buf bytes.Buffer
+    if err := gob.NewEncoder(&buf).Encode(src); err != nil {
+      return err
+    }
+    return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
+  }
+```
 	
 另外也有一些利用反射进行实现的方式：
 

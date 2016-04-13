@@ -1,6 +1,6 @@
----
+ï»¿---
 layout:     post
-title:      "ÈÃÄãµÄWP-Markdown²å¼şÖ§³ÖMultiMarkdown/Markdown ExtraÓï·¨"
+title:      "è®©ä½ çš„WP-Markdownæ’ä»¶æ”¯æŒMultiMarkdown/Markdown Extraè¯­æ³•"
 date:       2013-06-22 13:19
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
@@ -12,16 +12,16 @@ tags:
     - PHP
 ---
 
-[WP-Markdown](http://wordpress.org/plugins/wp-markdown/)ÊÇwordpressµÄÒ»¸öÖ§³ÖmarkdownÓï·¨µÄ²å¼ş£¬ÀàËÆ²å¼ş»¹ÓĞ£º
+[WP-Markdown](http://wordpress.org/plugins/wp-markdown/)æ˜¯wordpressçš„ä¸€ä¸ªæ”¯æŒmarkdownè¯­æ³•çš„æ’ä»¶ï¼Œç±»ä¼¼æ’ä»¶è¿˜æœ‰ï¼š
 
 * [markdown-on-save](http://wordpress.org/plugins/markdown-on-save/)
 * [markdown-on-save-improved](http://wordpress.org/plugins/markdown-on-save-improved/)
 
-ºóÁ½¸ö»áÔÚ±£´æµÄÊ±ºòµ¥¶À°Ñmarkdown±¾Éí´æµ½Êı¾İ¿âµÄÒ»¸ö¶ÀÁ¢×Ö¶ÎÖĞ¡£¶øwp-markdownÖ»»á´æ´¢HTML¸ñÊ½£¬µ±ÄãÖØĞÂ±à¼­ÎÄÕÂµÄÊ±ºò£¬Ëü»á´ÓÊı¾İ¿âÖĞÈ¡³öHTMLÈ»ºóÖØĞÂ½âÎö³Émarkdown¸ñÊ½¡£Õâ¾ÍÊÇ×î´óµÄ²»Í¬Ö®´¦¡£ÁíÍâÒ»¸ö²»Í¬Ö®´¦ÊÇwp-markdown²»Ö§³Ö[MultiMarkdown](http://fletcherpenney.net/multimarkdown/)/[Markdown Extra](http://michelf.ca/projects/php-markdown/)Óï·¨¡£ÕâÈÃÎÒ³£ÓÃµÄTableµÈ±êÇ©ÎŞ·¨ÔÚMarkdownÖĞ±»½âÎö¡£
+åä¸¤ä¸ªä¼šåœ¨ä¿å­˜çš„æ—¶å€™å•ç‹¬æŠŠmarkdownæœ¬èº«å­˜åˆ°æ•°æ®åº“çš„ä¸€ä¸ªç‹¬ç«‹å­—æ®µä¸­ã€‚è€Œwp-markdownåªä¼šå­˜å‚¨HTMLæ ¼å¼ï¼Œå½“ä½ é‡æ–°ç¼–è¾‘æ–‡ç« çš„æ—¶å€™ï¼Œå®ƒä¼šä»æ•°æ®åº“ä¸­å–å‡ºHTMLç„¶åé‡æ–°è§£ææˆmarkdownæ ¼å¼ã€‚è¿™å°±æ˜¯æœ€å¤§çš„ä¸åŒä¹‹å¤„ã€‚å¦å¤–ä¸€ä¸ªä¸åŒä¹‹å¤„æ˜¯wp-markdownä¸æ”¯æŒ[MultiMarkdown](http://fletcherpenney.net/multimarkdown/)/[Markdown Extra](http://michelf.ca/projects/php-markdown/)è¯­æ³•ã€‚è¿™è®©æˆ‘å¸¸ç”¨çš„Tableç­‰æ ‡ç­¾æ— æ³•åœ¨Markdownä¸­è¢«è§£æã€‚
 
-¹â´ÓµÚÒ»µã¿´£¬ºóÕß¿ÉÄÜÒÑ¾­ÊÇºÃÒ»Ğ©ÁË¡£ÓÉÓÚÎÒ×îÔçÊÇÓÃ¿ªÁËwp-markdown£¬µ¼ÖÂĞí¶àÎÄÕÂ²¢Ã»ÓĞ´æ´¢µ¥¶ÀµÄMarkdown¸ñÊ½¡£ËùÒÔÒ²²»´òËã»»µ½ºóÁ½ÕßÈ¥ÁË¡£µ«ÊÇ¶Ô[MultiMarkdown](http://fletcherpenney.net/multimarkdown/)/[Markdown Extra](http://michelf.ca/projects/php-markdown/)Óï·¨µÄÖ§³Ö»¹ÊÇºÜ±ØÒªµÄ¡£
+å…‰ä»ç¬¬ä¸€ç‚¹çœ‹ï¼Œåè€…å¯èƒ½å·²ç»æ˜¯å¥½ä¸€äº›äº†ã€‚ç”±äºæˆ‘æœ€æ—©æ˜¯ç”¨å¼€äº†wp-markdownï¼Œå¯¼è‡´è®¸å¤šæ–‡ç« å¹¶æ²¡æœ‰å­˜å‚¨å•ç‹¬çš„Markdownæ ¼å¼ã€‚æ‰€ä»¥ä¹Ÿä¸æ‰“ç®—æ¢åˆ°åä¸¤è€…å»äº†ã€‚ä½†æ˜¯å¯¹[MultiMarkdown](http://fletcherpenney.net/multimarkdown/)/[Markdown Extra](http://michelf.ca/projects/php-markdown/)è¯­æ³•çš„æ”¯æŒè¿˜æ˜¯å¾ˆå¿…è¦çš„ã€‚
 
-Êµ¼ÊÉÏÍê³ÉmarkdownÓï·¨ºÍHTMLÖ®¼ä×ª»»µÄÍêÈ«ÊÇ[php-markdown](http://michelf.ca/projects/php-markdown/#version-history)µÄ¹¦ÄÜ¡£¶øÔÚwp-markdownÖĞ¸ÃÀà¿âµÄ°æ±¾ÊÇ2009ÄêµÄ1.2.4°æ±¾¡£½«Ö®Ìæ»»ÎªÉÏÎÄÁ´½ÓÖĞµÄĞÂ°æ±¾£¬»òÕßÊ¹ÓÃÒÔÏÂµÄ´úÂëÈ«ÎÄÌæ»» *content/plugins/wp-markdown/markdown-extra.php* ÎÄ¼ş£¬wp-markdown¼´¿ÉÖ§³Ö×îĞÂµÄMultiMarkdown/Markdown Extra¡£
+å®é™…ä¸Šå®Œæˆmarkdownè¯­æ³•å’ŒHTMLä¹‹é—´è½¬æ¢çš„å®Œå…¨æ˜¯[php-markdown](http://michelf.ca/projects/php-markdown/#version-history)çš„åŠŸèƒ½ã€‚è€Œåœ¨wp-markdownä¸­è¯¥ç±»åº“çš„ç‰ˆæœ¬æ˜¯2009å¹´çš„1.2.4ç‰ˆæœ¬ã€‚å°†ä¹‹æ›¿æ¢ä¸ºä¸Šæ–‡é“¾æ¥ä¸­çš„æ–°ç‰ˆæœ¬ï¼Œæˆ–è€…ä½¿ç”¨ä»¥ä¸‹çš„ä»£ç å…¨æ–‡æ›¿æ¢ *content/plugins/wp-markdown/markdown-extra.php* æ–‡ä»¶ï¼Œwp-markdownå³å¯æ”¯æŒæœ€æ–°çš„MultiMarkdown/Markdown Extraã€‚
 
 `PHP Code:`
 

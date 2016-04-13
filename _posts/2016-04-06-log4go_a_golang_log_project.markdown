@@ -26,13 +26,15 @@ log4go支持类似log4j的xml配置文件，多个日志过滤器和级别设置
 
 3. 增加`Exclude`标签，可以用于不显示指定package下的代码所打印的日志。这个特性的使用场景在于如果第三方包或者一些lib包（比如我们的数据库封装层）也使用了log4go打印日志的话，我们在最终引用他们的时候可能并不希望看到他们debug级别的日志输出。例如下面的exclude标签表示*github.com/example*和*github.com/sample*开头的包所产生的INFO及以下级别的日志都不会输出到console中。
 
-		<filter enabled="true">
-	    	<tag>stdout</tag>
-	    	<type>console</type>
-	    	<level>INFO</level>
-	    	<exclude>github.com/example</exclude>
-	    	<exclude>github.com/sample</exclude>
-	  	</filter>
+```xml
+<filter enabled="true">
+	<tag>stdout</tag>
+	<type>console</type>
+	<level>INFO</level>
+	<exclude>github.com/example</exclude>
+	<exclude>github.com/sample</exclude>
+</filter>
+```
 
 4. 增加access级别的日志。access日志只会打印到access.log中，同样支持滚动。access日志的打印时间是一个请求结束之后。会记录整个请求的http状态码和请求消耗的时间。
 
@@ -40,12 +42,14 @@ log4go支持类似log4j的xml配置文件，多个日志过滤器和级别设置
 
 6. 提供一个log4go.Recover()方法，仅在捕捉到panic的时候打印堆栈，否则它的行为就和log.Error()一样。使用方法：
 
-		defer log4go.Recover("this is a msg: %v", "msg")
-		// or use with a function
-		defer log4go.Recover(func(err interface{}) string {
-		    // ... put your code here, construct the error message and return
-		    return fmt.Sprintf("recover..v1=%v;v2=%v;err=%v", 1, 2, err)
-		})
+```go
+defer log4go.Recover("this is a msg: %v", "msg")
+// or use with a function
+defer log4go.Recover(func(err interface{}) string {
+  // ... put your code here, construct the error message and return
+  return fmt.Sprintf("recover..v1=%v;v2=%v;err=%v", 1, 2, err)
+})
+```
 
 # 3. TODO
 
