@@ -103,53 +103,15 @@ table {
 }
 
 .table th, .table td {
-  /*border: 0px;*/
+  border: 0px solid #eee!important;
   padding: 0px;
 }
 
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
     padding: 0px;
-    line-height: 1.42857143;
     vertical-align: top;
-    border-top: 1px solid #ddd;
 }
 
 td.gutter.gl {
     width: 10px;
 }
-/*@mixin unselectable() {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@mixin opacity($opacity) {
-  opacity: $opacity;
-  $opacity-ie: $opacity * 100;
-  filter: alpha(opacity=$opacity-ie); //IE8
-}
-
-.highlight .lineno {
-  pre.lineno {
-    border: none;
-    @include opacity(0.6);  
-  }
-
-  .lineno {
-    @include unselectable();
-  }
-
-  .gutter {
-    border-right: 1px solid #ccc;
-  }
-
-  pre {
-    pre {
-      border: none;
-      margin-bottom: 0px;
-    }
-  }
-}*/
