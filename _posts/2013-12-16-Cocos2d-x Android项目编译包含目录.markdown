@@ -15,6 +15,6 @@ tags:
 
 具体使用可能要更改其中前缀部分，因为这里直接使用了绝对路径。
 
-![Cocos2d-x Android项目编译包含目录](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-12-16/cocos_include_path.png)
+![Cocos2d-x Android项目编译包含目录](/attachments/2013-12-16/cocos_include_path.png)
 
 [下载我的包含文件示例](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-12-16/CocosIncludePath.xml)。

@@ -16,7 +16,7 @@ tags:
 - 操作系统：Windows 8.1 Pro
 - Unity版本：4.3.1f1
 - 问题：点击脚本无法用MonoDeveloper打开，直接打开MonoDeveloper也无效，Loading界面启动到大概50%时消失，进程也无法找到。
-- 解决：下载[这个文件](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-12-02/glibsharpglue-2.dll)，替换 **Unity\Monodevelop\bin** 下的同名文件。
+- 解决：下载[这个文件](/attachments/2013-12-02/glibsharpglue-2.dll)，替换 **Unity\Monodevelop\bin** 下的同名文件。
 
 ### 参考
 

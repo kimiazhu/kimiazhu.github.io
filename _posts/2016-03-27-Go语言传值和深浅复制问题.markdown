@@ -158,17 +158,17 @@ func main() {
 
 slice包括三个部分，一个指针ptr，指向slice的第一个元素；一个长度len表示slice的长度，一个容量cap表示slice的容量。如下图：
 
-![go-slices-usage-and-internals_slice-struct](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-struct.png)
+![go-slices-usage-and-internals_slice-struct](/attachments/2016-03-27/go-slices-usage-and-internals_slice-struct.png)
 
 而slice的指针所指向“第一个元素”实际上是一个底层数组的第一个元素。可能会有多个slice共享着同一个底层数组。这种方式导致对slice的截取，拼接等操作都异常高效，可以在常数时间内完成。
 
 考虑下面的数组，这样的数组可以通过`make([]byte, 5)`来创建：
 
-![go-slices-usage-and-internals_slice-1](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-1.png)
+![go-slices-usage-and-internals_slice-1](/attachments/2016-03-27/go-slices-usage-and-internals_slice-1.png)
 
 然后对该数组执行`s = s[2:4]`操作：
 
-![go-slices-usage-and-internals_slice-2](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-03-27/go-slices-usage-and-internals_slice-2.png)
+![go-slices-usage-and-internals_slice-2](/attachments/2016-03-27/go-slices-usage-and-internals_slice-2.png)
 
 对于底层数组而言一次都没变，仅仅是slice的头部三个元素变发生了变化。
 
