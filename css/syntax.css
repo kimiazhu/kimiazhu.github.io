@@ -82,3 +82,41 @@
 .highlight .vi { color: teal; }
 .highlight .il { color: #009999; }
 .highlight .gc { color: #999; background-color: #EAF2F5; }
+
+
+@mixin unselectable() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+.highlight {
+  pre.lineno {
+    border: none;
+    @include opacity(0.6);  
+  }
+
+  .lineno {
+    @include unselectable();
+  }
+
+  .gutter {
+    border-right: 1px solid #ccc;
+  }
+
+  pre {
+    pre {
+      border: none;
+      margin-bottom: 0px;
+    }
+  }
+}
