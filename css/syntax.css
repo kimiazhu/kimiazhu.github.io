@@ -98,7 +98,7 @@
   user-select: none;
 }
 
-table {
+.highlighter-rouge>.table-responsive>table {
   border: 0;
   background-color: rgb(234, 234, 234);
 }
