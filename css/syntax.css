@@ -110,7 +110,7 @@ table {
   border: 0px;
 }
 
-td .gutter .gl {
+td.gutter.gl {
     width: 10px;
 }
 /*@mixin unselectable() {
