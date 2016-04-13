@@ -14,7 +14,7 @@ tags:
 
 核心结构如：
 
-![core struct of log4go](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2016-04-06/core_struct.png)
+![core struct of log4go]({{ site.baseurl }}/attachments/2016-04-06/core_struct.png)
 
 # 2. 特性
 
