@@ -209,6 +209,9 @@ img.shadow {
 .table td {
   border: 1px solid #AFAFAF !important;
 }
+.table>thead>tr {
+  background-color: cadetblue;
+}
 hr.small {
   max-width: 100px;
   margin: 15px auto;
