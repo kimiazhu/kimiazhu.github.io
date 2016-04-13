@@ -96,7 +96,8 @@ func ToJson(obj interface{}) string {
 //
 //   - ReflectToString(input)
 //   - ReflectToString(input, StringStyleLong)
-//   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", SepField:",", SepKeyValue:":"})
+//   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", 
+//       SepField:",", SepKeyValue:":"})
 //   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
 func ReflectToString(obj interface{}, args ...interface{}) string 
 ```
