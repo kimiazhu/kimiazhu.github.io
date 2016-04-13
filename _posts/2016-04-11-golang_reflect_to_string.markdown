@@ -65,40 +65,40 @@ func ToJson(obj interface{}) string {
 具体代码附在后边，函数的签名和注释如下：
 
 ```go
-  // ReflectToString return the string formatted by the given argument,
-  // the number of args may be one or two
-  //
-  // the first argument is the print style, and it's default value is
-  // StyleMedium. the second argument is the style configuration pointer.
-  //
-  // The long style may be a very long format like following:
-  //
-  //      Type{name=value}
-  //
-  // it's some different from fmt.Printf("%#v\n", value),
-  // it's separated by comma and equal
-  //
-  // Then, the medium style would like:
-  //
-  //      {key=value}
-  //
-  // it's some different from fmt.Printf("%+v\n", value),
-  // it's separated by comma and equal
-  //
-  // Otherwise the short format will only print the value but no type
-  // and name information.
-  //
-  // since recursive call, this method would be pretty slow, so if you
-  // use it to print log, may be you need to check if the log level is
-  // enabled first
-  // 
-  // examples:
-  //
-  //   - ReflectToString(input)
-  //   - ReflectToString(input, StringStyleLong)
-  //   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", SepField:",", SepKeyValue:":"})
-  //   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
-  func ReflectToString(obj interface{}, args ...interface{}) string 
+// ReflectToString return the string formatted by the given argument,
+// the number of args may be one or two
+//
+// the first argument is the print style, and it's default value is
+// StyleMedium. the second argument is the style configuration pointer.
+//
+// The long style may be a very long format like following:
+//
+//      Type{name=value}
+//
+// it's some different from fmt.Printf("%#v\n", value),
+// it's separated by comma and equal
+//
+// Then, the medium style would like:
+//
+//      {key=value}
+//
+// it's some different from fmt.Printf("%+v\n", value),
+// it's separated by comma and equal
+//
+// Otherwise the short format will only print the value but no type
+// and name information.
+//
+// since recursive call, this method would be pretty slow, so if you
+// use it to print log, may be you need to check if the log level is
+// enabled first
+// 
+// examples:
+//
+//   - ReflectToString(input)
+//   - ReflectToString(input, StringStyleLong)
+//   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", SepField:",", SepKeyValue:":"})
+//   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
+func ReflectToString(obj interface{}, args ...interface{}) string 
 ```
 
 我们可以通过这样一个方法来实现类似fmt.Printf()函数，并且支持一定的格式自定义：
@@ -149,19 +149,19 @@ func ToJson(obj interface{}) string {
 我们可以定制一个方法来统一上面两种格式的输出：
 
 ```go
-  // ToString return the common string format of the obj according
-  // to the given arguments
-  //
-  // by default obj.String() will be called if this method exists.
-  // otherwise we will call ReflectToString() to get it's string
-  // representation
-  //
-  // the args please refer to the ReflectToString() function.
-  func ToString(obj interface{}, args ...interface{}) string {
-    if v, ok := obj.(fmt.Stringer); ok {
-      return v.String()
+// ToString return the common string format of the obj according
+// to the given arguments
+//
+// by default obj.String() will be called if this method exists.
+// otherwise we will call ReflectToString() to get it's string
+// representation
+//
+// the args please refer to the ReflectToString() function.
+func ToString(obj interface{}, args ...interface{}) string {
+  if v, ok := obj.(fmt.Stringer); ok {
+    return v.String()
   }
-  return ReflectToString(obj, args)
+return ReflectToString(obj, args)
 }
 ```
 
