@@ -17,4 +17,4 @@ tags:
 
 正确的方法其实不需要删除 *~/.remmina* 目录，实际上是host认证的配置文件错误了。可以尝试直接删除 *~/.freerdp* 目录，然后重新链接即可，这时候系统会重新弹出认证窗口，让你重新确认host签名信息。
 
-![Remmina cert dialog](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-09-06/remmina-cert-dialog.png "Remmina cert dialog")
+![Remmina cert dialog](/attachments/2013-09-06/remmina-cert-dialog.png "Remmina cert dialog")

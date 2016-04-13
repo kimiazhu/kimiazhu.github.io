@@ -15,7 +15,7 @@ tags:
 
 通过本教程你可以学到如何使用Glyph Designer创建如[图1]所示漂亮的中文字体，本文介绍到的效果包括描边、填充、渐变和阴影。
 
-![图1](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/1.jpg)
+![图1](/attachments/2013-07-16/1.jpg)
 
 [下载工程文件](https://github.com/kimiazhu/cocos-playground/blob/master/GlyphDesignerChineseSampleProject.GlyphProject?raw=true)
 
@@ -24,7 +24,7 @@ tags:
 
 当你打开Glyph Desigher的时候，应用程序已经默认帮你新建了一个文档出来了。你可以使用Command+N或者File -> New菜单来创建一个新的文档。如[图2]所示。
 
-![图2](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/2.jpg)
+![图2](/attachments/2013-07-16/2.jpg)
 
 ## 2. 修改字型
 
@@ -34,7 +34,7 @@ tags:
 
 **诶比西迪伊艾弗吉艾尺艾杰开艾勒艾马艾娜哦屁吉吾艾儿艾丝提伊吾维豆贝尔维艾克斯吾艾贼德**
 
-![图3](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/3.jpg)
+![图3](/attachments/2013-07-16/3.jpg)
 
 ## 3. 选择适当字体
 
@@ -47,7 +47,7 @@ tags:
 |Font Width|Adobe Heiti STD|
 |Font Size|131|
 	
-![图4](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/4.jpg)
+![图4](/attachments/2013-07-16/4.jpg)
 
 ## 4. 应用描边效果
 
@@ -62,7 +62,7 @@ tags:
 |Color Type|Gradient|
 |Color Stops|RGB(25, 25, 25) at 0% <br/>RGB(255, 255, 255) at 50%<br/>RGB(25, 25, 25) at 100%|	
 
-![图5](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/5.jpg)
+![图5](/attachments/2013-07-16/5.jpg)
 
 ## 5. 设置填充颜色
 
@@ -74,7 +74,7 @@ tags:
 |Rotation|0|
 |Color Stops|RGB(61, 101, 118) at 0% <br/>RGB(122, 200, 225) at 50% <br/>RGB(61, 101, 118) at 100%|
 
-![图6](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/6.jpg)
+![图6](/attachments/2013-07-16/6.jpg)
 
 
 ## 5. 调整阴影效果
@@ -89,7 +89,7 @@ tags:
 |Blur Radius|4|
 |Shadow Color|RGB(12,23,27)|
 
-![图7](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/7.jpg)
+![图7](/attachments/2013-07-16/7.jpg)
 
 ## 6. 更改纹理地图
 
@@ -99,7 +99,7 @@ tags:
 |-----|---------|
 |Background Color|Black|
 
-![图8](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-07-16/8.jpg)
+![图8](/attachments/2013-07-16/8.jpg)
 
 ## 7. 参考
 

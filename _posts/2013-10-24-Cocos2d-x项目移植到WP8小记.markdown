@@ -109,7 +109,7 @@ tags:
 
 13. 提交市场的时候出现错误：
 
-	![提交市场的XAP验证失败](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/xap_valid_failed.jpg)
+	![提交市场的XAP验证失败](/attachments/2013-10-24/xap_valid_failed.jpg)
 
 		1028: The native API api-ms-win-core-debug-l1-1-1.dll:OutputDebugStringA() isn’t allowed in assembly libcocos2d.dll. Update it and then try again.
 	 
@@ -125,17 +125,17 @@ tags:
 
 	  - 修改文件：
 	  **cocos2dx/platform/winrt/CCWinRTUtils.h** 中的 **inline void pthread_mutex_init(pthread_mutex_t* m, void* attributes)** 方法注释掉内容。
-	  ![fix_createEventExA_problem_of_market_place](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_2.jpg)
+	  ![fix_createEventExA_problem_of_market_place](/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_2.jpg)
 	  - 修改文件：
 	  **cocos2dx/platform/third_party/winrt/angleproject/src/third_party/winrt/<br/>ThreadEmulation/ThreadEmulation.cpp** 中的 **\_Use_decl_annotations\_ VOID WINAPI Sleep(DWORD dwMilliseconds)** 方法，注释掉内容。
-	  ![fix_createEventExA_problem_of_market_place](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_1.jpg)
+	  ![fix_createEventExA_problem_of_market_place](/attachments/2013-10-24/fix_createEventExA_problem_of_market_place_1.jpg)
 
 14. Release版本无声音，在 **CocosDenshion/wp8/Audio.cpp** 中注释此行：
 
 		m_soundEffects[sound].m_soundEffectSourceVoice->SetVolume(m_soundEffctVolume);
 
 	如图：
-	![Release版本无声音Bug修复](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-10-24/fix_no_sound_effect_in_release_version.jpg)
+	![Release版本无声音Bug修复](/attachments/2013-10-24/fix_no_sound_effect_in_release_version.jpg)
 
 15. 关于内购：
 

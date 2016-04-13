@@ -27,10 +27,10 @@ Cocos2d-iphone版本的文档可以在作者页面上找到原文：《[TextureP
 ## 1.Cocos2d-iphone中使用内容加密
 
 1. 在TexturePacker中确定要加密的纹理，首先确保格式是 **.pvr.ccz** 点击Content Protection后面的小锁标志。
-![图1. 使用加密](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-08-08/1.jpg "图1. 使用加密")
+![图1. 使用加密](/attachments/2013-08-08/1.jpg "图1. 使用加密")
 
 2. 设置密钥。你可以将密钥保存成Global Key，以便如后使用。
-![图2. 设置密钥](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-08-08/2.png "图2. 设置密钥")
+![图2. 设置密钥](/attachments/2013-08-08/2.png "图2. 设置密钥")
 
 3. 在代码中要正确使用加密过的文件，需要设置密钥。（确保你有新版本的cocos2d框架，或者下载这两个文件以便程序能够支持加密内容： **[ZipUtils.h](http://www.codeandweb.com/public/contentprotection/cocos2d/ZipUtils.h "ZipUtils.h")** 和 **[ZipUtils.m](http://www.codeandweb.com/public/contentprotection/cocos2d/ZipUtils.m "ZipUtils.m")** ）
 
@@ -52,10 +52,10 @@ Cocos2d-iphone版本的文档可以在作者页面上找到原文：《[TextureP
 ## 2.Cocos2d-X中使用内容加密
 
 1. 在TexturePacker中确定要加密的纹理，首先确保格式是 **.pvr.ccz** 点击Content Protection后面的小锁标志。
-![图1. 使用加密](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-08-08/1.jpg "图1. 使用加密")
+![图1. 使用加密](/attachments/2013-08-08/1.jpg "图1. 使用加密")
 
 2. 设置密钥。你可以将密钥保存成Global Key，以便如后使用。
-![图2. 设置密钥](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-08-08/2.png "图2. 设置密钥")
+![图2. 设置密钥](/attachments/2013-08-08/2.png "图2. 设置密钥")
 
 3. 在代码中要正确使用加密过的文件，需要设置密钥。（确保你有的cocos2d-x-2.1.4或以上版本，或者从2.1.4中拷贝以下两个类 **ZipUtils.h** 和 **ZipUtils.cpp** ）
 

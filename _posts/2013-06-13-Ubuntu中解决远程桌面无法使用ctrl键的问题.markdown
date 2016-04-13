@@ -28,7 +28,7 @@ tags:
     
     There should be a setting there titled  *locate-pointer* .
     
-![Dconf配置](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-06-13/1.jpg "Dconf配置")
+![Dconf配置](/attachments/2013-06-13/1.jpg "Dconf配置")
 
 If it's not there, then I don't think its possible to change this. Very weird it defaults to on...
 
@@ -36,11 +36,11 @@ If it's not there, then I don't think its possible to change this. Very weird it
 
 原因是与 Ubuntu 12.10 版本比较，13.04中去掉了不少东西，所以也就直接导致无法从GUI上进行设置会恢复上面步骤提到的过程：
 
-![Ubuntu12的鼠标和觸控板配置页](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-06-13/2.jpg "Ubuntu12的鼠标和觸控板配置页")
+![Ubuntu12的鼠标和觸控板配置页](/attachments/2013-06-13/2.jpg "Ubuntu12的鼠标和觸控板配置页")
 上图是 Ubuntu 12.10 中的鼠标和触控板设置
 
 
-![Ubuntu 13.04 中的鼠标和触控板设置](https://raw.githubusercontent.com/kimiazhu/kimiazhu.github.io/master/_posts/attachments/2013-06-13/3.jpg "Ubuntu 13.04 中的鼠标和触控板设置")
+![Ubuntu 13.04 中的鼠标和触控板设置](/attachments/2013-06-13/3.jpg "Ubuntu 13.04 中的鼠标和触控板设置")
 上图是Ubuntu 13.04 中的鼠标和触控板设置
 
 ---
