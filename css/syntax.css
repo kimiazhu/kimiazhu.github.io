@@ -103,7 +103,7 @@
   background-color: rgb(234, 234, 234);
 }
 
-.table th, .table td {
+.highlighter-rouge>.table-responsive>.table th, .highlighter-rouge>.table-responsive>.table td {
   border: 0px solid #eee!important;
   padding: 0px;
 }
