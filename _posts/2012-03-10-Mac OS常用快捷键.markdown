@@ -11,7 +11,7 @@ tags:
 
 备忘用。Apple官网也有一份很全的[OS X 快捷键](http://support.apple.com/kb/HT1343?viewlocale=zh_CN)，不过还是漏了一些，而且有不少并不太常用的也在其中。找到一张不错的图，还有另外一些截屏用的快捷键。
 
-![Mac OS常用快捷键](/attachments/UsKt4.jpg "Mac OS X常用快捷键")
+![Mac OS常用快捷键](/attachments/2012-03-10/UsKt4.jpg "Mac OS X常用快捷键")
 
 ---
 

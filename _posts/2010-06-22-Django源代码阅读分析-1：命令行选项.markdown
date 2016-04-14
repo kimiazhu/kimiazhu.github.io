@@ -1,0 +1,151 @@
+---
+layout:     post
+title:      "Django源代码阅读分析-1：命令行选项"
+date:       2010-06-22 15:53
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Django
+    - Python
+---
+
+使用Django开始一个项目，用得最多的大概应该是django-admin.py命令了。使用它可以创建一个项目、清理项目、进入交互环境等等。想了解一个Django，以及如何用Python做一个优秀的项目和框架，我也打算从这里开始。由于我在项目中使用的是Django1.1.1，我就以这个版本作为蓝本。到现在为止，Django已经升级为1.2.1版了。
+
+首先看看源代码目录结构，总体了解一下它的结构。有好多东西现在对我来说还不明朗，现在的理解可能还会有许多不准确的地方，可以随时更正。
+
+* Bin //可执行文件，django的PATH可以设置在这里，我们最常用的命令之一django-admin.py就在其中
+
+* Conf //这是对生成的一个Project和App的配置文件，包括建立Project或者App时候会拷贝到其下的Python代码模板。
+
+* Contrib //标准模块。就是说，没有它你也能活，有了它可以帮你减少很大的工作量。例如一个通用的Admin后台，用户认证组件，Session，站点地图等等。
+
+* Core //核心模块
+
+* Db //数据库接口，Django可以兼容很多数据库，包括MySQL、Oracle等等，甚至SQLite。Db中还包括数据模型Model的定义，使用这些定义，可以屏蔽底层DNMS的差异。
+
+* Dispatch //信号相关模块
+
+* Froms //表单处理相关模块
+
+* Http //Http请求和应答等
+
+* Middleware //中间件。可以辅助系统在处理request之前先执行某些处理。
+
+* Shortcuts //快捷方式，例如常用的render_to_response方法就在这里了。
+
+* Template和Templatetags //django模板引擎
+
+* Test //单元测试框架
+
+* Utils //实用小程序
+
+* Views //视图处理
+ 
+
+使用python setup.py install命令从源代码安装完Django后，这些都会被拷贝到Python安装目录下的Lib/site-packages/django子目录中。之后我们使用Django的第一条命令大概就是使用django-admin.py startproject projectname来创建一个工程，我就打算从这里切入开始吧。
+
+django-admin.py命令可以使用的一系列参数对应的命令写在Django.core.Management.Commands命名空间中，在其中可以看到许多的模块，每个模块即是对应django-admin命令中的一个参数。
+
+1. 命令行调用命令django-admin.py subcommand [options] [args]
+
+2. 初始化ManagementUtil，并调用其execute()方法
+
+3. 对参数进行解析并验证，调用fetch_command()方法获取对应的Command
+
+4. 根据参数import对应的Model，导入操作使用的就是Python内置的__import__
+
+5. 调用core.management.Base.py模块中的BaseCommand.run_from_argv()方法
+
+6. run_from_argv()方法调用create_parser()创建一个解析器，解析参数和配置环境，并再调用execute()方法
+
+7. execute()方法调用handle()方法执行命令，handle()方法在BaseCommand类中的实现只是简单的抛出异常，所以BaseCommand的各个子类必须覆盖此方法才能使用这个命令。
+
+**特点：采用命令模式实现。**
+
+![Django命令行-命令模式图](/attachments/2010-06-22/medish.jpg)
+
+我们选一个Command来看看它是怎么实现的。就拿最简单的之一，也是最开始必用的Startproject.py命令吧。
+
+`Python Code:`
+
+	class Command(LabelCommand):
+	    help = "Creates a Django project directory structure for the\
+	                        given project name in the current directory."
+	    args = "[projectname]"
+	    label = 'project name'
+	
+	    requires_model_validation = False
+	    # Can't import settings during this command, because they haven't
+	    # necessarily been created.
+	    can_import_settings = False
+	
+	    def handle_label(self, project_name, **options):
+	        # Determine the project_name a bit naively -- by looking at the name of
+	        # the parent directory.
+	        directory = os.getcwd()
+	
+	        # Check that the project_name cannot be imported.
+	        try:
+	            import_module(project_name)
+	        except ImportError:
+	            pass
+	        else:
+	            raise CommandError("%r conflicts with the name of an existing Python module \
+	                                and cannot be used as a project name. Please try another name." % project_name)
+	
+	        copy_helper(self.style, 'project', project_name, directory)
+	
+	        # Create a random SECRET_KEY hash, and put it in the main settings.
+	        main_settings_file = os.path.join(directory, project_name, 'settings.py')
+	        settings_contents = open(main_settings_file, 'r').read()
+	        fp = open(main_settings_file, 'w')
+	        secret_key = ''.join([choice('abcdefghijklmnopqrstuvwxyz\
+	                                                0123456789!@#$%^&*(-_=+)') for i in range(50)])
+	        settings_contents = re.sub(r"(?<=SECRET_KEY = ')'", secret_key + "'", settings_contents)
+	        fp.write(settings_contents)
+	        fp.close()
+
+这是LabelCommand的一个子类，只有一个方法：handle_label()。在LabelCommand类的实现中已经覆盖了BaseCommand的handle()方法，但是暴露了这个handle_label()仍然会抛出异常，需要它的子类去实现。
+
+`Python Code:`
+
+	class LabelCommand(BaseCommand):
+	    args = ''
+	    label = 'label'
+	
+	    def handle(self, *labels, **options):
+	        if not labels:
+	            raise CommandError('Enter at least one %s.' % self.label)
+	
+	        output = []
+	        for label in labels:
+	            label_output = self.handle_label(label, **options)
+	            if label_output:
+	                output.append(label_output)
+	        return '\n'.join(output)
+	
+	    def handle_label(self, label, **options):
+	        """
+	        Perform the command's actions for ``label``, which will be the
+	        string as given on the command line.
+	        
+	        """
+	        raise NotImplementedError()
+	        
+我们看到，在Startproject.py命令中的handle_label()所做的事情有两件：
+
+1. 拷贝对应的模板目录中的文件到指定名字的工程目录下。
+
+2. 生成一个随机的SECRET_KEY哈希值。
+
+这就是我们开始一个工程的时候，Django为我们所做的事情，很简单。当然，当你启动服务器的时候，会有更复杂的操作，这些也都是通过一系列Command实现的。让我们回头看看Command命令的的层次图：
+
+![Django命令行-Command类层次结构图](/attachments/2010-06-22/medish.jpg)
+
+Command有三类：App命令，标签命令，无参命令。
+
+1. App命令：用于维护App的，如果继承自BaseCommand则必须实现handle()方法，如果继承自AppCommand则必须实现handle_app()方法；
+
+2. 标签命令：即是有参命令，可以带一些参数，例如上文的startproject就是一个标签命令，参数是你希望创建的工程名。需要实现handle()或者handle_label()方法；
+
+3. 无参命令：这种命令不需要带任何参数，一个例子是验证Model用的Validate命令。
