@@ -1,0 +1,63 @@
+---
+layout:     post
+title:      "ADT更新至r18后项目运行时出错"
+date:       2012-04-11 16:05
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - android
+---
+
+据说这个现象是r17更新后就有了，从r16直接更新到r18却也有同样的问题。第三方Jar包使用报告类找不到，以下解决方法权当记录：
+
+---
+
+## Jar包导入后无法找到类
+
+**问题**
+
+发现以前的老项目 导入后，jar包引用到的类 （编译的时候可以找到，运行的时候提示无法加载jar包中的类），比如  android  support v4的导入包
+04-09 13:35:43.803: E/AndroidRuntime(6997): Caused by: java.lang.ClassNotFoundException: android.support.v4.view.ViewPager in loader dalvik.system.PathClassLoader[/data/app/cn.czwproject.flipper-2.apk]
+
+**解决方案**
+
+lib目录改为libs，在项目属性中重新引用一次jar包。
+
+---
+
+## Jar包格式转换错误
+
+**问题**
+
+Jar包文件导入成 resource folder后，项目报错，运行时出现**Conversion to Dalvik format failed with error 1**问题。
+
+**解决方案**
+
+习惯上吧 jar 关联到相关的源码上面，就是因为这个出问题了。在资源目录下的jar包关联源码 会在 .classpath 文件中添加 
+
+```xml
+<!-- .classpath: -->
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="src" path="gen"/>
+    <classpathentry kind="src" path="lib"/>
+    <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+    <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+    <classpathentry kind="lib" path="lib/android-support-v4.jar" sourcepath="/android/android-sdk_r17-macosx/extras/android/support/v4/src/java"/>
+    <classpathentry kind="output" path="bin/classes"/>
+</classpath>
+```
+
+这个就是添加到sourcepath="/android/android-sdk_r17-macosx/extras/android/support/v4/src/java"
+
+删除后问题解决
+
+**以上是网上的记述**，我们自己使用lib工程，在引用jar包的时候也遇到的**Conversion to Dalvik format failed with error 1**的错误，删除不必要jar包引用，注意lib工程和产品工程中保持相同的引用，产品工程中的jar会覆盖lib工程。重新编译之后没有问题。
+
+---
+
+## 参考
+* [How to fix the “NoClassDefFoundError” with ADT 17](http://android.foxykeep.com/dev/how-to-fix-the-classdefnotfounderror-with-adt-17)
+* [How to fix the “Conversion to Dalvik format failed with error 1″ with ADT 14](http://android.foxykeep.com/dev/fix-the-conversion-to-dalvik-format-failed-with-error-1-with-adt-14)
+* [http://www.eoeandroid.com/thread-165493-1-1.html](http://www.eoeandroid.com/thread-165493-1-1.html)
