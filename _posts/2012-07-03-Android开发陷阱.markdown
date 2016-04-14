@@ -1,0 +1,253 @@
+---
+layout:     post
+title:      "Android开发陷阱"
+date:       2012-07-03 20:18
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - android
+---
+
+### 1、SD卡数据库
+
+数据库默认位置是在**/data/data2**目录下，但是出于某些原因（例如数据库文件可能会扩展得比较大，并且对读写速度要求不是很高，不介意sd卡可能比手机内置存储的速度慢），我们可能希望定制位置将数据库文件存放到sd卡，定制位置的方式也很多，其中对现有代码影响最小的方法之一是重写**SQLiteOpenHelper**的构造函数，新构造出来的**SQLiteOpenHelper**中存有的就是对SD卡数据库文件的引用。该函数的原型是：
+
+```java
+/**
+ * 构造函数1
+ */
+public SQLiteOpenHelper(Context context, String name, 
+		CursorFactory factory, int version);
+	
+/**
+ * 构造函数2
+ */
+public SQLiteOpenHelper(Context context, String name, 
+		CursorFactory factory, int version,
+       DatabaseErrorHandler errorHandler);
+```    
+            
+我们可以写一个**SdcardDatabaseOpenHelper**继承**SQLiteOpenHelper**，并重写构造函数，传入新的**Context**对象，以使调用方还是按照以前的模式进行调用，但是读写的数据库却保存于SD卡中：
+
+```java
+/**
+ * 构造函数
+ */
+public SdcardDatabaseOpenHelper(final Context context, String dbPath, String dbName) {
+    super(new SDCardDatabaseContext(context, dbPath), dbName, null, 
+    	DATABASE_VERSION);
+}
+    
+/**
+ * <p>
+ * 用于支持对存储在SD卡上的数据库的访问
+ * </p>
+ * 
+ * @author <a href="mailto:kimiazhu@gmail.com">Kimia Zhu</a>
+ * @version $Id: SDCardDatabaseContext.java, v0.1 2012-7-1 下午2:42:25, Kimia Zhu Exp $
+ */
+public class SDCardDatabaseContext extends ContextWrapper {
+	
+	private String mPath;
+	
+	/**
+	 * 构造函数
+	 *
+     * @param context 上下文
+     * @param path    数据库路径，目录名，不包括文件名。例如/sdcard
+     */
+    public SDCardDatabaseContext(Context context, String path) {
+        super(context);
+        this.mPath = path;
+    }
+    
+    /**
+     * 重载这方法，是用于指定数据库的存储路径的，
+     */
+    public File getDatabasePath(String name) {
+        String dbfile = mPath + File.separator + name;
+        if (!dbfile.endsWith(".db")) {
+            dbfile += ".db";
+        }
+	
+        File result = new File(dbfile);
+	
+        if (!result.getParentFile().exists()) {
+            result.getParentFile().mkdirs();
+        }
+
+        return result;
+    }
+    
+    //其他方法...
+    
+}
+```
+	
+注意仅仅这样并不够，另外需要重写：**public SQLiteDatabase openOrCreateDatabase()**方法。该方法有两个重载形式，都必须一一实现：
+
+```java
+/**
+ * 重载这个方法，是用来打开SD卡上的数据库的，android 2.3及以下会调用这个方法。
+ */
+@Override
+public SQLiteDatabase openOrCreateDatabase(String name, int mode, 
+		SQLiteDatabase.CursorFactory factory) {
+    SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), null);
+    return result;
+}
+    
+/**
+ * Android 4.0会调用此方法获取数据库。
+ * 
+ * @see android.content.ContextWrapper#openOrCreateDatabase(java.lang.String, int, 
+ * 				android.database.sqlite.SQLiteDatabase.CursorFactory,
+ * 				android.database.DatabaseErrorHandler)
+ */
+@Override
+public SQLiteDatabase openOrCreateDatabase(String name, int mode, CursorFactory factory,
+        DatabaseErrorHandler errorHandler) {
+    SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), null);
+    return result;
+}
+```
+    
+重载一个不够的原因是（当然可能你也不会只重载其中一个，不过如果漏掉或者是早期开发的应用则是有可能的），Android 2.3和4.0所调用的函数不一样。前者是API LEVEL 1就已经有了的API，而后者是API Level 11才新增的。所以老应用升级如果没有覆盖后面这个方法，会发现数据库仍然被创建到了**/data/data**路径下了。（所幸应用是不会出现异常的。）
+
+
+### 2、联系人头像设置
+
+网络上现在有很多联系人头像设置的解决方案，都是操作数据库。先说下我对这个过程的理解：
+
+1. 在用户希望设置为联系人头像的照片页面弹出选择框，让用户选择联系人；
+2. 拿到返回的联系人URI，你能从中取得联系人ID（URI最后一个字段），先临时保存起来；
+3. 弹出框让用户选择裁剪图片，（用一张完整的照片可能不是一个好的方案）
+4. 拿到裁剪完的照片，以及我们刚刚保存起来的URI或者联系人ID，去修改联系人表的PHOTO（data15）字段
+
+过程是没有问题的，相应的代码也很简单，主要逻辑如下：
+
+```java
+/**
+ * 选择联系人,会返回联系人URI，最后一段是联系人ID，保存起来
+ * 
+ * @param activity
+ * @param requestCode
+ */
+public static void selectContact(Activity activity, int requestCode){
+    Intent i = new Intent();
+    i.setAction(Intent.ACTION_PICK);
+    i.setData(Contacts.CONTENT_URI);
+    activity.startActivityForResult(i, requestCode);
+}
+
+/**
+ * 为设置联系人头像进行截图，数据较小，这里固定为100X100，所以直接返回，
+ * 调用方在onActivityResult()中可以通过getParcelableExtra("data")获得截取好的Bitmap
+ * 
+ * @param activity
+ * @param inputUri
+ * @param outputUri
+ * @param requestCode
+ */
+public static void cropFroContactAvatar(Activity activity, Uri inputUri, int requestCode){
+    Intent i = new Intent("com.android.camera.action.CROP");
+    i.setDataAndType(inputUri, "image/*");
+    i.putExtra("crop", "true");
+    i.putExtra("aspectX", 1);
+    i.putExtra("aspectY", 1);
+    i.putExtra("outputX", 100);
+    i.putExtra("outputY", 100);
+    i.putExtra("scale", true);
+    i.putExtra("noFaceDetection", false);
+    i.putExtra("return-data", true);
+    activity.startActivityForResult(Intent.createChooser(i, 
+     		activity.getString(R.string.crop_image)),
+            requestCode);
+}
+    
+/**
+ * 设置联系人图片
+ * 
+ * @param c
+ * @param bytes
+ * @param personId
+ * @param sync
+ */
+public static void setContactPhoto(ContentResolver c, byte[] bytes,
+		long personId, boolean sync) {  
+    Uri u = Uri.parse("content://com.android.contacts/data");  
+    ContentValues values = new ContentValues();
+    values.put(Photo.PHOTO, bytes); 
+    int r = c.update(ContactsContract.Data.CONTENT_URI, values, 
+    	ContactsContract.Data.RAW_CONTACT_ID + " = " + personId, null);
+    Log.d(TAG, "更新" + r + "位联系人信息成功");
+}
+```
+
+然而这样的代码走下来我们可能发现在某些机器上成功，某些机器上不能成功。甚至是某些机器的某些联系人成功，另外一些联系人不能成功。
+
+这问题本质上还是和系统分化有关（或者哪位仁兄如果有通用的方法，还请劳烦告知 :) ）。Android 2.0以后的联系人数据库十分复杂，在某些定制的系统中，可能有接近50个表。为了避免在各个系统之间出现差池，还是建议调用系统提供的接口进行设置。
+
+系统提供的**Intent.ACTION_ATTACH_DATA**可以设置联系人，当然它还会带来其他“副作用”，例如它弹出的框也允许用户将图片设做壁纸。不过这个调用当真会比前面的方式简单得多，更重要的是安全。还有一个额外的好处，就是你的应用不需要申请读写Contacts的权限，对于比较敏感的用户，应用不过分申请权限是个明智的选择。
+
+```java
+/**
+ * “设置为”按钮按下。
+ */
+public void setAs(String filePath){
+	Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+	//ImageUtils是自己写的方法，返回mimetype，例如image/jpeg或者image/png
+	String mimetype = ImageUtils.getImageMimeType(filePath);
+	intent.setDataAndType(Uri.parse("file://" + filePath), mimetype);
+	intent.putExtra("mimeType", mimetype);
+	startActivity(Intent.createChooser(intent, getText(R.string.set_as)));
+}
+```
+
+### 3、在Assets和Drawable中放置图片
+
+这个其实没什么好说，但是困扰了我两天，我曾经在assets放了一些用作前景的jpg图片，在drawable中放了一份用作背景的1px X 1px的像素点jpg。发现将他们用在一起的时候，背景在某些机器上和前景不一样。但实际上前景的边缘和背景这1像素的颜色值绝对是一样的。在小米 + MIUI V4上正常，没有色差；在HTC、MOTO等2.3的机器上不正常，背景显得比前景颜色更深一些。
+
+偶然的，发现如果将他们都放到drawable中，那么不管在4.0还是2.3，小米还是HTC上都是正常无色差的。暂时未能有时间做更多的测试，怀疑是Android系统版本导致的问题。
+
+为了避免此类不是问题的问题，建议将资源统一防止到assets或者drawable目录中。
+
+
+### 4、9 Patch 图片
+
+9 Patch图片只支持png，并且是png24，png32未测试，但是png8大部分情况是不行的。虽然png8也能带透明度，但是系统对png8的支持在可与不可之间。所以编辑9 Patch图片最好使用Android SDK自带的工具。甚至避免用Photoshop去制作周围那一条黑边。
+
+我感觉Google是否也应该提供jpg格式的9 Patch? :D
+
+
+### 5、NDK数据库操作
+
+Android使用SQLite3数据库，顶层对数据库做了定制化非常大的封装，使用Provider来完成数据库操作，当然你也可以使用一般的SQL语句进行增删改查。所有的Java层数据库调用实际都会执行到本地C代码，再由它们通过**libsqlite.so**执行到DB层面。**libsqlite.so**位于**/system/lib/**中。
+
+我们有一个需求希望能在C代码中执行文件系统扫描操作，这是耗时操作，通过NDK实现能够使得效率上有相当大的提升。这个问题在[《从Android本地代码扫描SD卡说开去》](http://scriptogr.am/kimiazhu/post/about-scanning-sdcard-in-native-code)中做过些探讨。
+
+但是使用过程中频频出现奇怪的问题，困扰了我很久。包括数据访问过程中不停地出现不同的错误：
+
+- The database disk image is malformed database disk image is malformed
+- database is locked
+- database image I/O Error
+
+排除了锁的错误之后，I/O错误以及数据库镜像损坏是一个比较头疼的问题。特别是数据库损坏，每次都在不同的地方出现这个错误，十分诡异。
+
+尝试过很多方式去解决问题，包括使用统一的SQLiteOpenHelper，减少访问数据库的频率，拆分数据库，更改事务级别，甚至去掉了事务，等等等等。均无果。
+
+最终看到一篇讲[NDK编译SQLite的文章](http://www.roman10.net/how-to-compile-sqlite-for-android-using-ndk/)，其实过程和我原来使用SQLite C API的方式差不多，但却让我突然想到是不是可能并不是自己的问题，是不是可能是Android NDK本身对SQLite的支持问题。原因是NDK使用SQLite的方式都是支持从官方下载一份sqlite3.h和sqlite3.c放到jni目录下来进行编译生成.so文件。而不是像其他操作那样（例如NDK下打日志用的log.c）使用NDK本身提供的代码。所以这块是否可能产生一些兼容性问题？
+
+如何用上系统本身的libsqlite.so，可能是一个可以尝试的解决问题的方向。
+
+1. 先**adb pull /system/lib/libsqlite.so**得到 libsqlite.so文件 
+2. 把libsqlite.so文件放到**$NDK/platforms/android-14/arch-arm/usr/lib**目录下。 （我用的是android 4.0的sdk，所以是android-14）
+3. 把 sqlite3.h放到**$NDK/platforms/android-14/arch-arm/usr/include/android**目录下。 （我用的是android 4.0的sdk，所以是android-14）
+4. 在Android.mk 文件中加入语句：**LOCAL_LDLIBS := -lsqlite**
+5. 和平常一样使NDK进行编译。
+
+编译执行，发现问题解决了。我是在Android 2.3提取出来的**libsqlite.so**，目前测试在Android 2.3和Android 4.0上均没有问题。然而这始终是个悬而未决的问题，无法保证这种方式在任何ROM上都不出问题。
+
+还有一种比较稳妥，但是效率不那么高的方式，就是在数据库操作的地方回调Java代码（其实如前所述，Java代码也会再次调用C进行数据库访问，绕了个圈子）。这种方式相对于是在效率和稳妥之间选择了折中。
+
+不过至少到现在为止，我没有发现2.3导出的so在其他地方出现不兼容的现象。
