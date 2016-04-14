@@ -1,0 +1,97 @@
+---
+layout:     post
+title:      "一种感觉不错的Java枚举写法"
+date:       2010-08-12 15:53
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Java
+    - Enum
+---
+
+相对于一般的写法来说，这种写法稍微复杂，但是工作环境中用起来确实很爽，呵呵…记下来…
+
+PS:现在回想起来，对Java的代码繁杂过去也确实习惯了，企业更重要的是可读性，和在编译器获得更多的信息辅助程序员写出更好更健壮的代码。```java/**
+ * kimiazhu.info 
+ * Created since 2010-8-12
+ */
+ package info.kimiazhu.blog.common.service.task.enums;
+/**
+ * <p>任务状态枚举，可能的状态包括：</p>
+ * <p>1.成功。</p>
+ * <p>2.失败：因为业务原因导致的（而非系统错误导致的）失败，不允许重试。</p>
+ * <p>3.未执行或系统原因导致的失败，如网络中断或者系统故障导致执行失败，允许系统继续重试。</p>
+ *
+ * @author <a href="mailto:me@kimiazhu.info">Kimia Zhu</a>
+ * @version $Id: TaskStatusEnum.java, v 0.1 2010-8-12 下午02:07:26 Kimia Zhu Exp $
+ */
+public enum TaskStatusEnum {
+
+    FAILD("F", "业务原因导致执行失败"),
+
+    SUCCESS("S", "执行成功"),
+
+    INIT("I", "未执行");
+
+    /** 任务状态枚举key值 */
+    private String key;
+
+    /** 任务状态枚举描述信息 */
+    private String desc;
+
+    /**
+     * <p>私有构造函数，枚举不允许外部调用构造新的枚举值。</p>
+     * 
+     * @param key               键值
+     * @param desc              描述值
+     */
+    private TaskStatusEnum(String key, String desc) {
+        this.key = key;
+        this.desc = desc;
+    }
+
+    /**
+     * @return Returns the key.
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @param key The key to set.
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
+     * @return Returns the desc.
+     */
+    public String getDesc() {
+        return desc;
+    }
+
+    /**
+     * @param desc The desc to set.
+     */
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    /**
+     * <p>工厂方法，从指定的key值获取对应枚举</p>
+     *
+     * @param key   需要获取枚举的key
+     * @return      
+     * @date 2010-7-13
+     */
+    public static final TaskStatusEnum getFromKey(String key) {
+        for (TaskStatusEnum e : TaskStatusEnum.values()) {
+            if (e.getKey().equals(key)) {
+                return e;
+            }
+        }
+        return null;
+    }
+}
+```

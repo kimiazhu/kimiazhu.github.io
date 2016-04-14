@@ -1,0 +1,34 @@
+---
+layout:     post
+title:      "Django源代码阅读分析-2：持久层结构分析"
+date:       2010-07-14 15:53
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Django
+    - Python
+---
+
+Django对持久层的封装得很好，很好地支持Mysql、PostgreSQL、Oracle、SQLite3等流行的关系型数据库。顶层提供统一的模型封装，使用者基本无须关心真实数据库底层的细节，甚至对DBMS本身知之甚少也没关系。
+
+Django做到这点的的方法之一是进行了抽象和封装。不再对外暴露SQL语句本身，甚至连具体DBMS也以统一的界面为使用者做了隔离，用户看到的只有同一的Model模型，或者一些命令行Command，这些Model或Command与实际DBMS的沟通，都被封装到了经过高度抽象的Backend模块中。如下图所示为Django持久层模型概览：
+
+![Django持久层概览](/attachments/2010-07-14/QuNWD.png)
+
+Django对持久层的封装的Python模块写在Django.Db.Backends包中，其下的每一个包对应一种具体的数据库类型，上面所提到的MySQL、SQLite等就是以包的形式存在于Django.Db.Backends下的。以MySQL为例我整理了一下其类层次结构。画类图的过程中发现，对Python的建模和Java不同，因为Python中一个模块中可以有多个类结构，还可以有一些面向过程的语句。而Java中一般都是一个文件一个类（当然，内部类除外），建模的时候很容易使用类图表达。
+
+基于“抽象”的思维，Django为它所支持的底层数据库类型提供了一致的接口，但这个接口并非其下所有接口的共有操作，而是提供了底下所有操作的一个超集。例如，对于DatabaseOperations类的方法，在SQLite3中有convert_values()方法，在Mysql的操作中是没有此方法的；但在Mysql中又有value_to_db_datetime()和value_to_db_time()等SQLite3所没有的操作。而这些操作在其父类BaseDatabaseOperations中都有。
+
+以MySQL为例，画了Backends内部类图之间的关系，细节如下图所示，其实对于其他的数据库实现的支持，也是差不多的。
+
+![Django持久层内部结构-以MySQL为例](/attachments/2010-07-14/GYoo8.png)
+
+模型最原始的调用在最顶层的\_\_init\_\_.py中。load_backends()方法会根据settings.py中的配置项import对应的DB驱动和backend模块。有一个比较巧而且也算典型的Python代码写法，在db.\_\_init\_\_.py的load_backend(backend_name)函数中。
+
+该语句是出现导入backend异常的时候出现的，当然后不被支持的数据库后端时，系统找不到对应的backend实例，就会抛出异常，同时会把目前已被支持的数据库列举一遍，列举是通过扫描Django/Db/Backends目录下的文件完成的（前面说过，每一种实际被支持的数据库后端，都必须在Backends目录下建立子目录然后在其中继承实现第二幅图中蓝色的几个基类），如果该文件f是一个子目录，并且目录名不是"."开头的，则把这些目录名合并成一个列表返回赋值给available_backends变量。这是一个完整语句所完成的功能，相比于Java代码，十分简洁。
+
+`Python Code:`
+
+	available_backends = [f for f in os.listdir(backend_dir) \	        if os.path.isdir(os.path.join(backend_dir, f))  \	        and not f.startswith('.')]
+
+至于更细节的数据库封装实现，可以以MySQL为例参考Django源代码，源代码树的位置是Django/Db/Backends/Mysql。
