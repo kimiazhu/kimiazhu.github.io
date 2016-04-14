@@ -55,7 +55,7 @@ JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.uti
 # 3. 安装 git 1.8
 CentOS 6中默认安装的git版本是1.7, 部分新特性不支持，需要使用1.8以上的版本。编译安装。
 
-```sh
+```bash
 yum install gettext-devel expat-devel curl-devel zlib-devel openssl-devel
 cd /usr/local/src
 wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
