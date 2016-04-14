@@ -58,23 +58,23 @@ server.port=8443
 接下来通过编码的方式支持HTTP协议访问，可以在application.java入口中加入以下代码创建一个新德Connector：
 
 ```java
-	@Value("${xgsdk.http.port}")
-    private int httpPort;
-    
-	@Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
-        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
-        return tomcat;
-    }
-    
-    private Connector createHttpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(httpPort);
-        connector.setSecure(false);
-        return connector;
-    }
+@Value("${xgsdk.http.port}")
+private int httpPort;
+
+@Bean
+public EmbeddedServletContainerFactory servletContainer() {
+    TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+    tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+    return tomcat;
+}
+
+private Connector createHttpConnector() {
+    Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+    connector.setScheme("http");
+    connector.setPort(httpPort);
+    connector.setSecure(false);
+    return connector;
+}
 ```
     
 另外在application.properties文件配置http端口即可：
@@ -90,28 +90,28 @@ xgsdk.http.port=8090
 我们希望用户访问http端口的时候会自动跳转到https协议来访问，可以在创建connect的时候进行端口重定向。（当然还有其他方式，比如可以在应用中通过filter进行重定向处理）。
 
 ```java
-	@Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
-        	  SecurityConstraint securityConstraint = new SecurityConstraint();
-            securityConstraint.setUserConstraint("CONFIDENTIAL");
-            SecurityCollection collection = new SecurityCollection();
-            collection.addPattern("/");
-            securityConstraint.addCollection(collection);
-            context.addConstraint(securityConstraint);
-        };
-        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
-        return tomcat;
-    }
-    
-    private Connector createHttpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(httpPort);
-        connector.setSecure(false);
-        connector.setRedirectPort(httpsPort);
-        return connector;
-    }
+@Bean
+public EmbeddedServletContainerFactory servletContainer() {
+    TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
+    	  SecurityConstraint securityConstraint = new SecurityConstraint();
+        securityConstraint.setUserConstraint("CONFIDENTIAL");
+        SecurityCollection collection = new SecurityCollection();
+        collection.addPattern("/");
+        securityConstraint.addCollection(collection);
+        context.addConstraint(securityConstraint);
+    };
+    tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+    return tomcat;
+}
+
+private Connector createHttpConnector() {
+    Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+    connector.setScheme("http");
+    connector.setPort(httpPort);
+    connector.setSecure(false);
+    connector.setRedirectPort(httpsPort);
+    return connector;
+}
 ```
     
 # 5. 配置部分链接允许http访问
@@ -119,45 +119,45 @@ xgsdk.http.port=8090
 这个需求源自一些静态资源，使用http协议访问可以获得更高效率。这里需要再增加一个SecurityConstraint对象进行处理，我们先设置一些url-pattern，然后将这些pattern加入到NONE策略的SecurityConstraint中，以便允许这部分链接通过http访问。而剩下的仍然走CONFIDENTIAL策略。
 
 ```java
-	private static final String HTTP_URL_PATTERNS[] = {
-            "/static/*", 
-            "/download/*", 
-            "/doc/*"
-            };
-	@Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
-            @Override
-            protected void postProcessContext(Context context) {
-                SecurityConstraint securityConstraint = new SecurityConstraint();
-                securityConstraint.setUserConstraint("NONE");
-                SecurityCollection collection = new SecurityCollection();
-                for (String pattern : HTTP_URL_PATTERNS) {
-                    collection.addPattern(pattern);
-                }
-                securityConstraint.addCollection(collection);
-                context.addConstraint(securityConstraint);
-                
-                SecurityConstraint securityConstraint2 = new SecurityConstraint();
-                securityConstraint2.setUserConstraint("CONFIDENTIAL");
-                SecurityCollection collection2 = new SecurityCollection();
-                collection2.addPattern("/");
-                securityConstraint2.addCollection(collection2);
-                context.addConstraint(securityConstraint2);
-                
-                LOGGER.info("Constraints length = " + context.findConstraints().length);
-            }
+private static final String HTTP_URL_PATTERNS[] = {
+        "/static/*", 
+        "/download/*", 
+        "/doc/*"
         };
-        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
-        return tomcat;
-    }
-    
-    private Connector createHttpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(httpPort);
-        connector.setSecure(false);
-        connector.setRedirectPort(httpsPort);
-        return connector;
-    }
+@Bean
+public EmbeddedServletContainerFactory servletContainer() {
+    TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
+        @Override
+        protected void postProcessContext(Context context) {
+            SecurityConstraint securityConstraint = new SecurityConstraint();
+            securityConstraint.setUserConstraint("NONE");
+            SecurityCollection collection = new SecurityCollection();
+            for (String pattern : HTTP_URL_PATTERNS) {
+                collection.addPattern(pattern);
+            }
+            securityConstraint.addCollection(collection);
+            context.addConstraint(securityConstraint);
+            
+            SecurityConstraint securityConstraint2 = new SecurityConstraint();
+            securityConstraint2.setUserConstraint("CONFIDENTIAL");
+            SecurityCollection collection2 = new SecurityCollection();
+            collection2.addPattern("/");
+            securityConstraint2.addCollection(collection2);
+            context.addConstraint(securityConstraint2);
+            
+            LOGGER.info("Constraints length = " + context.findConstraints().length);
+        }
+    };
+    tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+    return tomcat;
+}
+
+private Connector createHttpConnector() {
+    Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+    connector.setScheme("http");
+    connector.setPort(httpPort);
+    connector.setSecure(false);
+    connector.setRedirectPort(httpsPort);
+    return connector;
+}
 ```
