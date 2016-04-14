@@ -1,0 +1,12 @@
+---
+layout:     post
+title:      "SSH使用公钥免密码登陆"
+date:       2011-07-11 15:53
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Linux
+    - SSH
+---
+
+做个记录，希望A机器在做基于SSH的操作时不需要输入密码，这样需要服务器端进行认证，即服务器客户端生成好密钥对后，把公钥传给服务器进行安装，完成之后却发现仍然每次都需要输入密码，检查/etc/ssh/sshd_config文件，PubkeyAuthentication是yes的，AuthorizedKeysFile的路径也正常，但是服务器就是不去度authorized_keys文件，几番反复之后，发现原来是authorized_keys文件的权限设置不对，是664，安全策略阻止了对该文件的访问，实际上，需要设置成600即可。

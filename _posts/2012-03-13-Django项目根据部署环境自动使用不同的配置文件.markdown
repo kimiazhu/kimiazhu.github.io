@@ -1,0 +1,38 @@
+---
+layout:     post
+title:      "Django项目根据部署环境自动使用不同的配置文件"
+date:       2012-03-13 13:36
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Django
+    - Python
+---
+
+Django默认从settings.py文件读取配置信息。但是我们不同的部署环境下可能有不同的配置内容，一个最明显的需求就是日志级别，测试环境可能需要打印debug信息，而生产环境可能只要info甚至是warnning以上就可以了。这就需要根据部署环境进行区分了。以下是我在用的一种区分方式。
+
+假定现在使用三套环境：开发、测试、生产，以指定日志级别为例：
+
+1. 配置文件还是**settings.py**。
+
+2. 在项目文件夹建三个文件：**settings_dev.py**, **settings_test.py**, **settings_prod.py**，这几个文件将分别用在开发环境、测试环境、生产环境中。
+
+3. 把会有不同的配置项目都抽取到对应的配置文件中。例如：
+   
+   开发环境**settings_dev.py**中设置：**DEBUG = True**
+      
+   测试环境**settings_test.py**中设置：**DEBUG = True**
+   
+   生产环境**settings_prod.py**中设置：**DEBUG = False**
+   
+4. **settings.py**中使用主机名区分部署环境引入对应的配置项目：
+
+	```python
+		
+	import socket
+	
+	if socket.gethostname() == 'Kimia-MBP':	    import settings_dev as settings_env	elif socket.gethostname() == 'test-env.com':	    import settings_test as settings_env	else:	    import settings_production as settings_env
+	DEBUG = settings_env.DEBUG
+	# Other configrations...
+	```
+

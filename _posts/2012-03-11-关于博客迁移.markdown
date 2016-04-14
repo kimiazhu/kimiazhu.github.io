@@ -1,0 +1,19 @@
+---
+layout:     post
+title:      "关于博客迁移"
+date:       2012-03-11 01:16
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+---
+
+博客搬动很多次了，之前有自己在计算机本地记录过东西，有用过现成的博客工作，有自己搭建过网站，甚至自己一行一行写过一个用于博客的cms系统（[http://me.kimiazhu.info](http://me.kimiazhu.info)）,但是始终没有找到一个足够满意的记录生活的方式。
+
+其实我希望的方式很简单，就是随时可以在本地记录自己的想法，然后很容易地把需要分享的部分分享到网络上。或者说是：无网络时支持本地写作，有网络时能够保存至云端（保证不丢失和在多台电脑同步）和发布。
+
+利用Dropbox + Markdown的组合确实是绝配，这类应用不止一个。scriptogr.am应该是处于初生期的一个，希望提供免费的同时还能继续完善和有自己的特色 :)
+
+准备把博客搬过来了。域名已经指过来。本地写作的感觉很棒。
+
+Anyway, this is just another journey…
+
+And you can join me with contact <a href="mailto:me@kimiazhu.info">me@kimiazhu.info</a> (or <a href="mailto:kimiazhu@gmail.com">kimiazhu@gmail.com</a> is me too) :D
