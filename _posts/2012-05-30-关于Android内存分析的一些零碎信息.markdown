@@ -1,0 +1,125 @@
+---
+layout:     post
+title:      "关于Android内存分析的一些零碎信息"
+date:       2012-05-30 00:15
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - android
+    - memory analysis
+    - mat
+---
+
+仍是摘的，主要是ddms工具的是有，这个工具很强大，但有时候操作步骤却有点繁琐。
+
+做图片的时候经常会遇到内存问题，官方是不推荐手工调用bitmap.recycle()的。因为如果还有其他地方引用该图片，而你手工recycle()之后，其他地方的引用会报错。推荐的使用方式之一是使用softReference软引用，以便JVM在需要的时候去释放这些图片所占用的内存空间。但其实软引用的释放并没有想象中的及时准确，由于GC的实际执行时间仍是不确定的，如果你创建和操作Bitmap太频繁，很可能OOM了，软引用还没有释放掉。so，如果能确定bitmap不再被引用，还是手工recycle()掉比较保险。我们看到几乎所有的图片类应用都会这么做。
+
+注意adt dump 出来的hprof镜像必须执行adt命令**hprof-conv infile outfile**转化之后才能被MAT识别和进一步分析。
+
+---
+
+# 调试时用DDMS监控内存
+
+以下内容出自[这里](http://blog.csdn.net/feng88724/article/details/6460918)。
+
+用 Heap监测应用进程使用内存情况的步骤如下：
+
+1. 启动eclipse后，切换到DDMS透视图，并确认Devices视图、Heap视图都是打开的；
+2. 将手机通过USB链接至电脑，链接时需要确认手机是处于“USB调试”模式，而不是作为“Mass Storage”；
+3. 链接成功后，在DDMS的Devices视图中将会显示手机设备的序列号，以及设备中正在运行的部分进程信息；
+4. 点击选中想要监测的进程，比如system_process进程；
+5. 点击选中Devices视图界面中最上方一排图标中的“Update Heap”图标；
+6. 点击Heap视图中的“Cause GC”按钮；
+7. 此时在Heap视图中就会看到当前选中的进程的内存使用量的详细情况。
+
+说明：
+
+a. 点击“Cause GC”按钮相当于向虚拟机请求了一次gc操作；
+b. 当内存使用信息第一次显示以后，无须再不断的点击“Cause GC”，Heap视图界面会定时刷新，在对应用的不断的操作过程中就可以看到内存使用的变化；
+c. 内存使用信息的各项参数根据名称即可知道其意思，在此不再赘述。
+
+  如何才能知道我们的程序是否有内存泄漏的可能性呢。这里需要注意一个值：Heap视图中部有一个Type叫做data object，即数据对象，也就是我们的程序中大量存在的类类型的对象。在data object一行中有一列是“Total Size”，其值就是当前进程中所有Java数据对象的内存总量，一般情况下，这个值的大小决定了是否会有内存泄漏。可以这样判断：
+  
+a. 不断的操作当前应用，同时注意观察data object的Total Size值；
+b. 正常情况下Total Size值都会稳定在一个有限的范围内，也就是说由于程序中的的代码良好，没有造成对象不被垃圾回收的情况，所以说虽然我们不断的操作会不断的生成很多对 象，而在虚拟机不断的进行GC的过程中，这些对象都被回收了，内存占用量会会落到一个稳定的水平；
+c. 反之如果代码中存在没有释放对象引用的情况，则data object的Total Size值在每次GC后不会有明显的回落，随着操作次数的增多Total Size的值会越来越大，直到到达一个上限后导致进程被kill掉。
+d. 此处已system_process进程为例，在我的测试环境中system_process进程所占用的内存的data object的Total Size正常情况下会稳定在2.2~2.8之间，而当其值超过3.55后进程就会被kill。
+
+---
+
+# 应用内查看内存使用情况
+
+查看基于Android 系统单个进程内存、CPU使用情况的几种方法。以下内容来自[这里](http://blog.csdn.net/kieven2008/article/details/6445421)。
+
+#### 一、利用Android API函数查看
+
+1. ActivityManager查看可用内存。
+
+		ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo(); 
+		am.getMemoryInfo(outInfo); 
+		//outInfo.availMem即为可用空闲内存。
+
+2. android.os.Debug查询PSS，VSS，USS等单个进程使用内存信息:
+
+		MemoryInfo[] memoryInfoArray = am.getProcessMemoryInfo(pids); 
+		MemoryInfo pidMemoryInfo=memoryInfoArray[0];
+		pidMemoryInfo.getTotalPrivateDirty();
+		
+		getTotalPrivateDirty()
+		//Return total private dirty memory usage in kB.USS
+		
+		getTotalPss()
+		//Return total PSS memory usage in kB.PSS
+		
+		getTotalSharedDirty()
+		//Return total shared dirty memory usage in kB.RSS
+
+
+#### 二、直接对Android文件进行解析查询
+/proc/cpuinfo系统CPU的类型等多种信息。
+
+/proc/meminfo 系统内存使用信息
+
+如
+
+	# cat /proc/meminfo
+	MemTotal: 16344972 kB
+	MemFree: 13634064 kB
+	Buffers: 3656 kB
+	Cached: 1195708 kB
+	
+我们查看机器内存时，会发现MemFree的值很小。这主要是因为，在linux中有这么一种思想，内存不用白不用，因此它尽可能的cache和buffer一些数据，以方便下次使用。但实际上这些内存也是可以立刻拿来使用的。
+
+所以 **空闲内存=free+buffers+cached=total-used**
+
+通过读取文件/proc/meminfo的信息获取Memory的总量。
+
+	ActivityManager.getMemoryInfo(ActivityManager.MemoryInfo)
+	//获取当前的可用Memory量。
+
+ 
+
+####三、通过Android系统提供的Runtime类，执行adb命令(top,procrank,ps...等命令)查询
+
+通过对执行结果的标准控制台输出进行解析。这样大大的扩展了Android查询功能.例如：
+
+	final Process m_process = Runtime.getRuntime().exec("/system/bin/top -n 1");
+	final StringBuilder sbread = new StringBuilder();
+	BufferedReader bufferedReader = new BufferedReader(
+	    new InputStreamReader(m_process.getInputStream()), 8192);
+
+	# procrank	
+	Runtime.getRuntime().exec("/system/xbin/procrank");
+	
+内存耗用：VSS/RSS/PSS/USS
+
+Terms:
+nan
+1. VSS - Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
+2. RSS - Resident Set Size 实际使用物理内存（包含共享库占用的内存）
+3. PSS - Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+4. USS - Unique Set Size 进程独自占用的物理内存（不包含共享库占用的内存）
+
+一般来说内存占用大小有如下规律：VSS >= RSS >= PSS >= USS
+
+USS is the total private memory for a process, i.e. that memory that is completely unique to that process.USS is an extremely useful number because it indicates the true incremental cost of running a particular process. When a process is killed, the USS is the total memory that is actually returned to the system. USS is the best number to watch when initially suspicious of memory leaks in a process.

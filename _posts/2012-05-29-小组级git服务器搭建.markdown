@@ -1,0 +1,61 @@
+---
+layout:     post
+title:      "小组级git服务器搭建"
+date:       2012-05-29 23:37
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - git
+    - svn
+    - github
+---
+
+摘的，原文见[这里](http://blog.prosight.me/index.php/2009/11/485)，开发刚开始没多久就搭建了一个git，之前的工作用svn，但是觉得svn不能本地提交不太爽，其他方便我们也基本把git当成svn了，有一个中心服务器。对git了解不太深。权且当作记录一下操作而已。
+
+---
+
+# 过程：
+使用 –bare 选项运行 git init 来设定一个空仓库，这会初始化一个不包含工作目录的仓库。
+
+	$ cd /opt/git
+	$ mkdir project.git
+	$ cd project.git
+	$ git --bare init
+	
+
+这时，开发人员就可以把它加为远程仓库，推送一个分支，从而把第一个版本的工程上传到仓库里了。值得注意的是，每次添加一个新项目都需要通过 shell 登入主机并创建一个纯仓库。我们不妨以 gitserver 作为 git 用户和仓库所在的主机名。如果你在网络内部运行该主机，并且在 DNS 中设定 gitserver 指向该主机，那么以下这些命令都是可用的：
+
+	# 在一个工程师的电脑上
+	$ cd myproject
+	$ git init
+	$ git add .
+	$ git commit -m 'initial commit'
+	$ git remote add origin git@gitserver:/opt/git/project.git
+	$ git push origin master
+	
+这样，其他人的克隆和推送也一样变得很简单：
+
+	$ git clone git@gitserver:/opt/git/project.git
+	$ vim README
+	$ git commit -am 'fix for the README file'
+	$ git push origin master
+	
+用这个方法可以很快捷的为少数几个开发者架设一个可读写的 Git 服务。
+
+作为一个额外的防范措施，你可以用 Git 自带的 git-shell 简单工具来把 git 用户的活动限制在仅与 Git 相关。把它设为 git 用户登入的 shell，那么该用户就不能拥有主机正常的 shell 访问权。为了实现这一点，需要指明用户的登入shell 是 git-shell ，而不是 bash 或者 csh。你可能得编辑 /etc/passwd 文件
+
+	$ sudo vim /etc/passwd
+	
+在文件末尾，你应该能找到类似这样的行：
+
+	git:x:1000:1000::/home/git:/bin/sh
+	
+把 bin/sh 改为 /usr/bin/git-shell （或者用 which git-shell 查看它的位置）。该行修改后的样子如下：
+
+	git:x:1000:1000::/home/git:/usr/bin/git-shell
+	
+现在 git 用户只能用 SSH 连接来推送和获取 Git 仓库，而不能直接使用主机 shell。尝试登录的话，你会看到下面这样的拒绝信息：
+
+	$ ssh git@gitserver
+	fatal: What do you think I am? A shell? （你以为我是个啥？shell吗？)
+	Connection to gitserver closed. （gitserver 连接已断开。）

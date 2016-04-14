@@ -224,7 +224,7 @@ public void setAs(String filePath){
 
 Android使用SQLite3数据库，顶层对数据库做了定制化非常大的封装，使用Provider来完成数据库操作，当然你也可以使用一般的SQL语句进行增删改查。所有的Java层数据库调用实际都会执行到本地C代码，再由它们通过**libsqlite.so**执行到DB层面。**libsqlite.so**位于**/system/lib/**中。
 
-我们有一个需求希望能在C代码中执行文件系统扫描操作，这是耗时操作，通过NDK实现能够使得效率上有相当大的提升。这个问题在[《从Android本地代码扫描SD卡说开去》](http://scriptogr.am/kimiazhu/post/about-scanning-sdcard-in-native-code)中做过些探讨。
+我们有一个需求希望能在C代码中执行文件系统扫描操作，这是耗时操作，通过NDK实现能够使得效率上有相当大的提升。这个问题在[《从Android本地代码扫描SD卡说开去》](http://kchu.me/2012/06/28/%E4%BB%8EAndroid%E6%9C%AC%E5%9C%B0%E4%BB%A3%E7%A0%81%E6%89%AB%E6%8F%8FSD%E5%8D%A1%E8%AF%B4%E5%BC%80%E5%8E%BB/)中做过些探讨。
 
 但是使用过程中频频出现奇怪的问题，困扰了我很久。包括数据访问过程中不停地出现不同的错误：
 
