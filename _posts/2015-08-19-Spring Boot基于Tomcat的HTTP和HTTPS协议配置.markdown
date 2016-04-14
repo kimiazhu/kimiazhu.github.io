@@ -18,30 +18,38 @@ tags:
 
 首先生成SSL证书，这里选择P12格式。
 
-	keytool -genkey -alias xgsdk -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
+```sh
+keytool -genkey -alias xgsdk -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
+```
 	
 按提示输入各项之后，可以得到一个keystore.p12文件。可以通过以下命令验证其中的信息。
 
-	keytool -list -v -keystore keystore.p12 -storetype pkcs12
-	
+```sh
+keytool -list -v -keystore keystore.p12 -storetype pkcs12
+```
+
 如果ssl链接仅通过浏览器访问，可以跳过下面这步，如果需要通过客户端访问，可以从浏览器中导出cer或者crt格式的公钥，然后通过以下命令添加证书到信任列表。
 
-	keytool -import -alias xgsdk -keystore $JAVA_HOME/jre/lib/security/cacerts -file xgsdk.com.crt
-	
+```sh
+keytool -import -alias xgsdk -keystore $JAVA_HOME/jre/lib/security/cacerts -file xgsdk.com.crt
+```
+
 # 2. 配置SSL支持
 
 将keystore.p12放到工程根目录下，并在application.properties文件配置即可：
 
-`application.properties`
-
-	server.ssl.key-store = keystore.p12
-	server.ssl.key-store-password = your_password
-	server.ssl.keyStoreType = PKCS12
-	server.ssl.keyAlias = xgsdk
+```properties
+server.ssl.key-store = keystore.p12
+server.ssl.key-store-password = your_password
+server.ssl.keyStoreType = PKCS12
+server.ssl.keyAlias = xgsdk
+```
 	
 还可以额外定义端口，例如到8443：
 
-	server.port=8443
+```properties
+server.port=8443
+```
 	
 此时服务器已经打开8443端口，需要用https访问。访问http端口会发现已经不通了。
 
@@ -49,8 +57,7 @@ tags:
 
 接下来通过编码的方式支持HTTP协议访问，可以在application.java入口中加入以下代码创建一个新德Connector：
 
-`java:`
-
+```java
 	@Value("${xgsdk.http.port}")
     private int httpPort;
     
@@ -68,10 +75,13 @@ tags:
         connector.setSecure(false);
         return connector;
     }
+```
     
 另外在application.properties文件配置http端口即可：
 
-	xgsdk.http.port=8090
+```properties
+xgsdk.http.port=8090
+```
 	
 此时系统已经完全支持http和https同时访问。
 
@@ -79,8 +89,7 @@ tags:
 
 我们希望用户访问http端口的时候会自动跳转到https协议来访问，可以在创建connect的时候进行端口重定向。（当然还有其他方式，比如可以在应用中通过filter进行重定向处理）。
 
-`java:`
-
+```java
 	@Bean
     public EmbeddedServletContainerFactory servletContainer() {
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
@@ -103,13 +112,13 @@ tags:
         connector.setRedirectPort(httpsPort);
         return connector;
     }
+```
     
 # 5. 配置部分链接允许http访问
 
 这个需求源自一些静态资源，使用http协议访问可以获得更高效率。这里需要再增加一个SecurityConstraint对象进行处理，我们先设置一些url-pattern，然后将这些pattern加入到NONE策略的SecurityConstraint中，以便允许这部分链接通过http访问。而剩下的仍然走CONFIDENTIAL策略。
 
-`java:`
-
+```java
 	private static final String HTTP_URL_PATTERNS[] = {
             "/static/*", 
             "/download/*", 
@@ -151,3 +160,4 @@ tags:
         connector.setRedirectPort(httpsPort);
         return connector;
     }
+```
