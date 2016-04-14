@@ -13,13 +13,15 @@ tags:
 
 表可能被锁。
 
-	mysql> show OPEN TABLES where In_use > 0;
-    +--------------+-----------------+--------+-------------+
-    | Database     | Table           | In_use | Name_locked |
-    +--------------+-----------------+--------+-------------+
-    | demodatabase | demo_table_1234 |      1 |           0 |
-    +--------------+-----------------+--------+-------------+
-    1 row in set (0.00 sec)
+```sh
+mysql> show OPEN TABLES where In_use > 0;
++--------------+-----------------+--------+-------------+
+| Database     | Table           | In_use | Name_locked |
++--------------+-----------------+--------+-------------+
+| demodatabase | demo_table_1234 |      1 |           0 |
++--------------+-----------------+--------+-------------+
+1 row in set (0.00 sec)
+```
 
 这时候显示表 **demo_table_1234** 已被使用
 
@@ -27,8 +29,10 @@ tags:
 
 查看RDS系统资源
 
-	#查看性能指标，累计值
-	mysqladmin -hlocalhost -uroot extended-status
-    
-    #查看性能指标，1秒内差值 
-	mysqladmin -hlocalhost -uroot extended-status --relative --sleep=1
+```sh
+#查看性能指标，累计值
+mysqladmin -hlocalhost -uroot extended-status
+
+#查看性能指标，1秒内差值 
+mysqladmin -hlocalhost -uroot extended-status --relative --sleep=1
+```
