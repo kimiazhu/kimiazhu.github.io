@@ -58,4 +58,4 @@ PS: 有人会建议使用 `2>&-` 来替代 `2>/dev/null`，原因是前者更短
 
 [^1]: [Check if a program exists from a bash script](http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script)
 
-[^2]: [Difference between 2>&-, 2>/dev/null, |&, &>/dev/null and >/dev/null 2>&1](http://unix.stackexchange.com/questions/70963/difference-between-2-2-dev-null-dev-null-and-dev-null-21)
+[^2]: [这里有讲到几种符号的区别](http://unix.stackexchange.com/questions/70963/difference-between-2-2-dev-null-dev-null-and-dev-null-21)
