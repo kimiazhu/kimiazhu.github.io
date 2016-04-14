@@ -17,13 +17,18 @@ tags:
 
 需要在启动Jenkins的时候，传入以下参数：
 
-	-Dhudson.util.ProcessTreeKiller.disable=true
+```properties
+-Dhudson.util.ProcessTreeKiller.disable=true
+```
         
 例如，我们使用CentOS 6, ** yum -y install jenkins ** 进行的安装，则修改 ** /etc/init.d/jenkins ** 启动脚本，添加以下红色部分：
 
+```properties
 JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.util.ProcessTreeKiller.disable=true</font> -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
+```
 
-参考：
+### 参考：
+
 1. https://wiki.jenkins-ci.org/display/JENKINS/ProcessTreeKiller
 
 
@@ -32,13 +37,15 @@ JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.uti
 # 2. Jenkins SVN SSL错误
 
 配置SVN时报
-**javax.net.ssl.SSLProtocolException: handshake alert:  unrecognized_name**错误。
+`javax.net.ssl.SSLProtocolException: handshake alert:  unrecognized_name`错误。
 
 需要在启动Jenkins的时候，传入以下参数：
 
-	-Djsse.enableSNIExtension=false
-    
-例如，我们使用CentOS 6, ** yum -y install jenkins ** 进行的安装，则修改 ** /etc/init.d/jenkins ** 启动脚本，添加以下红色部分：
+```properties
+-Djsse.enableSNIExtension=false
+````
+
+例如，我们使用CentOS 6, ` yum -y install jenkins ` 进行的安装，则修改 ` /etc/init.d/jenkins ` 启动脚本，添加以下红色部分：
 
 JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.util.ProcessTreeKiller.disable=true</font> -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
 
@@ -48,14 +55,15 @@ JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS <font color="red">-Dhudson.uti
 # 3. 安装 git 1.8
 CentOS 6中默认安装的git版本是1.7, 部分新特性不支持，需要使用1.8以上的版本。编译安装。
 
-    yum install gettext-devel expat-devel curl-devel zlib-devel openssl-devel
-    cd /usr/local/src
-    wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
-    tar xzvf git-1.8.2.3.tar.gz
-    cd git-1.8.2.3
-    make prefix=/usr/local all
-    make prefix=/usr/local install
-    
+```sh
+yum install gettext-devel expat-devel curl-devel zlib-devel openssl-devel
+cd /usr/local/src
+wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
+tar xzvf git-1.8.2.3.tar.gz
+cd git-1.8.2.3
+make prefix=/usr/local all
+make prefix=/usr/local install
+```
     
 ---
 
@@ -63,7 +71,9 @@ CentOS 6中默认安装的git版本是1.7, 部分新特性不支持，需要使�
 
 五位的字符串，形如:
 
-	15 13 * * *
+```
+15 13 * * *
+```
     
 上面的Schedule表示每天的13:15分执行任务。
 
@@ -77,11 +87,15 @@ CentOS 6中默认安装的git版本是1.7, 部分新特性不支持，需要使�
 
 如果需要表示每五分钟执行一次，表达式为：
 
-	*/5 * * * * 
+```
+*/5 * * * *
+``` 
     
 另外，新版本的Jenkins会有一个**H**符号，当你用上面的表达式表示每分钟执行一次的时候，会提示你写成下面这样：
 
-	H/5 * * * * 
+```
+H/5 * * * *
+``` 
 
 这里的**H**代表**hash**的意思，实际上是对job名字的一个哈希值。之所以Jenkins这样建议，是因为如果有多个任务使用这样的表达式的时候有可能出现同时间并发执行的情况。比如有10个任务使用了 <font color="red"> 0 0 \* \* \* </font> 表达式，会造成在每天午夜同时执行这10个任务，而在其他时间都是系统都是空闲的。 
 
