@@ -1,0 +1,240 @@
+---
+layout:     post
+title:      "定制Android原生相机支持连拍"
+date:       2012-05-24 20:00
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - android
+    - camera
+    - burst
+---
+
+## 1、需求
+之前基于Android 2.3原生相机做过定制，每拍完一张照片，会跳转到处理界面允许用户使用各种滤镜进行处理。现在需要增加一个分支流程，用户可以选择连拍模式，跳过滤镜，直接将照片保存或者进行情景模版叠加后保存。
+
+------------------
+## 2、正方向分析：
+
+从拍照按钮开始分析。并在关键地方加入一些跟踪流程用的日志。
+
+发现拍完一张照片之后，isCameraIdle()和mPreviewing都会被设置成false，从而令canTakePicture()返回false，这是导致不能连拍的原因。
+
+canTakePicture()被autoFocus()函数调用，后者又被doFocus()调用。但是查找autoFocus()的调用方的时候，发现太多了，一时无法确定那个分支过来的是我想要的。
+
+正向分析流程能得到很多信息，但是到后来分支多了，就容易混乱，于是尝试反过来看流程，从拍照那一刻开始往前推，看看逻辑能否和这个分支点重合。
+
+---------
+## 3、反方向分析：
+
+相机一定会调用的方法是[camera.takePicture()](http://developer.android.com/reference/android/hardware/Camera.html)方法。先找到这个方法。该方法的调用位于ImageCapture类中。
+
+ImageCapture类中需要关注的方法预计会是：
+
+#### 1、capture()
+
+1) 设置相机参数：mParameters对象：gps, Rotation，Timestamp等等。
+   最后调用mCameraDevice.takePicture()方法进行拍照。注意capture()
+   本身是private方法，它被initiate()共有方法简单包装。
+
+2) initiate()方法被ImageCapture.onSnap()调用.
+
+3) ImageCapture.onSnap()被以下两处调用：
+    
+- AutoFocusCallback.onAutoFocus()：在对焦完成后调用。该回调对象
+  被设置在mCameraDevice.autoFocus(mAutoFocusCallback)方法中。
+  mCameraDevice.autoFocus()被camera.autoFocus()调用
+    
+- Camera.doSnap(): 当对焦模式为以下情况时回调用onSnap()进行拍照。
+
+    -- 无限远
+    
+    -- 固定焦距
+    
+    -- FOCUS_MODE_EDOF
+    
+    -- 对焦已经成功
+    
+    -- 对焦已经失败
+    
+    这些情况都是不需要对焦或者对焦已结束（不管成功还是失败），所以直接进行拍摄。
+
+#### 2、 storeImage():存储照片
+
+mCameraDevice.takePicture()方法中的回调参数JpegPictureCallback类中定义了生成图片以及存储的相关代码。
+
+---------------------
+
+## 4、关键
+问题焦点落在autoFocus()。该方法调用了这两个关键方法：
+- canTakePicture()：它决定了相机能否进行拍照。
+- mCameraDevice.autoFocus(mAutoFocusCallback)：调用它之后，相机会进行对焦（或者如果焦距设置为无限远则不对焦）然后拍摄。并且此方法是在canTakePicture()返回true的时候才执行的。
+
+OK，要连拍，则必须让canTakePicture()方法返回true。
+
+----------------------
+
+## 5、继续深入
+
+```java
+private boolean canTakePicture() {
+    return isCameraIdle() && mPreviewing && (mPicturesRemaining > 0);
+}
+```    
+
+根据前面的跟踪发现，每次拍照后，isCameraIdle() 和 mPreviewing 都会被设置为false。mPicturesRemaining我们不去管它，看过代码后发现这个是计算SD卡还足够容纳多少张照片的变量，目前我们存储卡容量肯定不会只能容下最后一张照片的，他肯定为true，无妨。
+
+```java
+private boolean isCameraIdle() {
+    return mStatus == IDLE && mFocusState == FOCUS_NOT_STARTED;
+}
+```
+
+判断相机空闲是根据两个变量，mStatus设置为空闲（废话。。），相机未开始对焦。注意到在Camera中重写的startPreview()方法中设置了**mStatus=IDLE**。而且mstatus的状态只有两种：
+
+```java
+private static final int IDLE                 = 1;
+private static final int SNAPSHOT_IN_PROGRESS = 2;
+```
+
+那么估计就是在相机拍照过程中，mstatus被设置成**SNAPSHOT_IN_PROGRESS**了。确实，设置的地方就在**ImageCapture.onSnap()**方法中。
+
+再找到mFocusState:
+
+```java
+
+private static final int FOCUS_NOT_STARTED       = 0;
+private static final int FOCUSING                = 1;
+private static final int FOCUSING_SNAP_ON_FINISH = 2;
+private static final int FOCUS_SUCCESS           = 3;
+private static final int FOCUS_FAIL              = 4;
+private int mFocusState                          = FOCUS_NOT_STARTED;
+```
+
+状态多了去了。看看需要的状态在何时出现：
+
+```java
+
+private void clearFocusState() {
+    mFocusState = FOCUS_NOT_STARTED;
+    updateFocusIndicator();
+}
+
+private void stopPreview() {
+    if (mCameraDevice != null && mPreviewing) {
+        Log.v(TAG, "stopPreview");
+        mCameraDevice.stopPreview();
+    }
+    mPreviewing = false;
+    // If auto focus was in progress, it would have been canceled.
+    clearFocusState();
+}
+```
+
+停止预览的时候会重置该状态，按照我们对android相机的理解，拍照结束后应该会停止预览，我们也看到**ImageCapture.capture()**的最后一行**mPreviewing = false;**（虽然不是直接调用stopPreview()）
+
+-------------
+
+## 6、解决
+
+其实回头来看，这个定制也是比较简单的，在拍照结束后直接存储起来。然后再调用一次**restartPreview()**方法，该方法其实还是会去调用**startPreview()**
+
+```java
+private void startPreview() throws CameraHardwareException {
+    if (mPausing || isFinishing())
+        return;
+
+    try {
+        ensureCameraDevice();
+    } catch (CameraHardwareException e) {
+        MobclickAgent.reportError(Camera.this, AppUtils.joinArray(e.getStackTrace(), "\n"));
+        throw e;
+    }
+
+    // If we're previewing already, stop the preview first (this will blank
+    // the screen).
+    if (mPreviewing)
+        stopPreview();
+
+    Util.setCameraDisplayOrientation(this, mCameraId, mCameraDevice);
+    setCameraParameters(UPDATE_PARAM_ALL);
+    setPreviewDisplay(mSurfaceHolder);
+
+    mCameraDevice.setErrorCallback(mErrorCallback);
+
+    try {
+        Log.v(TAG, "startPreview");
+        mCameraDevice.startPreview();
+    } catch (Throwable ex) {
+        closeCamera();
+        MobclickAgent.reportError(Camera.this, AppUtils.joinArray(ex.getStackTrace(), "\n"));
+        throw new RuntimeException("startPreview failed", ex);
+    }
+    mPreviewing = true;
+    mZoomState = ZOOM_STOPPED;
+    mStatus = IDLE;
+}
+```
+
+-------------------
+
+## 7、完善
+连拍已经打开了，但方案并不完善。我们的需求和原生相机的模式并不完全一直，多出来的其中一个重要的部分是需要配合情景相机，如果用户使用情景相机进行连拍，则后台要处理更多的事情，这会使后台花费更多的时间和更大的内存和CPU资源消耗。
+
+所有的保存使用后台的异步线程进行，但是页面线程还是保留可操作状态，只是把相机的Preview设置暂时暂停，否则用户可能在前一张照片未处理完成就继续拍摄下一张照片，如果用户采用拍摄照片尺寸过大，可能导致后台内存溢出。这点的做法其实是和系统相机一致的。拍摄完成到开启下一张拍摄的时候有一个画面定格，可以认为是给用户看看刚刚所拍的照片，同时也是留出时间给后台进行图片的生成和存储。这比使用一堆复杂的排队机制要来得更纯粹些。
+
+这里我们通过一个saveInstant()方法来实现。
+
+```java
+
+/**
+ * 后台立即保存图片，保存好后会调用前台传入的callback接口。
+ * 这里我新建了一个相机辅助类来做这个事，所以涉及到比较多的参数，
+ * 我们统一封装到Bundle中。
+ * 
+ * @param activity
+ * @param bundle
+ * @param callback
+ */
+public static void instantSave(final Activity activity, final Bundle bundle, final PictureSaveCallBack callback) {
+    new Thread(new Runnable() {
+        //开启线程处理，不阻塞UI
+        @Override
+        public void run() {
+            //这里要做的事情很多，判断前后摄像头，图片旋转角度，是否情景相机模式，是否需要合成情景模版等等。
+            //把原始图片最终生成好。
+            //生成相机左下角的缩略图。
+            //调用回调接口通知相机图片保存已经OK（相机界面要做“善后”：更新左下角缩略图）
+            activity.runOnUiThread(new Runnable() {
+                //这个回调是设计到UI的，所以我们在UI线程中执行。也可以采取通知的形式。
+                @Override
+                public void run() {
+                    callback.callback(thumbFilePath);
+                }
+            });
+        }
+    }).start()；
+}
+```
+
+在onPictureTaken()方法中：
+
+```java
+    if (burstEnabled) {
+    // 连拍模式
+    Bundle b = new Bundle();
+    //构造参数放到Bundle中。
+    CameraUtils.instantSave(Camera.this, b, new CameraUtils.PictureSaveCallBack() {
+     @Override
+        public void callback(String thumbFilePath) {
+            Bitmap bmp = BitmapFactory.decodeFile(thumbFilePath);
+            mLastPictureButton.setScaleType(ScaleType.FIT_XY);
+            if (bmp != null) {
+                mLastPictureButton.setImageBitmap(bmp);
+            }
+            updateThumbnailButton();
+            progressBar.setVisibility(View.INVISIBLE);
+            restartPreview();
+        }
+});
+```
