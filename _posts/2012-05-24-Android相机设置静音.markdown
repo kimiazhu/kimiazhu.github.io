@@ -1,0 +1,133 @@
+---
+layout:     post
+title:      "Android设置相机静音"
+date:       2012-05-24 00:48
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - android
+    - java
+    - camera
+---
+
+Android相机拍照声音是写死在C++文件中的：
+
+```java
+//CameraService.cpp:
+CameraService::Client::Client(const sp<CameraService>& cameraService,
+    const sp<ICameraClient>& cameraClient,
+    const sp<CameraHardwareInterface>& hardware,
+    int cameraId, int cameraFacing, int clientPid) {
+    mPreviewCallbackFlag = FRAME_CALLBACK_FLAG_NOOP;
+        mOrientation = getOrientation(0, mCameraFacing == CAMERA_FACING_FRONT);
+        mOrientationChanged = false;
+        cameraService->setCameraBusy(cameraId);
+        cameraService->loadSound();
+        LOG1("Client::Client X (pid %d)", callingPid)
+}
+
+void CameraService::loadSound() {
+    Mutex::Autolock lock(mSoundLock);
+    LOG1("CameraService::loadSound ref=%d", mSoundRef);
+    if (mSoundRef++) return;
+
+    mSoundPlayer[SOUND_SHUTTER] = newMediaPlayer("/system/media/audio/ui/camera_click.ogg");
+    mSoundPlayer[SOUND_RECORDING] = newMediaPlayer("/system/media/audio/ui/VideoRecord.ogg");
+}
+```
+
+在这个层面上我们无法更改相机声音，所以要静音需要寻求其他的方法。在应用层面上可选的方案是拍照时让应用静音，设置应用STREAM_SYSTEM为Mute：
+
+```java
+AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+manager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+```
+
+需要取消静音的时候：
+
+```java
+AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+manager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
+```
+
+这是正常而自然的方法，然而却发现在我的机器上不起作用。搜索后发现也有其他不少人遇到同样的问题，结论是这可能是Android中的一个缺陷，这个方法可以设置静音，取消的时候却无法起作用。[有人提出了一种方式是让AudioManager为static](http://stackoverflow.com/a/7929139/1413216)，但在我这里不能满足需求，另外使用static也有隐患，即如果在设置会unmute之前应用崩溃，则该static扔会丢失，造成无法unmute。
+
+只能使用另外的方式解决，查找API后找到以下的方式：
+
+```java
+//拍照之前设置
+AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//保存当前的音量
+int volumn = manager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+if(TextUtils.equals(muteMode, "mute") && volumn != 0){
+    //如果需要静音并且当前未静音（muteMode的设置可以放在Preference中）
+    manager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0 ,     AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+}
+//ok, 可以拍照了...
+//...拍照结束后，继续以下流程恢复音量
+if(TextUtils.equals(muteMode, "mute") && volumn != 0){
+    //只有标记为mute并且先前音量不为0的时候，我们才需要恢复。
+    manager.setStreamVolume(AudioManager.STREAM_SYSTEM, volumn, AudioManager.FLAG_ALLOW_RINGER_MODES);
+}
+```    
+
+这种方式目前运作得很好。
+
+另外如果想要更改快门声音，也可以在将应用静音之后在onShut中播放自己的声音。
+
+
+---
+
+## Update
+
+上面的设置在MiUI V4中无效。测试后发现MiUI V4中快门声音收到STREAM_MUSIC控制。并且也发现了**AudioManager.setStreamMute()**方法在android 4.0中已经不存在无法恢复声音的bug。
+
+杯具的事情发生了，HTC Sence android 2.3上的快门声音必须控制STREAM_SYSTEM，而android MIUI V4上必须控制STREAM_MUSIC！再一次看到版本分化的问题。。并且发现在控制快门声音恢复上貌似也有不同。最后改成以下版本，直接用线程延迟3秒后恢复之前的声音，并且同时控制STREAM_SYSTEM和STREAM-MUSIC的声音。
+
+```java
+
+/**
+ * 根据需要设置相机静音。
+ */
+private void muteIfNeeded(){
+    
+    String muteMode = mPreferences.getString(CameraSettings.KEY_MUTE_MODE, "unmute");
+    final AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+    final int maxMusicVolumn = manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+    final int maxSystemVolumn = manager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+    final int musicVolumnBeforeTaken = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    final int systemVolumnBeforeTaken = manager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+    
+    if(TextUtils.equals(muteMode, "mute")){
+        manager.setStreamVolume(AudioManager.STREAM_MUSIC, 0,
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        manager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0,
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                    manager.setStreamVolume(AudioManager.STREAM_MUSIC, musicVolumnBeforeTaken,
+                            AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                    manager.setStreamVolume(AudioManager.STREAM_SYSTEM, systemVolumnBeforeTaken,
+                            AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                } catch (Exception e) {
+                    LogUtils.e(TAG, "静音计时线程被中断。", e);
+                }
+                
+            }
+        }).start();
+    }else if(TextUtils.equals(muteMode, "unmute") && musicVolumnBeforeTaken == 0){
+        manager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusicVolumn,
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+    }else if(TextUtils.equals(muteMode, "unmute") && systemVolumnBeforeTaken == 0){
+        manager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxSystemVolumn,
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+    }
+}
+```
+
+关于替换自己的声音，这个则必须掌握时间，先mute，takePicture()之后unmute,接着马上播放自己的声音，（或者反过来，先把自己的声音放了，然后马上mute）。发现camera360在我的HTC上会出现系统声音和自己声音都会出现，先是自定义的声音，紧接着是系统声音。这就应该是后续的声音播放没有控制好所导致。
