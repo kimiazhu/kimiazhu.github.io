@@ -24,11 +24,11 @@ tags:
 
 所以，尽量不要使用这两个命令。可以尝试以下命令取而代之：
 
-`Shell Script:`
-
-	$ command -v foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
-	$ type foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
-	$ hash foo 2>/dev/null || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+```sh
+$ command -v foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+$ type foo >/dev/null 2>&1 || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+$ hash foo 2>/dev/null || { echo >&2 "I require foo but it's not installed.  Aborting."; exit 1; }
+```
 
 PS: 有人会建议使用 `2>&-` 来替代 `2>/dev/null`，原因是前者更短更简洁。但实际上这两种写法的效果并非完全一样：`2>&-` 用于关闭FD2即stderr，当程序尝试写入stderr的时候它可能会导致错误。[^2]
 
@@ -38,15 +38,15 @@ PS: 有人会建议使用 `2>&-` 来替代 `2>/dev/null`，原因是前者更短
 
 以下是一个使用gdate的例子：
 
-`Shell Script:`
-
-	gnudate() {
-       if hash gdate 2>/dev/null; then
-           gdate "$@"
-       else
-           date "$@"
-       fi
-	}
+```sh
+gnudate() {
+   if hash gdate 2>/dev/null; then
+       gdate "$@"
+   else
+       date "$@"
+   fi
+}
+```
 	
 # 3. 总结
 
