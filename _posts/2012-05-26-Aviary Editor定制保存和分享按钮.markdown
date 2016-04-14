@@ -30,13 +30,13 @@ PS: 大致看过一下Aviary的条款，貌似在修改方面有限制，这两�
 // ToolbarView.java;
 mSaveButton.setOnClickListener( new OnClickListener() {
 
-	@Override
-	public void onClick( View v ) {
-		if ( mListener != null && 
-				mCurrentState == STATE.STATE_SAVE && isClickable() ) {
-			mListener.onSaveClick();
-		}
-	}
+    @Override
+    public void onClick( View v ) {
+        if ( mListener != null && 
+                mCurrentState == STATE.STATE_SAVE && isClickable() ) {
+            mListener.onSaveClick();
+        }
+    }
 } );
 ```
 
@@ -50,17 +50,17 @@ ToolbarView中的保存按钮的单击动作在做三个判断后调用了监听
  */
 @Override
 public void onSaveClick() {
-	
-	if( mFilterManager.getEnabled() ){
-		mFilterManager.onSave();
+    
+    if( mFilterManager.getEnabled() ){
+        mFilterManager.onSave();
 
-		if ( mFilterManager != null ) {
-			Bitmap bitmap = mFilterManager.getBitmap();
-			if ( bitmap != null ) {
-				performSave( bitmap );
-			}
-		}
-	}
+        if ( mFilterManager != null ) {
+            Bitmap bitmap = mFilterManager.getBitmap();
+            if ( bitmap != null ) {
+                performSave( bitmap );
+            }
+        }
+    }
 }
 ```
 
@@ -75,54 +75,54 @@ public void onSaveClick() {
  */
 protected void doSave( Bitmap bitmap ) {
 
-	// result extras
-	Bundle extras = new Bundle();
+    // result extras
+    Bundle extras = new Bundle();
 
-	// if the request intent has EXTRA_OUTPUT declared
-	// then save the image into the output uri and return it
-	if ( mSaveUri != null ) {
-		OutputStream outputStream = null;
-		String scheme = mSaveUri.getScheme();
-		try {
-			if ( scheme == null ) {
-				outputStream = new FileOutputStream( mSaveUri.getPath() );
-			} else {
-				outputStream = getContentResolver().openOutputStream( mSaveUri );
-			}
-			if ( outputStream != null ) {
-				int quality = Constants.getValueFromIntent( Constants.EXTRA_OUTPUT_QUALITY, 90 );
-				bitmap.compress( mOutputFormat, quality, outputStream );
-			}
-		} catch ( IOException ex ) {
-			logger.error( "Cannot open file", mSaveUri, ex );
-		} finally {
-			IOUtils.closeSilently( outputStream );
-		}
-		onSetResult( RESULT_OK, new Intent().setData( mSaveUri ).putExtras( extras ) );
-	} else {
-		// no output uri declared, save the image in a new path
-		// and return it
+    // if the request intent has EXTRA_OUTPUT declared
+    // then save the image into the output uri and return it
+    if ( mSaveUri != null ) {
+        OutputStream outputStream = null;
+        String scheme = mSaveUri.getScheme();
+        try {
+            if ( scheme == null ) {
+                outputStream = new FileOutputStream( mSaveUri.getPath() );
+            } else {
+                outputStream = getContentResolver().openOutputStream( mSaveUri );
+            }
+            if ( outputStream != null ) {
+                int quality = Constants.getValueFromIntent( Constants.EXTRA_OUTPUT_QUALITY, 90 );
+                bitmap.compress( mOutputFormat, quality, outputStream );
+            }
+        } catch ( IOException ex ) {
+            logger.error( "Cannot open file", mSaveUri, ex );
+        } finally {
+            IOUtils.closeSilently( outputStream );
+        }
+        onSetResult( RESULT_OK, new Intent().setData( mSaveUri ).putExtras( extras ) );
+    } else {
+        // no output uri declared, save the image in a new path
+        // and return it
 
-		String url = Media.insertImage( getContentResolver(), bitmap, "title", "modified with Aviary Feather" );
-		Uri newUri = null;
-		if ( url != null ) {
-			newUri = Uri.parse( url );
-			getContentResolver().notifyChange( newUri, null );
-		}
-		onSetResult( RESULT_OK, new Intent().setData( newUri ).putExtras( extras ) );
-	}
+        String url = Media.insertImage( getContentResolver(), bitmap, "title", "modified with Aviary Feather" );
+        Uri newUri = null;
+        if ( url != null ) {
+            newUri = Uri.parse( url );
+            getContentResolver().notifyChange( newUri, null );
+        }
+        onSetResult( RESULT_OK, new Intent().setData( newUri ).putExtras( extras ) );
+    }
 
-	final Bitmap b = bitmap;
-	mHandler.post( new Runnable() {
+    final Bitmap b = bitmap;
+    mHandler.post( new Runnable() {
 
-		@Override
-		public void run() {
-			mImageView.clear();
-			b.recycle();
-		}
-	} );
+        @Override
+        public void run() {
+            mImageView.clear();
+            b.recycle();
+        }
+    } );
 
-	finish();
+    finish();
 }
 ```
 
@@ -140,8 +140,8 @@ getContentResolver().notifyChange( mSaveUri, null );
 update: 发现部分环境不起作用，可以改成以下代码（不推荐），扫描整个目录（当然，代码需要优化，目录名不建议放在这里，可以采用常量或者参数传入，或者直接从目标目录解压。）：
 
 ```java
-	sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
-		                + Environment.getExternalStorageDirectory())));
+    sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                        + Environment.getExternalStorageDirectory())));
 ```
 
 关于更新缩略图，按照官方原来的模式，是调用**startActivityForResult()**方法来调用打开Aviary编辑器，并不结束当前Activity，当Aviary编辑器结束自身时，就返回到之前的页面（我们这里是相机）。但是这种方式无法满足我们的需求。我们是希望在用户编辑完图片时，可以选择保存到相册或是分享到微博。这里就总共有两个跳转目标：
