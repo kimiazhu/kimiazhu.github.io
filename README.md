@@ -4,13 +4,13 @@
 
 - 4/16/2016 
 
-	- add google custom search
+	- Add google custom search
 
-	- there is a bug in jekyll-sitemap plugin, if the title or/and url of post/page contains Chinese characters, it will be encoded twice to cause the post unaccessable from sitemap. i have changed to use a custom page to produce my sitemap. thanks to [David Ensinger](http://davidensinger.com/2013/03/generating-a-sitemap-in-jekyll-without-a-plugin/).
+	- There is an issue in jekyll-sitemap plugin (i have report it), if the title or/and url of post/page contains Chinese characters, it will be encoded twice to cause the post unaccessable from sitemap. i have changed to use a custom page to produce my sitemap. thanks to [David Ensinger](http://davidensinger.com/2013/03/generating-a-sitemap-in-jekyll-without-a-plugin/).
 
 - 4/15/2016
 
-	- add line number, add sitemap.xml, change css and many other changes.
+	- Add line number, add sitemap.xml, change css and many other changes.
 
 ---
 
