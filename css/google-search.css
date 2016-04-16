@@ -4,3 +4,13 @@
     width: 500px;
     margin: auto;
 } 
+
+.cus_google_search_page {
+    position: relative;
+    bottom: 50px;
+}
+
+.cus_google_search_post {
+    position: relative;
+    bottom: 50px;
+}

@@ -10,7 +10,8 @@ layout: default
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')
+        background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}');
+        height: 550px;
     }
 
     {% if page.header-mask %}
@@ -44,7 +45,7 @@ layout: default
                 </div>
             </div>
         </div>
-        <div id="cus_google_search">
+        <div id="cus_google_search" class="cus_google_search_post">
             <script>
               (function() {
                 var cx = '001907658793054288336:zpgnfyjtlxk';
