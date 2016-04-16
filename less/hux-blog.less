@@ -8,7 +8,6 @@
 body {
 	.sans-serif;
 	font-size: 16px;
-	// Hux mpdify to 16px (Mobile First), and increase to 20px while 768+ width
 	color: @gray-dark;
 	//-webkit-user-select:text; //对于 Blog 还是先不开启这句。
 	overflow-x : hidden;
@@ -177,7 +176,6 @@ pre code{
 			margin-top: 20px;
 		}
 	}
-	// V1.6 Hux display title by default.
 	.pager li{
 		width: 48%;
 		&.next{ float: right};
@@ -214,10 +212,7 @@ pre code{
 		border-radius: 2px;
 		width: 170px;
 	}
-	/**
-	 * Animation
-	 * HuxBlog-Navbar using genuine Material Design Animation
-	 */
+
 	#blog_navbar{ 	
 		/**
 		 * Sharable code and 'out' function
@@ -536,7 +531,6 @@ pre code{
 	}
 }
 
-// Hux add home-page post-content-preview
 .post-content-preview{
     font-size: 13px;
     font-style: italic;
@@ -752,7 +746,6 @@ img::-moz-selection {
 }
 
 
-/* Hux add tags support */
 .tags{
 	margin-bottom: -5px;
 	a,.tag{
@@ -879,7 +872,6 @@ img::-moz-selection {
 
 /* Tags support End*/
 
-/* Hux make all img responsible in post-container */
 .post-container img{
 	display: block;
 	max-width: 100%;
@@ -888,7 +880,6 @@ img::-moz-selection {
 }
 
 
-/* Hux Optimize UserExperience */
 .navbar-default .navbar-toggle {
 	&:focus, &:hover{
 		background-color: inherit;
@@ -898,7 +889,6 @@ img::-moz-selection {
   	}
 }
 
-/* Hux customize Style for navBar button */
 
 .navbar-default .navbar-toggle{
 	border-color: transparent;
@@ -919,7 +909,6 @@ img::-moz-selection {
 }
 
 
-/* Hux customize Style for Duoshuo */
 .comment{
 	margin-top: 20px;
 	#ds-thread {
@@ -968,9 +957,6 @@ img::-moz-selection {
 #ds-smilies-tooltip ul.ds-smilies-tabs li a {
 	background: white !important;
 }
-
-
-// Hux fullscreen mode in 404.html
 
 .page-fullscreen .intro-header{
 	position: fixed;
