@@ -1,7 +1,8 @@
 .gsc-control-cse.gsc-control-cse-en {
     background-color: rgba(255, 255, 255, 0);
     border: 0;
-    width: 500px;
+    /*width: 400px;*/
+    width: 50%;
     margin: auto;
 } 
 
