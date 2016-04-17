@@ -5,7 +5,7 @@ date:       2012-05-22 20:08
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - python
+    - Python
 ---
 
 # 1、函数作为Decorator

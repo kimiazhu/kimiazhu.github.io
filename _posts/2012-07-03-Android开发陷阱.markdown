@@ -5,7 +5,7 @@ date:       2012-07-03 20:18
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - android
+    - Android
 ---
 
 ### 1、SD卡数据库

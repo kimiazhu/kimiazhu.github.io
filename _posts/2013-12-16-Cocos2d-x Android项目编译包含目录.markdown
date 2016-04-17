@@ -6,8 +6,8 @@ author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - Games
-    - cocos2d-x
-    - android
+    - Cocos2d-x
+    - Android
     - C++
 ---
 

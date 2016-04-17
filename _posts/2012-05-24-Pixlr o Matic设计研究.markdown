@@ -5,8 +5,8 @@ date:       2012-05-25 23:00
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - apps
-    - android
+    - Apps
+    - Android
     - iOS
     - Pixlr
     - Design

@@ -5,8 +5,8 @@ date:       2012-03-10 14:05
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - django
-    - python
+    - Django
+    - Python
 ---
 
 ## 问题：

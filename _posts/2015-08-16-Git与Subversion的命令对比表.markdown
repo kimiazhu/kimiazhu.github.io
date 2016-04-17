@@ -6,8 +6,8 @@ author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - Git
-    - SVN
-    - github
+    - Svn
+    - Github
 ---
 
 | 操作        | Git           | Subversion   |

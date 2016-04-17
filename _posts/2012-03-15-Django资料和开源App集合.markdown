@@ -5,8 +5,8 @@ date:       2012-03-15 15:53
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - django
-    - python
+    - Django
+    - Python
 ---
 
 *本文源于网络[《我和Django》](http://lds.osser.me/data/20110902224717/index.html)。我对其中部分明显有误的地方进行了更正，并对部分内容作了补充，补充内容大部分以斜体的形式直接插入文中，或者以注解的形式存在于文章末尾。*

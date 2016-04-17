@@ -5,8 +5,8 @@ date:       2012-03-12 18:37
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - django
-    - python
+    - Django
+    - Python
 ---
 
 ### 1 
@@ -70,7 +70,8 @@ OneToOneField相当于设置了**unique=True**的ForeignKey，在对象模型上
 	
 ```python
 	
-class UserProfile(BaseModel):	user = models.OneToOneField(User)
+class UserProfile(BaseModel):
+	user = models.OneToOneField(User)
 	nick_name = models.CharField(verbose_name='昵称', \ 
 		max_length=64,blank=True, null=True)
 ```

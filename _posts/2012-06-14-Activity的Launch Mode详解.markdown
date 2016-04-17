@@ -5,8 +5,7 @@ date:       2012-06-14 00:15
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - android
-    - Activity
+    - Android
 ---
 
 原文[此处](http://www.cnblogs.com/xiaoQLu/archive/2011/09/29/2195742.html)。

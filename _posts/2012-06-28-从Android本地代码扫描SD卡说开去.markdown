@@ -5,12 +5,12 @@ date:       2012-06-28 20:18
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - android
-    - jni
-    - ndk
+    - Android
+    - JNI
+    - NDK
     - C
     - C++
-    - java
+    - Java
 ---
 
 # 一、缘起

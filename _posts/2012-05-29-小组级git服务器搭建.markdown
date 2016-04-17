@@ -5,9 +5,9 @@ date:       2012-05-29 23:37
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - git
-    - svn
-    - github
+    - Git
+    - Svn
+    - Github
 ---
 
 摘的，原文见[这里](http://blog.prosight.me/index.php/2009/11/485)，开发刚开始没多久就搭建了一个git，之前的工作用svn，但是觉得svn不能本地提交不太爽，其他方便我们也基本把git当成svn了，有一个中心服务器。对git了解不太深。权且当作记录一下操作而已。

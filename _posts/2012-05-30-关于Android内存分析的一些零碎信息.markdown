@@ -5,9 +5,9 @@ date:       2012-05-30 00:15
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-    - android
-    - memory analysis
-    - mat
+    - Android
+    - Memory Analysis
+    - MAT
 ---
 
 仍是摘的，主要是ddms工具的是有，这个工具很强大，但有时候操作步骤却有点繁琐。
