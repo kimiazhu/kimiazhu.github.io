@@ -13,7 +13,7 @@ tags:
 
 表可能被锁。
 
-```sh
+```bash
 mysql> show OPEN TABLES where In_use > 0;
 +--------------+-----------------+--------+-------------+
 | Database     | Table           | In_use | Name_locked |
@@ -29,7 +29,7 @@ mysql> show OPEN TABLES where In_use > 0;
 
 查看RDS系统资源
 
-```sh
+```bash
 #查看性能指标，累计值
 mysqladmin -hlocalhost -uroot extended-status
 
