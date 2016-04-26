@@ -38,46 +38,46 @@ gc # @#s #%: #+...+# ms clock, #+...+# ms cpu, #->#-># MB, # MB goal, # P
 package main
 
 import (
-	"runtime"
-	"fmt"
-	"strconv"
+    "runtime"
+    "fmt"
+    "strconv"
 )
 
 type Person struct {
-	name string
+    name string
 
-	data []byte
-	Apart *Apartment
+    data []byte
+    Apart *Apartment
 }
 
 type Apartment struct {
-	addr string
-	data []byte
+    addr string
+    data []byte
 
-	Tenants *Person
+    Tenants *Person
 }
 
 func main() {
-	fmt.Println("start test gc")
+    fmt.Println("start test gc")
 
-	for i := 0; i <= 50000; i++ {
-		apartment := &Apartment{addr: "Zhuhai, CN: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
-		tenant := &Person{name: "HAIHUA ZHU: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
-		runtime.SetFinalizer(apartment, func(a *Apartment) {
-			//fmt.Printf("Apartment in [%s] removed\n", a.addr)
-		})
-		runtime.SetFinalizer(tenant, func(p *Person) {
-			//fmt.Printf("Tenant [%s] removed\n", p.name)
-		})
+    for i := 0; i <= 50000; i++ {
+        apartment := &Apartment{addr: "Zhuhai, CN: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
+        tenant := &Person{name: "HAIHUA ZHU: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
+        runtime.SetFinalizer(apartment, func(a *Apartment) {
+            //fmt.Printf("Apartment in [%s] removed\n", a.addr)
+        })
+        runtime.SetFinalizer(tenant, func(p *Person) {
+            //fmt.Printf("Tenant [%s] removed\n", p.name)
+        })
 
-		(*apartment).Tenants = tenant
-		(*tenant).Apart = apartment
+        (*apartment).Tenants = tenant
+        (*tenant).Apart = apartment
 
-		tenant = nil
-		apartment = nil
-	}
+        tenant = nil
+        apartment = nil
+    }
 
-	fmt.Println("end test gc")
+    fmt.Println("end test gc")
 }
 ```
 
