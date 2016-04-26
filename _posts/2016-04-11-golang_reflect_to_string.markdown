@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Golang Object to String Using Reflect"
-date:       2016-04-11 20:05
+date:       2016-04-11 20:05 +08:00
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
