@@ -1,11 +1,12 @@
 ---
 layout:     post
-title:      "log4go: A Golang Log Project"
-date:       2016-04-06 20:05
+title:      "Golang Garbage Collection Analysis"
+date:       2016-04-26 18:28
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - Golang
+    - GC
 ---
 
 
