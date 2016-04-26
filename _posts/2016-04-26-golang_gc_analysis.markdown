@@ -1,108 +1,173 @@
 ---
 layout:     post
-title:      "Golang Garbage Collection Analysis"
-date:       2016-04-26 20:05
+title:      "Golang Object to String Using Reflect"
+date:       2016-04-11 20:05
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - Golang
-    - GC
-    - Garbage Collection
 ---
 
-Go到1.5之后的GC机制已经有了长足进展，而扫描-标记-清除算法应该也能够支持循环引用，但是今天尝试发现了对于指针类型的循环引用，发现内存并没有释放。
+# 1. 说明
 
-# 1. GC日志格式
+将struct对象信息方便地以人可读的方式打印到日志或者console中，go提供了一些方式，可以让我们方便地做这个事情。
 
-```log
-gc # @#s #%: #+...+# ms clock, #+...+# ms cpu, #->#-># MB, # MB goal, # P
+# 2. fmt包标准输出
+
+标准包`fmt`中提供了格式化字符串的支持。
+
+```go
+fmt.Printf("%v", value)
 ```
 
-- `gc #` GC进行次数，每次GC自增
-- `@#s` 自程序启动以来的时间
-- `#%` 自程序启动以来，花在GC上的时间的百分比
-- `#+...+#` 这个有两段，一段是wall clock时间，一段是cpu时间。每段内部都是用+号分隔
-	- wall clock时间段分三部分：STW清理终止+扫描、同步、标记终止(_GCmarktermination)+STW结束阶段
-	- cpu time时间段也分三部分：broken in to assist time+后台GC时间+空闲GC时间
-- `#->#-># MB` 三个阶段的堆大小，三个阶段分别是：GC开始时堆大小->GC结束时堆大小->实时堆大小
-- `# MB goal` 目标堆大小
-- `# P` 处理器使用数量
+`%v`可以打印出你想要的方式。并且私有字段也可以通过反射获取输出值。
 
-# 2. Golang循环引用测试
+对于以下的`struct`：
 
-```go:
-// Description: src
-// Author: ZHU HAIHUA
-// Since: 2016-04-26 09:46
-package main
-
-import (
-	"runtime"
-	"fmt"
-	"strconv"
-)
-
-type Person struct {
-	name string
-
-	data []byte
-	Apart *Apartment
-}
-
-type Apartment struct {
-	addr string
-	data []byte
-
-	Tenants *Person
-}
-
-func main() {
-	fmt.Println("start test gc")
-
-	for i := 0; i <= 50000; i++ {
-		apartment := &Apartment{addr: "Zhuhai, CN: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
-		tenant := &Person{name: "HAIHUA ZHU: " + strconv.Itoa(i), data: make([]byte, 1 << 16)}
-		runtime.SetFinalizer(apartment, func(a *Apartment) {
-			//fmt.Printf("Apartment in [%s] removed\n", a.addr)
-		})
-		runtime.SetFinalizer(tenant, func(p *Person) {
-			//fmt.Printf("Tenant [%s] removed\n", p.name)
-		})
-
-		(*apartment).Tenants = tenant
-		(*tenant).Apart = apartment
-
-		tenant = nil
-		apartment = nil
-	}
-
-	fmt.Println("end test gc")
+```go
+type R struct {
+  L int
+  w int
 }
 ```
 
-输出如下（根据环境不同，具体数值也会有不同）：
+具体可以有三种方式进行输出：
 
-	// ... other log ...
-	gc 10 @0.064s 15%: 0+2.5+1.0 ms clock, 0+0/2.0/5.5+4.0 ms cpu, 1185->1188->1189 MB, 1216 MB goal, 4 P
-	gc 11 @0.103s 11%: 0.50+6.5+0.50 ms clock, 2.0+0/5.0/15+2.0 ms cpu, 2313->2332->2333 MB, 2372 MB goal, 4 P
-	gc 12 @0.205s 7%: 0+18+0.50 ms clock, 0+0/18/40+2.0 ms cpu, 4512->4533->4534 MB, 4628 MB goal, 4 P
-	gc 13 @0.287s 18%: 0.50+0+38 ms clock, 2.0+0/18/40+152 ms cpu, 6260->6260->6262 MB, 6260 MB goal, 4 P (forced)
-	end test gc
+- %v 输出只有value的格式。比如一个矩形`{100 50}`
+- %+v 输出带filed name的格式，比如一个矩形`{L:100 w:50}`
+- %#v 输出带type、filed name和filed value的完整形式，还是这个矩形：`main.R{L:100, w:50}`
 
-当注释掉40行时，去掉了循环引用，此时可以可以发现堆大小明显下降。
+# 3. json输出
 
-	// ... other log ...
-	gc 22 @0.470s 3%: 0+3.0+0.50 ms clock, 0+0/2.5/4.0+2.0 ms cpu, 1220->1231->828 MB, 1251 MB goal, 4 P
-	gc 23 @0.589s 2%: 0+3.5+0.50 ms clock, 0+0/2.5/5.0+2.0 ms cpu, 1594->1607->1080 MB, 1635 MB goal, 4 P
-	gc 24 @0.758s 2%: 0+6.0+0.50 ms clock, 0+0/5.5/5.5+2.0 ms cpu, 2081->2103->1419 MB, 2134 MB goal, 4 P
-	gc 25 @0.984s 2%: 0+8.5+0.50 ms clock, 0+0/6.5/13+2.0 ms cpu, 2724->2724->1823 MB, 2794 MB goal, 4 P
-	end test gc
+可以调用`encoding/json`包进行格式化成json格式输出，但这个方式只会导出公开的字段，**对于unexported字段值是不会出现的**。
 
-如果打开line33或者line36行的注释，还可以看到每次系统执行gc时回收了哪些对象。可以发现，有循环引用的时候，GC并没有释放内存。
+```go
+// ToJson return the json format of the obj
+// when error occur it will return empty.
+// Notice: unexported field will not be marshaled
+func ToJson(obj interface{}) string {
+  result, err := json.Marshal(obj)
+  if err != nil {
+    return fmt.Sprintf("<no value with error: %v>", err)
+  }
+  return string(result)
+}
+```
 
-值得注意的是，当循环引用不是通过指针，而是对象来引用的话，是无法通过编译的，编译器会报递归引用错误终止执行。
+# 4. 自定义的输出
 
-# 3. Reference 
+如果需要更自由一些，又希望节省代码，可以使用反射的方式递归遍历一个数据结构内的每个字段和值，并根据需要进行拼接打印。
 
-1. [GC算法的概要](http://gad.qq.com/article/detail/7150922)
-2. [Go 1.4+ Garbage Collection (GC) Plan and Roadmap](https://docs.google.com/document/d/16Y4IsnNRCN43Mx0NZc5YXZLovrHvvLhK_h0KN8woTO4/edit#heading=h.o8eay7ieosat)
+## 4.1 RefelectToString
+
+我提供了一个ReflectToString()的实现，使用反射机制来生成一个struct的字符串表示。它与fmt包不同的地方在于，在保持通用性的同时，提供了许多配置项来控制字符串的最终格式。
+
+具体代码附在后边，函数的签名和注释如下：
+
+```go
+// ReflectToString return the string formatted by the given argument,
+// the number of args may be one or two
+//
+// the first argument is the print style, and it's default value is
+// StyleMedium. the second argument is the style configuration pointer.
+//
+// The long style may be a very long format like following:
+//
+//      Type{name=value}
+//
+// it's some different from fmt.Printf("%#v\n", value),
+// it's separated by comma and equal
+//
+// Then, the medium style would like:
+//
+//      {key=value}
+//
+// it's some different from fmt.Printf("%+v\n", value),
+// it's separated by comma and equal
+//
+// Otherwise the short format will only print the value but no type
+// and name information.
+//
+// since recursive call, this method would be pretty slow, so if you
+// use it to print log, may be you need to check if the log level is
+// enabled first
+// 
+// examples:
+//
+//   - ReflectToString(input)
+//   - ReflectToString(input, StringStyleLong)
+//   - ReflectToString(input, StringStyleMedium, &StringConf{SepElem:";", 
+//       SepField:",", SepKeyValue:":"})
+//   - ReflectToString(input, StringStyleLong, &StringConf{SepField:","})
+func ReflectToString(obj interface{}, args ...interface{}) string 
+```
+
+我们可以通过这样一个方法来实现类似fmt.Printf()函数，并且支持一定的格式自定义：
+
+- 短格式：只打印value，类似`fmt.Printf("%v", value)`
+- 中格式：打印key和value，类似`fmt.Printf("%+v", value)`
+- 长格式：打印Type、key和value，类似`fmt.Printf("%v", value)`
+
+支持的分隔符控制有三种：
+
+- SepElem：map、slice、array元素之间的分隔符，默认是逗号(`","`)
+- SepField：每个struct属性之间的分隔符，默认是逗号+空格(`", "`)
+- SepKeyValue：属性和属性值之间的分隔符，默认是等号(`"="`)
+
+另外各种边界可定制：
+
+- BoundaryStructStart/BoundaryStructEnd: struct边界，默认`{}`
+- BoundaryMapStart/BoundaryMapEnd: map边界，默认`{}`
+- BoundaryArraySliceStart/BoundaryArraySliceEnd: array和slice边界，默认`[]`
+- BoundaryPointerFuncStart/BoundaryPointerFuncEnd: func边界，默认`()`
+- BoundaryInterfaceStart/BoundaryInterfaceEnd: func边界，默认`()`
+
+注意使用自定义边界时和分隔符共用同一个`Conf`配置项，对于传入的`Conf`中没有设置（也就是配置项的值为空字符串）的项目，将保留配置项的非空默认值。这就会产生一个问题，就是当我们希望把某个配置项目设置成空(`""`)的时候，需要明确地设置该值为`NONE`才行。比如我们希望我们slice输出的时候，不要带有默认的方括号`[]`,需要这样配置：
+
+	c := &StringConf{SepElem:";", BoundaryArrayAndSliceStart:NONE, BoundaryArrayAndSliceEnd:NONE}
+
+这样配置之后，对切片[1,2,3,4,5]将会生成以下的格式化字符串：
+
+	1;2;3;4;5
+
+而使用默认配置项时的输出会是这样的：
+
+	[1,2,3,4,5]
+
+作为对比，以下是使用标准库`fmt.Printf("%v", []int{1,2,3,4,5})`的输出：
+
+	[1 2 3 4 5]
+
+
+具体代码资源在[这里](https://github.com/kimiazhu/golib/blob/master/utils/strings.go)。
+
+## 4.2 自定义ToString
+
+当以上所有情况都不能满足需求时，或者对于某个输出具有非常特别的格式要求时候，可以针对每个struct内自行定义`String()`函数，在需要的时候进行调用该方法。
+
+## 4.3 统一
+
+我们可以定制一个方法来统一上面两种格式的输出：
+
+```go
+// ToString return the common string format of the obj according
+// to the given arguments
+//
+// by default obj.String() will be called if this method exists.
+// otherwise we will call ReflectToString() to get it's string
+// representation
+//
+// the args please refer to the ReflectToString() function.
+func ToString(obj interface{}, args ...interface{}) string {
+  if v, ok := obj.(fmt.Stringer); ok {
+    return v.String()
+  }
+  return ReflectToString(obj, args)
+}
+```
+
+这段代码实现了当存在String()方法的时候，我们调用对象的String()方法进行输出。否则使用反射构造通用的字符串格式输出。
+
+# 5. Reference
+
+- [strings.go](https://github.com/kimiazhu/golib/blob/master/utils/strings.go)
