@@ -15,7 +15,7 @@ Go到1.5之后的GC机制已经有了长足进展，而扫描-标记-清除算�
 
 # 1. GC日志格式
 
-```log
+```config
 gc # @#s #%: #+...+# ms clock, #+...+# ms cpu, #->#-># MB, # MB goal, # P
 ```
 
@@ -31,7 +31,7 @@ gc # @#s #%: #+...+# ms clock, #+...+# ms cpu, #->#-># MB, # MB goal, # P
 
 # 2. Golang循环引用测试
 
-```go:
+```go
 // Description: src
 // Author: ZHU HAIHUA
 // Since: 2016-04-26 09:46
