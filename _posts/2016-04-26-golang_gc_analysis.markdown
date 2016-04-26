@@ -106,4 +106,3 @@ func main() {
 
 1. [GC算法的概要](http://gad.qq.com/article/detail/7150922)
 2. [Go 1.4+ Garbage Collection (GC) Plan and Roadmap](https://docs.google.com/document/d/16Y4IsnNRCN43Mx0NZc5YXZLovrHvvLhK_h0KN8woTO4/edit#heading=h.o8eay7ieosat)
-3. 
