@@ -1,7 +1,8 @@
 ---
 layout:     post
 title:      "MySQL问题记录"
-date:       2015-10-19 00:05
+date:       2015-10-19 00:05:00 +08:00
+lastmod: 	2016-04-23 18:40:00 +08:00
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:

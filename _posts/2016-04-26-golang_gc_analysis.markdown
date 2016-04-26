@@ -2,6 +2,7 @@
 layout:     post
 title:      "Golang Garbage Collection Analysis"
 date:       2016-04-25 18:28:00 +08:00
+lastmod: 	2016-04-25 18:40:00 +08:00
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
