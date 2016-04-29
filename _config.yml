@@ -44,6 +44,7 @@ gems:
 # document: http://jekyllrb.com/docs/configuration/#kramdown
 markdown: kramdown
 kramdown:
+  toc_levels: 1..5
   input: GFM                            # use Github Flavored Markdown !important
   syntax_highlighter: rouge
   # Rouge Highlighter in Kramdown › http://kramdown.gettalong.org/syntax_highlighter/rouge.html

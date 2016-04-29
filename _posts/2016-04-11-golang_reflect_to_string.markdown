@@ -8,6 +8,11 @@ tags:
     - Golang
 ---
 
+# 目录：
+{:.no_toc}
+* any list
+{:toc}
+
 # 1. 说明
 
 将struct对象信息方便地以人可读的方式打印到日志或者console中，go提供了一些方式，可以让我们方便地做这个事情。

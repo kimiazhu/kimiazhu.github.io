@@ -8,6 +8,11 @@ tags:
     - Golang
 ---
 
+# 目录：
+{:.no_toc}
+* any list
+{:toc}
+
 # 1. 说明
 
 现有的golang标准库中的log方案不支持滚动，也不支持多个日志级别输出，使用起来会有些不方便，而网上也有不少的针对go的log解决方案。我这个log方案基于[alecthomas/log4go](https://github.com/alecthomas/log4go)改造而来。并且已经改过很多东西，所以讲它单独独立出来了。目前我们自己的生产环境已经在使用。
