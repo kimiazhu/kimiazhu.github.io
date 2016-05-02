@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "What We Talk About When We Talk About Open Source License"
+title:      "What We Talk About When We Talk About Open Source"
 date:       2016-05-02 12:20:00 +08:00
 lastmod: 	2016-05-02 12:20:00 +08:00
 author:     "KC"
