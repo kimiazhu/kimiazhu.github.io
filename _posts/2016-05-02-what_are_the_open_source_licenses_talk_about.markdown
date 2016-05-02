@@ -100,9 +100,10 @@ Apache Lience鼓励代码共享和尊重原作者的著作权。
 
 采用这个协议的开源软件有： JBoss、 FCKeditor 、 Hibernate。之前extjs就因为从LGPL转换到GPL带来了不少的震动。
 
-## 3.4 BSD(Berkerley Software Distribution)
+## 3.4 BSD (Berkerley Software Distribution)
 
 目前分为BSD 3-Clause和BSD 2-Clause。顾名思义，3-Clause包含3个条款，2-Clause只有两个。
+
 这个协议相对上面两个协议宽松很多，允许使用者修改和重新发布代码，也允许使用或在BSD代码基础上开发商业软件发布和销售，因此是适用于商业软件的。
 
 使用者别太高兴，使用时还必须做到满足三个条件（2-Clause则不带第3条）：
