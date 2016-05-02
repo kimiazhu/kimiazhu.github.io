@@ -34,7 +34,7 @@ Source Code 指的是各种语言写成的源代码,通过Source Code,结合文�
 Object Code 指的是Source Code 经过编译之后,生成的类似于“类库”一样的,提供各种接口供他人使用的目标码,按我的理解,它就是像常见的DLL、ActiveX、OCX控件性质的东西。(不知道这样理解对不对)
 
 分清楚这两个概念的目的在于，有些开源，只发布Object Code，当然，大多数发布的是Source Code。很多协议也对 “你发布的是哪种Code的时候应该怎样”，有着明确的约束。
-　　
+
 ## 1.3 Derivative Module 和 Separate Module
 
 Derivative Module 指的是，依托或包含“最初的”或者“从别人处获取的”开源代码而产生的代码，是原“源代码”的增强(不等于增加)、改善和延续的模块，意为“衍生模块”。
