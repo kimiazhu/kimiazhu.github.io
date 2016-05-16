@@ -27,14 +27,14 @@ tags:
 # 垂直分2屏幕，分别编辑file1和file2
 vim -O2 file1 file2 
 
-# 水平分2屏幕，分别编辑file1、file2和file3
-vim -o2 file1 file2 file3
+# 水平分3屏幕，分别编辑file1、file2和file3
+vim -o3 file1 file2 file3
 ```
 
 ## 1.2 关闭分屏
 
 ```bash
-# 关闭当前分屏
+# 关闭当前分屏，当若当前已是最后一个分屏则不会退出
 Ctrl+w c
 
 # 关闭当前分屏，如果只剩最后一个了，则退出Vim
