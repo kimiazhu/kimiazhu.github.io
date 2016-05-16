@@ -1,0 +1,100 @@
+---
+layout:     post
+title:      "VIM FAQ"
+date:       2016-05-16 10:28:00 +08:00
+lastmod: 	2016-05-16 10:28:00 +08:00
+author:     "KC"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - Vim
+    - Linux
+---
+
+# 目录：
+{:.no_toc}
+* any list
+{:toc}
+
+# 1. Multiple Windows
+
+分屏操作使用`Ctrl+W`进行控制。
+
+## 1.1 启动时分屏
+
+通过-O(大写)指定垂直分屏，-o(小写)指定水平分屏。
+
+```bash
+# 垂直分2屏幕，分别编辑file1和file2
+vim -O2 file1 file2 
+
+# 水平分2屏幕，分别编辑file1、file2和file3
+vim -o2 file1 file2 file3
+```
+
+## 1.2 关闭分屏
+
+```bash
+# 关闭当前分屏
+Ctrl+W c
+
+# 关闭当前分屏，如果只剩最后一个了，则退出Vim
+Ctrl+W q
+```
+
+## 1.3 编辑文件时增加分屏
+
+```bash
+# 水平分割当前打开的文件
+Ctrl+W s
+
+# 水平分割窗口，并在新窗口打开一个新的文件。
+:sp filename
+
+# 垂直分割当前打开的文件
+Ctrl+W v
+
+# 垂直分割窗口，并在新窗口打开一个新的文件。
+:vsp filename
+```
+
+## 1.4 在分屏间移动光标
+
+Vim中的光标键是h, j, k, l，要在各个屏间切换，只需要先按一下Ctrl+W
+
+```bash
+# 光标左移
+Ctrl+w h
+
+# 光标右移
+Ctrl+w l
+
+# 光标上移
+Ctrl+w k
+
+# 光标下移
+Ctrl+w j
+
+# 光标移动到下一个分屏中
+Ctrl+w w
+```
+
+> 移动屏幕本身也是H, J, K, L四个键，但是移动光标是小写，移动窗体是大写。
+
+## 1.5 调节屏幕尺寸
+
+```bash
+# 让所有窗口等大
+Ctrl+w =
+
+# 增加当前窗口高度
+Ctrl+w +
+
+# 减小当前窗口高度
+Ctrl+w -
+
+# 增加当前窗口宽度
+Ctrl+w >
+
+# 减小当前窗口宽度
+Ctrl+w <
+```
