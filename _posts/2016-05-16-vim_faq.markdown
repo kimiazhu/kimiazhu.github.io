@@ -15,7 +15,7 @@ tags:
 * any list
 {:toc}
 
-# 1. Multiple Windows
+# 1. 分屏
 
 分屏操作使用`Ctrl+w`进行控制。
 
