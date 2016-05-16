@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "VIM FAQ"
+title:      "Vim FAQ"
 date:       2016-05-16 10:28:00 +08:00
 lastmod: 	2016-05-16 10:28:00 +08:00
 author:     "KC"
@@ -17,7 +17,7 @@ tags:
 
 # 1. Multiple Windows
 
-分屏操作使用`Ctrl+W`进行控制。
+分屏操作使用`Ctrl+w`进行控制。
 
 ## 1.1 启动时分屏
 
@@ -35,23 +35,23 @@ vim -o2 file1 file2 file3
 
 ```bash
 # 关闭当前分屏
-Ctrl+W c
+Ctrl+w c
 
 # 关闭当前分屏，如果只剩最后一个了，则退出Vim
-Ctrl+W q
+Ctrl+w q
 ```
 
 ## 1.3 编辑文件时增加分屏
 
 ```bash
 # 水平分割当前打开的文件
-Ctrl+W s
+Ctrl+w s
 
 # 水平分割窗口，并在新窗口打开一个新的文件。
 :sp filename
 
 # 垂直分割当前打开的文件
-Ctrl+W v
+Ctrl+w v
 
 # 垂直分割窗口，并在新窗口打开一个新的文件。
 :vsp filename
@@ -59,7 +59,7 @@ Ctrl+W v
 
 ## 1.4 在分屏间移动光标
 
-Vim中的光标键是h, j, k, l，要在各个屏间切换，只需要先按一下Ctrl+W
+Vim中的光标键是`h, j, k, l`，要在各个屏间切换，只需要先按一下`Ctrl+w`
 
 ```bash
 # 光标左移
@@ -78,7 +78,8 @@ Ctrl+w j
 Ctrl+w w
 ```
 
-> 移动屏幕本身也是H, J, K, L四个键，但是移动光标是小写，移动窗体是大写。
+> BTW：
+>     移动屏幕本身也是`H, J, K, L`四个键，但是移动光标是小写，移动窗体是大写。
 
 ## 1.5 调节屏幕尺寸
 
