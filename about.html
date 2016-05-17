@@ -56,13 +56,8 @@ header-img: "img/about-bg.jpg"
 {% if site.duoshuo_username %}
 <!-- 多说评论框 start -->
 <div class="comment">
-    <div class="ds-thread"
-    {% if site.duoshuo_username == "kchu" %}
-        data-thread-key="kchu/about"
-    {% else %}
-        data-thread-key="{{site.duoshuo_username}}/about"
-    {% endif %}
-
+    <div class="ds-thread" 
+    data-thread-key="{{site.duoshuo_username}}/about" 
     data-title="{{page.title}}"
     data-url="{{site.url}}/about/"></div>
 </div>
