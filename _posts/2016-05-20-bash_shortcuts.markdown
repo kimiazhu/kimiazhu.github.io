@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Bash shortcuts"
+title:      "Bash Shortcuts"
 date:       2016-05-20 15:40:00 +08:00
 lastmod: 	2016-05-20 15:40:00 +08:00
 author:     "KC"
@@ -10,7 +10,7 @@ tags:
     - Linux
 ---
 
-# 目录：
+# Contents：
 {:.no_toc}
 * any list
 {:toc}
