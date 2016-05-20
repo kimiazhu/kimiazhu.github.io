@@ -100,6 +100,7 @@ Many terminals will also send control characters for keys in the digit row:
 	 ALT + .   Last argument of previous command
 	      !*   All arguments of previous command
 	^abc­^­def   Run previous command, replacing abc with def
+	^abc­^­def^  Run previous command, replacing all abc with def
 
 # 5. Process control
 
