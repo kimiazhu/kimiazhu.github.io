@@ -173,23 +173,17 @@ vim -p file1 file2 file3
 	ctrl + y   向下滚动一行
 	ctrl + u   向上滚动半屏
 	ctrl + d   向下滚动半屏
-	ctrl + ]   跳转到关键字的定义处
-	ctrl + o   插入模式下移动光标，后接着输入h/j/k/l可以向左/下/上/右移动一个字符。
-	           ctrl+o 0    插入模式下移动光标到行首
-	           ctrl+o A    插入模式下移动光标到行尾
-	           ctrl+o ^    插入模式下移动光标到行首第一个非空白字符处
 	
 
-# 5. 编辑文档
+# 5. 单词或行编辑
 
 	 r        replace,替换当前字符
 	 x/X      小写x删除光标处字符，大写X删除光标前字符
 	 i/I      小写i在光标前插入，大写I在行首插入
-	 a/A      小写a在光标后插入，大写A在行尾插入
+     a/A      小写a在光标后插入，大写A在行尾插入
 	 u        undo
 	ctrl + u  在输入模式下执行的撤销操作
 	ctrl - r  redo
-	ctrl + c  回到普通模式。`esc`和`ctrl + [`也是会到普通模式的按键
 
 	 d        删除命令，删除后会将内容复制到剪切板。相当于剪切命令。有以下组合：
 	          dd   删除当前行，重复两次命令为删除当前行。
@@ -211,7 +205,19 @@ vim -p file1 file2 file3
 
 	>>/<<     >>向右缩进当前行，<<向左缩进当前行
 	2,8>      2-8行缩进，`4,6<`: 4-6行反缩进
-	
 	v         进入选择模式，移动光标选择多行，然后执行`>`缩进一次，执行`2>`则会缩进两次
-	ctrl+v    列编辑
-	          `ctrl+v`选择列，然后`I`或`A`切换到插入模式编辑列，最后`esc`可以在所选每一列上应用。
+
+# 6. 缩进
+
+以下选项需在命令模式下使用，例如`:set number`表示显示行号。
+
+	 (no)ai    (no)autoindent，自动缩进，即新行与当前行同等缩进
+	 (no)ci    (no)cindent，C语言风格的缩进
+	 (no)si    (no)smartindent，基于autoindent的一些改进风格
+
+	 ts={n}    tabstop，设置tab键长度，相当于n个空格
+	sts={n}    softtabstop，开启et后，如果开启本参数，每次退格会删除n个空格
+	 sw={n}    shiftwidth，每层缩进的空格数
+	 (no)et    (no)expandtab，将tab字符展开为空格，开启后如果确实要输入tab，可以使用`<C-v><Tab>`
+	(no)sta    (no)smarttab，开启后在行首按<Tab>将会sw个空格，否则加入ts个空格
+	
