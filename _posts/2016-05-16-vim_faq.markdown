@@ -197,7 +197,10 @@ vim -p file1 file2 file3
 
 	   c      删除并改变状态的插入模式。其中删除部分和`d`命令相同。同样有`cc`,`cw`,`cE`等等组合
 	   y      复制命令，有和`d`命令同样的组合
-	          yy   复制行，相当于 `ddP`
+	             yy   复制行，相当于 `ddP`
+	            nyy   复制n行
+	           "+yy   复制1行到操作系统剪切板
+	          "+nyy   复制n行到操作系统剪切板  
 	   p      光标后粘贴；`P`: 光标前粘贴
 
 
@@ -226,3 +229,8 @@ vim -p file1 file2 file3
 	 (no)et    (no)expandtab，将tab字符展开为空格，开启后如果确实要输入tab，可以使用`<C-v><Tab>`
 	(no)sta    (no)smarttab，开启后在行首按<Tab>将会sw个空格，否则加入t个空格
 	
+# 7. 环境变量和配置项
+
+	:echo $VIMRUNTIME    查看vim环境变量$VIMRUNTIME的值
+	:set fileencodings?  查看fileencodings配置项的值
+	:set history=200     设置history配置项的值（该值默认为20）
