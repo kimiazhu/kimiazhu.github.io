@@ -219,16 +219,16 @@ vim -p file1 file2 file3
 
 以下选项需在命令模式下使用，例如`:set number`表示显示行号。
 
-	 (no)ai    (no)autoindent，自动缩进，即新行与当前行同等缩进
-	 (no)ci    (no)cindent，C语言风格的缩进
-	 (no)si    (no)smartindent，基于autoindent的一些改进风格
-
-	 ts={n}    tabstop，设置tab键长度，相当于n个空格
-	sts={n}    softtabstop，开启et后，如果开启本参数，每次退格会删除n个空格
-	 sw={n}    shiftwidth，每层缩进的空格数
-	 (no)et    (no)expandtab，将tab字符展开为空格，开启后如果确实要输入tab，可以使用`<C-v><Tab>`
-	(no)sta    (no)smarttab，开启后在行首按<Tab>将会sw个空格，否则加入t个空格
-	(no)paste  粘贴选项打开的时候，从剪切板粘贴过来的文本不会自动缩进，可以在粘贴完之后再关闭该选项
+	   (no)ai    (no)autoindent，自动缩进，即新行与当前行同等缩进
+	   (no)ci    (no)cindent，C语言风格的缩进
+	   (no)si    (no)smartindent，基于autoindent的一些改进风格
+      
+	   ts={n}    tabstop，设置tab键长度，相当于n个空格
+	  sts={n}    softtabstop，开启et后，如果开启本参数，每次退格会删除n个空格
+	   sw={n}    shiftwidth，每层缩进的空格数
+	   (no)et    (no)expandtab，将tab字符展开为空格，开启后如果确实要输入tab，可以使用`<C-v><Tab>`
+	  (no)sta    (no)smarttab，开启后在行首按<Tab>将会sw个空格，否则加入t个空格
+	(no)paste    粘贴选项打开的时候，从剪切板粘贴过来的文本不会自动缩进，可以在粘贴完之后再关闭该选项
     
 	
 # 7. 环境变量和配置项
