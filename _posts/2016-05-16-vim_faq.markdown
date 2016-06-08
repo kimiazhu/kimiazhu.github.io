@@ -228,6 +228,8 @@ vim -p file1 file2 file3
 	 sw={n}    shiftwidth，每层缩进的空格数
 	 (no)et    (no)expandtab，将tab字符展开为空格，开启后如果确实要输入tab，可以使用`<C-v><Tab>`
 	(no)sta    (no)smarttab，开启后在行首按<Tab>将会sw个空格，否则加入t个空格
+	(no)paste  粘贴选项打开的时候，从剪切板粘贴过来的文本不会自动缩进，可以在粘贴完之后再关闭该选项
+    
 	
 # 7. 环境变量和配置项
 
