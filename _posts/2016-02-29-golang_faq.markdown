@@ -177,3 +177,13 @@ func DumpBodyAsBytes(req *http.Request) (copy []byte, err error) {
 这里我实践的方式不改动任何代码，直接在Linux部署应用时将系统标准错误重定向到一个文件：
 
 	$> nohup ./server > /dev/null 2>stderr.log &
+
+
+# 5. 编译链接
+
+## 5.1 多个ldflags
+
+以下命令在build的时候设置了两个参数值，一个是Env直接设置为prod，另外一个Host参数直接从环境变量中读取`$HOST`的值，如果在windows下编译，获取环境变量应该改为`%HOST%`。
+```go
+go build -ldflags "-X main.Env=prod -X main.Host=$HOST" -o path/to/output
+```
