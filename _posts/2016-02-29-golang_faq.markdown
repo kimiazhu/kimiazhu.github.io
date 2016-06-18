@@ -184,6 +184,9 @@ func DumpBodyAsBytes(req *http.Request) (copy []byte, err error) {
 ## 5.1 多个ldflags
 
 以下命令在build的时候设置了两个参数值，一个是Env直接设置为prod，另外一个Host参数直接从环境变量中读取`$HOST`的值，如果在windows下编译，获取环境变量应该改为`%HOST%`。
+
 ```go
 go build -ldflags "-X main.Env=prod -X main.Host=$HOST" -o path/to/output
 ```
+
+参考这里：[go command link](https://golang.org/cmd/link/ "Command link")。
