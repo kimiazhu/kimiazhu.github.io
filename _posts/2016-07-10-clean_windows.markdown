@@ -39,13 +39,12 @@ for example:
 
 [JUST this time]:
 
-F:(safe mode) maps the C:(normal mode)
-
-G:(safe mode) maps the E:(normal mode)
+X:\Windows\System32> F:(safe mode) maps the C:(normal mode)
+X:\Windows\System32> G:(safe mode) maps the E:(normal mode)
 
 we should enter the follow command to move the files:
 
-```bat
+```bash
 > robocopy F:\Windows\Installer G:\Windows\Installer /MOVE /e
 ```
 
@@ -57,11 +56,10 @@ the target location of mklink is a simple string, so we need to use the path on 
 
 Just like last sample:
 
-F:(safe mode) maps the C:(normal mode)
+X:\Windows\System32> F:(safe mode) maps the C:(normal mode)
+X:\Windows\System32> G:(safe mode) maps the E:(normal mode)
 
-G:(safe mode) maps the E:(normal mode)
-
-```bat
+```bash
 > mklink /J F:\Windows\Installer E:\Windows\Installer
 ```
 
