@@ -39,13 +39,13 @@ for example:
 
 [JUST this time]:
 
-X:\Windows\System32> F:(safe mode) maps the C:(normal mode)
-X:\Windows\System32> G:(safe mode) maps the E:(normal mode)
+> F:(safe mode) maps the C:(normal mode)
+> G:(safe mode) maps the E:(normal mode)
 
 we should enter the follow command to move the files:
 
 ```bash
-> robocopy F:\Windows\Installer G:\Windows\Installer /MOVE /e
+X:\Windows\System32> robocopy F:\Windows\Installer G:\Windows\Installer /MOVE /e
 ```
 
 ### 3. Make Link
@@ -56,11 +56,11 @@ the target location of mklink is a simple string, so we need to use the path on 
 
 Just like last sample:
 
-X:\Windows\System32> F:(safe mode) maps the C:(normal mode)
-X:\Windows\System32> G:(safe mode) maps the E:(normal mode)
+> F:(safe mode) maps the C:(normal mode)
+> G:(safe mode) maps the E:(normal mode)
 
 ```bash
-> mklink /J F:\Windows\Installer E:\Windows\Installer
+X:\Windows\System32> mklink /J F:\Windows\Installer E:\Windows\Installer
 ```
 
 this time we must use the path relative to the nomal mode.(Driver G: in safe mode is driver E: in normal mode)
