@@ -40,6 +40,7 @@ for example:
 [JUST this time]:
 
 > F:(safe mode) maps the C:(normal mode)
+
 > G:(safe mode) maps the E:(normal mode)
 
 we should enter the follow command to move the files:
@@ -57,6 +58,7 @@ the target location of mklink is a simple string, so we need to use the path on 
 Just like last sample:
 
 > F:(safe mode) maps the C:(normal mode)
+
 > G:(safe mode) maps the E:(normal mode)
 
 ```bash
