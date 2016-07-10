@@ -66,3 +66,9 @@ X:\Windows\System32> mklink /J F:\Windows\Installer E:\Windows\Installer
 ```
 
 this time we must use the path relative to the nomal mode.(Driver G: in safe mode is driver E: in normal mode)
+
+
+### 4. Other Tools
+
+[PatchCleaner](http://www.homedev.com.au/free/patchcleaner)
+[WICleanup](http://www.kztechs.com/wicleanup/)
