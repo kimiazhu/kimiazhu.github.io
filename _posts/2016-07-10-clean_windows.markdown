@@ -23,7 +23,7 @@ I want my space back, but I don't wanna take the risk to delete all the contents
 
 So my solution is moving them to the other driver and make a soft link to the new target, just like we used to do on Unix-like system.
 
-### 1. : Enter Safe Mode
+### 1. Enter Safe Mode
 
 Restart to `Command prompt with safe mode`.
 
