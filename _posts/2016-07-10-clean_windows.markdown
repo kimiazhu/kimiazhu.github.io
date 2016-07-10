@@ -70,6 +70,5 @@ this time we must use the path relative to the nomal mode.(Driver G: in safe mod
 
 ### 4. Other Tools
 
-[PatchCleaner](http://www.homedev.com.au/free/patchcleaner)
-
-[WICleanup](http://www.kztechs.com/wicleanup/)
+- [PatchCleaner](http://www.homedev.com.au/free/patchcleaner)
+- [WICleanup](http://www.kztechs.com/wicleanup/)
