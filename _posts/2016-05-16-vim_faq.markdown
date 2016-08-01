@@ -251,4 +251,6 @@ vim -p file1 file2 file3
 
 # 9. 其他
 
-	:%!python -m json.tool      json代码格式化
+	:%!python -m json.tool          json代码格式化
+	:w !sudo tee % > /dev/null      以root权限保存当前文件
+	:e path/to/file                 打开指定文件进行编辑
