@@ -15,6 +15,13 @@ tags:
 * any list
 {:toc}
 
+---
+
+updated on 2016-08-12
+
+Move WinSxS folder to another driver will cause windows update failure, it will complain the error `0x80070011`，means the system cannot write files to another driver. 
+
+---
 The largest folder on my windows is `C:\Windows\Installer`, it takes more than 40GB!
 
 And the second one maybe `C:\Windows\WinSxS`.
