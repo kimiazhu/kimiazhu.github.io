@@ -17,6 +17,8 @@ tags:
 
 ---
 
+Linux的curl命令本身非常强大，可以很全面而精确地模拟页面请求。这里做一些整理，资料来自网上和Linux Man手册。
+
 ## 1. 查看网页源码
 直接在curl命令后加上网址，就可以看到网页源码。我们以网址www.sina.com为例（选择该网址，主要因为它的网页代码较短）：
 
@@ -36,7 +38,19 @@ $ curl www.sina.com
 如果要把这个网页保存下来，可以使用`-o`参数，这就相当于使用wget命令了。
 
 ```bash
-$ curl -o [文件名] www.sina.com
+$ curl -o sina_output.html www.sina.com
+```
+
+如果要保存一张图片，一个文本或者其他的一个什么文件，可以使用`-O`(大写)，注意URL必须精确到远程的一个文件名，比如：
+
+```bash
+$ curl -O http://www.example.com/example.jpg
+```
+
+或者：
+
+```bash
+$ curl -O http://www.example.com/filename.zip
 ```
 
 ## 2. 自动跳转
