@@ -2,7 +2,7 @@
 layout:     post
 title:      "Free System Disk Space on Windows"
 date:       2016-07-10 12:52:00 +08:00
-lastmod: 	2016-07-10 12:52:00 +08:00
+lastmod: 	2016-08-06 14:32:00 +08:00
 author:     "KC"
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -17,7 +17,7 @@ tags:
 
 ---
 
-updated on 2016-08-12
+updated on 2016-08-06
 
 Move WinSxS folder to another driver will cause windows update failure, it will complain the error `0x80070011`，means the system cannot write files to another driver. 
 
