@@ -183,7 +183,7 @@ $ curl -X DELETE www.example.com
 </form>
 ```
 
-你可以用curl这样上传文件：
+你可以用`@`符号表示文件路径来上传文件：
 
 ```bash
 $ curl --form upload=@localfilename --form press=OK [URL]
