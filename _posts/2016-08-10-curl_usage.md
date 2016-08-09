@@ -23,6 +23,7 @@ tags:
 ```bash
 $ curl www.sina.com
 ```
+输出：
 
 	<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 	<html><head>
@@ -57,6 +58,8 @@ $ curl -L www.sina.com
 $ curl -i www.sina.com
 ```
 
+输出：
+
 	HTTP/1.0 301 Moved Permanently
 	Date: Sat, 03 Sep 2011 23:44:10 GMT
 	Server: Apache/2.0.54 (Unix)
@@ -87,6 +90,7 @@ $ curl -i www.sina.com
 ```bash
 $ curl -v www.sina.com
 ```
+输出：
 
 	* About to connect() to www.sina.com port 80 (#0)
 	* Trying 61.172.201.195... connected
@@ -156,9 +160,13 @@ $ curl -X POST--data-urlencode "date=April 1" example.com/form.cgi
 
 curl默认的HTTP动词是GET，使用`-X`参数可以支持其他动词。
 
+POST 方法：
+
 ```bash
 $ curl -X POST www.example.com
 ```
+
+DELETE 方法：
 
 ```bash
 $ curl -X DELETE www.example.com
@@ -218,6 +226,8 @@ $ curl --cookie "name=xxx" www.example.com
 ```bash
 $ curl -c cookies http://example.com
 ```
+
+以及：
 
 ```bash
 $ curl -b cookies http://example.com
