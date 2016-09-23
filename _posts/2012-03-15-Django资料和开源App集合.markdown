@@ -117,7 +117,7 @@ Django的论坛APP不少，但到就目前而言，还没有什么杀手级的AP
  
 * [django-socialregistration](https://github.com/flashingpumpkin/django-socialregistration) 支持OpenID, OAuth and Facebook的认证。似乎和Django-Socialauth差不多。没有对比过，希望用过的朋友给些心得。[^4]
  
-* [django-registration](http://bitbucket.org/ubernostrum/django-registration/wiki/Home) 注册功能，支持帐户的邮件激活。该项目似乎已经停止维护了。可作为参考项目，不太建议在新项目中使用了。
+* [django-registration](https://github.com/ubernostrum/django-registration) 注册功能，支持帐户的邮件激活。该项目似乎已经停止维护了。可作为参考项目，不太建议在新项目中使用了。
  
 * [django-auth-ldap](http://bitbucket.org/psagers/django-auth-ldap/) Django的LDAP认证支持，使用LDAP的集成变得简单。
 
