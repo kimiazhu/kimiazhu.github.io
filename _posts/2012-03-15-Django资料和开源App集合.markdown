@@ -11,6 +11,8 @@ tags:
 
 *本文源于网络[《我和Django》](http://lds.osser.me/data/20110902224717/index.html)。我对其中部分明显有误的地方进行了更正，并对部分内容作了补充，补充内容大部分以斜体的形式直接插入文中，或者以注解的形式存在于文章末尾。*
 
+这里有一篇英文的[入门教程](http://wiht.link/django_primer)。
+
 ---
 
 我使用python的很大一部分原因就是django。虽然在以前也用过python，不过始终没有什么特别的感觉。然后接触到了django。可以说django非常对我的胃口，特别是他的admin给人的感觉特别的棒。
